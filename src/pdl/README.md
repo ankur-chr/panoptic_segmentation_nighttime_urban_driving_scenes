@@ -1,5 +1,5 @@
 # **Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
-This repository contains the dissertation related source code and related files for the title mentioned above.
+This repository contains the source code and related files for the dissertation title mentioned above.
 # Training and Testing execution source code
 All the Training and Testing execution related source code files are present under the folder **"/src_train_test"**
 - A description for all the files is provided in **"Files.xlsx"**. Please refer this file to understand which file does what.
