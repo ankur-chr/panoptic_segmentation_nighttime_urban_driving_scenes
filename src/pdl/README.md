@@ -1,9 +1,11 @@
 # **Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
 This repository contains the source code and related files for the dissertation title mentioned above.
-# Training and Testing execution source code
-All the Training and Testing execution related source code files are present under the folder **"/src_train_test"**
+# Training/Testing - source code
+All the source code files for training and evaluation are present under the folder **"/src_train_test"**
 - A description for all the files is provided in **"Files.xlsx"**. Please refer this file to understand which file does what.
-- The folder contains training and evaluation files for Panoptic Segmentation and Domain Adaptation (CycleGAN)
+- The folder contains training and evaluation files for:
+    -  Panoptic Segmentation
+    -  Domain Adaptation (CycleGAN)
 - Corresponding Jupyter Notebooks are also available, and added to the sub-folder **"/jupyter"**
 
 # IMPORTANT: DATA SETUP for Cityscapes dataset
