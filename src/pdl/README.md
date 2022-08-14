@@ -2,7 +2,9 @@
 This repository contains the source code and related files for the dissertation title mentioned above.
 # Training/Testing - source code
 All the source code files for training and evaluation are present under the folder **"/src_train_test"**
-- A description for all the files is provided in **"Files.xlsx"**. Please refer this file to understand which file does what.
+- A description for all the files is provided in
+    - **ReadMe.MD** file under the **"/src_train_test"** directory.
+    - You may also download the descriptions via **"Files.xlsx"** in the outer folder **pdl**
 - The folder contains training and evaluation files for:
     -  Panoptic Segmentation
     -  Domain Adaptation (CycleGAN)
