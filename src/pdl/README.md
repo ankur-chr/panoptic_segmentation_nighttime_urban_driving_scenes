@@ -13,10 +13,11 @@ This repository contains the source code and related files for the dissertation 
             -  Domain Adaptation (CycleGAN)
         - Corresponding Jupyter Notebooks are also available with output logs, etc. These are added under the sub-folder **"/jupyter"**
         - For using this code, you will need to have the base source code for Panoptic-DeepLab and/or CycleGAN, as these files use the base code.
-            - More information for the base source code of each of them is provided below.
+            - More information for the base source code for each of them is provided below.
+            
 # Panoptic-DeepLab model architecture base source code:
 - Source code for Panoptic segmentation model is present under the folder: **"/panoptic-deeplab"**
-- Note: The source code for Panoptic-DeepLab was **USED AND ADAPTED** from public re-implementation of the paper: "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation", available via https://github.com/bowenc0221/panoptic-deeplab  
+- Note: The source code for Panoptic-DeepLab was **USED and further ADAPTED** from a public re-implementation of the paper: "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation", available via https://github.com/bowenc0221/panoptic-deeplab  
     - bibtex entry:
         - @inproceedings{cheng2020panoptic,
           title={Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation},
@@ -90,3 +91,6 @@ The following publicly available datasets have been used in this project:
 # Trained Models
 - The 3 main trained models for panoptic segmentation, and 1 main CycleGAN model can be found here: https://drive.google.com/drive/folders/1--u0QI1YJQsbKRJTA55MDEga7X6OzS3c?usp=sharing
 - Many other models were trained and tested for Panoptic Segmentation and CycleGAN under various settings and with different datasets. Those can be shared on request as the list is big!
+
+# Additional data/logs
+- Some additional training and evaluation logs are added in the folder **/additional_output** as supporting facts for trainings (and evaluation) conducted under various settings.
