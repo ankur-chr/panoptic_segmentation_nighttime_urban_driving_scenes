@@ -25,8 +25,6 @@ import os
 os.chdir('/content/drive/MyDrive/dissertation/dissertation')
 
 # git repo related code (not to be used always)
-#!git config --global user.email "ankur.chrungoo@gmail.com"
-#!git commit -m "Updated via colab"
 #!git push
 #!git pull
 
@@ -39,8 +37,7 @@ os.chdir('/content/drive/MyDrive/dissertation/dissertation/src/pdl/panoptic-deep
 # Install requirements/dependencies
 !pip install -r requirements.txt
 
-# Use for training the panoptic-deeplab model
-
+# Use for training the panoptic-deeplab model ( baseline)
 #!python tools/train_net.py --cfg configs/Base-Panoptic-DeepLab.yaml
 !python tools/train_net.py --cfg configs/panoptic_deeplab_R50_os32_cityscapes.yaml
 
@@ -59,7 +56,6 @@ os.chdir('/content/drive/MyDrive/dissertation/dissertation/src/pdl/panoptic-deep
 # Before training, the data preparation scripts need to be run for cityscapes, as per https://github.com/bowenc0221/panoptic-deeplab/blob/master/datasets/README.md
 
 # use for testing the panoptic-deeplab model
-
 #!python tools/test.py --cfg configs/Base-Panoptic-DeepLab.yaml
 !python tools/test.py --cfg configs/panoptic_deeplab_R50_os32_cityscapes.yaml
 

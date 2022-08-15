@@ -1,5 +1,7 @@
 # **Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
 This repository contains the source code and related files for the dissertation title mentioned above.
+# IMPORTANT: DATA SETUP for Cityscapes dataset
+- Before training of the panoptic-deeplab model, the data preparation scripts need to be run for the Cityscapes dataset, as described in https://github.com/bowenc0221/panoptic-deeplab/blob/master/datasets/README.md
 # Training/Testing - source code
 All the source code files for training and evaluation are present under the folder **"/src_train_test"**
 - A description for all the files is provided in
@@ -10,8 +12,22 @@ All the source code files for training and evaluation are present under the fold
     -  Domain Adaptation (CycleGAN)
 - Corresponding Jupyter Notebooks are also available, and added to the sub-folder **"/jupyter"**
 
-# IMPORTANT: DATA SETUP for Cityscapes dataset
-- Before training of the panoptic-deeplab model, the data preparation scripts need to be run for the Cityscapes dataset, as described in https://github.com/bowenc0221/panoptic-deeplab/blob/master/datasets/README.md
+# Running the training / evaluation code
+- NOTE that the executable code works on the "Google Drive" environment (has been implemented and tested via Google Colaboratory).
+- Panoptic Segmentation
+    - Please download and setup the Cityscapes panoptic segmentation training dataset and prepare it using the instructions provided above, and the dataset link(s) provided below.
+    - After setting up the data for the Cityscapes dataset, the python file for baseline panoptic segmentation model can be run. Or the other python files can be run as per need.
+    - In some files, demo code is also available as described in the readme file in the **"/src_train_test"** directory. Basically, the demo related commands in the python files take a trained model, and some input images and use the model to make the panoptic predictions.
+        - You will need to setup the data in the required input directory, and have the trained model path ready before using this.
+    - The python files also contain commands to execute 'test.py' which evaluate a trained panoptic segmentation model on the configured validation set.
+    - The panoptic-deeplab folder contains configuration yaml files under the "configs" directory which can be configured to use different datasets, model settings, trained model path, number of iterations, resume/refine model, number of GPUs, batch size, crop size, loss parameters, and various other settings.
+- CycleGAN:
+    - Please download the required repository from the link provided below.
+    - The python files provided under the **"/src_train_test"** directory can be used as per need to train or refine a CycleGAN model.
+    - For detailed instructions, please refer: https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix and related documentation.
+    - The Pytorch implementation has been used in this project, in the respective code files that are provided.
+    - In order to train CycleGAN, source and target datasets need to be set up as per the instructions provided in the repository linked above.
+    - If the training gets stuck mid-way, it can be resumed using the --continue_train --epoch_count <epoch number> arguments to the training command. Such instances can already be found in the training execution python files in the **"/src_train_test"** directory.
 
 # Panoptic-DeepLab model architecture source code:
 - Source code for Panoptic segmentation model is present under the folder: **"/panoptic-deeplab"**
