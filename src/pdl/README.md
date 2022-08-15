@@ -26,7 +26,7 @@ This repository contains the source code and related files for the dissertation 
 
 # CycleGAN base source code:
 - The base code for CycleGAN mmodel architecture was sourced from the public github repository : https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
-- bibtex entries 
+- It is part of the published paper "Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks" with the following bibtex entries:-
     - @inproceedings{CycleGAN2017,
       title={Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks},
       author={Zhu, Jun-Yan and Park, Taesung and Isola, Phillip and Efros, Alexei A},
