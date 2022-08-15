@@ -1,0 +1,1108 @@
+[07/27 20:50:07 segmentation_test]: Namespace(cfg='configs/Approach_2_solution_2_refine_on_approach_1.yaml', opts=[])
+[07/27 20:50:07 segmentation_test]: CKPT_FREQ: 5000
+CUDNN:
+  BENCHMARK: True
+  DETERMINISTIC: False
+  ENABLED: True
+DATALOADER:
+  NUM_WORKERS: 1
+  SAMPLER_TRAIN: TrainingSampler
+  TRAIN_SHUFFLE: True
+DATASET:
+  CROP_SIZE: (1025, 2049)
+  DATASET: cityscapes_panoptic
+  IGNORE_STUFF_IN_OFFSET: True
+  MAX_RESIZE_VALUE: -1
+  MAX_SCALE: 2.0
+  MEAN: (0.485, 0.456, 0.406)
+  MIN_RESIZE_VALUE: -1
+  MIN_SCALE: 0.5
+  MIRROR: True
+  NUM_CLASSES: 19
+  RESIZE_FACTOR: -1
+  ROOT: ./datasets/cityscapes
+  SCALE_STEP_SIZE: 0.1
+  SEMANTIC_ONLY: False
+  SMALL_INSTANCE_AREA: 4096
+  SMALL_INSTANCE_WEIGHT: 3
+  STD: (0.229, 0.224, 0.225)
+  TEST_SPLIT: val
+  TRAIN_SPLIT: train
+DEBUG:
+  DEBUG: True
+  DEBUG_FREQ: 100
+  KEEP_INTERVAL: 1000
+  OUTPUT_KEYS: ('semantic', 'center', 'offset')
+  TARGET_KEYS: ('semantic', 'center', 'offset', 'semantic_weights', 'center_weights', 'offset_weights')
+GPUS: (0,)
+LOSS:
+  CENTER:
+    NAME: mse
+    REDUCTION: none
+    WEIGHT: 200.0
+  FOREGROUND:
+    IGNORE: 255
+    MIN_KEPT: 100000
+    NAME: cross_entropy
+    REDUCTION: mean
+    THRESHOLD: 0.7
+    TOP_K_PERCENT: 1.0
+    WEIGHT: 1.0
+  OFFSET:
+    NAME: l1
+    REDUCTION: none
+    WEIGHT: 0.01
+  SEMANTIC:
+    IGNORE: 255
+    MIN_KEPT: 100000
+    NAME: hard_pixel_mining
+    REDUCTION: mean
+    THRESHOLD: 0.7
+    TOP_K_PERCENT: 0.2
+    WEIGHT: 1.0
+MODEL:
+  BACKBONE:
+    DILATION: (False, False, False)
+    META: resnet
+    NAME: resnet50
+    PRETRAINED: True
+    WEIGHTS: 
+  BN_MOMENTUM: 0.01
+  DECODER:
+    ATROUS_RATES: (3, 6, 9)
+    CONV_KERNEL: 5
+    CONV_PADDING: 2
+    CONV_STACK: 1
+    CONV_TYPE: depthwise_separable_conv
+    DECODER_CHANNELS: 256
+    FEATURE_KEY: res5
+    IN_CHANNELS: 2048
+  META_ARCHITECTURE: panoptic_deeplab
+  PANOPTIC_DEEPLAB:
+    INSTANCE:
+      ASPP_CHANNELS: 256
+      CLASS_KEY: ('center', 'offset')
+      DECODER_CHANNELS: 128
+      ENABLE: True
+      FOREGROUND_ARCH: v1
+      FOREGROUND_SEG: False
+      HEAD_CHANNELS: 32
+      LOW_LEVEL_CHANNELS_PROJECT: (64, 32, 16)
+      NUM_CLASSES: (1, 2)
+    LOW_LEVEL_CHANNELS: (1024, 512, 256)
+    LOW_LEVEL_CHANNELS_PROJECT: (128, 64, 32)
+    LOW_LEVEL_KEY: ('res4', 'res3', 'res2')
+  WEIGHTS: 
+OUTPUT_DIR: ./output/approach_2_solution_2_refine_on_approach_1
+POST_PROCESSING:
+  CENTER_THRESHOLD: 0.1
+  NMS_KERNEL: 7
+  STUFF_AREA: 2048
+  TOP_K_INSTANCE: 200
+PRINT_FREQ: 20
+SOLVER:
+  ADAM_BETAS: (0.9, 0.999)
+  ADAM_EPS: 1e-08
+  BASE_LR: 5e-05
+  BIAS_LR_FACTOR: 1.0
+  CLIP_GRADIENTS:
+    CLIP_TYPE: value
+    CLIP_VALUE: 1.0
+    ENABLED: False
+    NORM_TYPE: 2.0
+  GAMMA: 0.1
+  LR_SCHEDULER_NAME: WarmupPolyLR
+  MOMENTUM: 0.9
+  OPTIMIZER: adam
+  POLY_LR_CONSTANT_ENDING: 0
+  POLY_LR_POWER: 0.9
+  STEPS: (30000,)
+  WARMUP_FACTOR: 0.001
+  WARMUP_ITERS: 0
+  WARMUP_METHOD: linear
+  WEIGHT_DECAY: 0.0
+  WEIGHT_DECAY_BIAS: 0.0
+  WEIGHT_DECAY_NORM: 0.0
+TEST:
+  CROP_SIZE: (1025, 2049)
+  DEBUG: False
+  EVAL_FOREGROUND: False
+  EVAL_INSTANCE: True
+  EVAL_PANOPTIC: True
+  FLIP_TEST: False
+  FOREGROUND_FOLDER: foreground
+  GPUS: (0,)
+  INSTANCE_FOLDER: instance
+  INSTANCE_SCORE_TYPE: semantic
+  MODEL_FILE: 
+  ORACLE_CENTER: False
+  ORACLE_FOREGROUND: False
+  ORACLE_OFFSET: False
+  ORACLE_SEMANTIC: False
+  PANOPTIC_FOLDER: panoptic
+  SCALE_LIST: [1]
+  SEMANTIC_FOLDER: semantic
+  TEST_TIME_AUGMENTATION: False
+TRAIN:
+  IMS_PER_BATCH: 1
+  MAX_ITER: 180000
+  REFINE: True
+  RESUME: True
+WORKERS: 1
+Downloading: "https://download.pytorch.org/models/resnet50-19c8e357.pth" to /root/.cache/torch/checkpoints/resnet50-19c8e357.pth
+100% 97.8M/97.8M [00:00<00:00, 137MB/s]
+[07/27 20:50:09 segmentation_test]: Model:
+PanopticDeepLab(
+  (backbone): ResNet(
+    (conv1): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+    (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+    (relu): ReLU(inplace=True)
+    (maxpool): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+    (layer1): Sequential(
+      (0): Bottleneck(
+        (conv1): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer2): Sequential(
+      (0): Bottleneck(
+        (conv1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (3): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer3): Sequential(
+      (0): Bottleneck(
+        (conv1): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(512, 1024, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (3): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (4): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (5): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer4): Sequential(
+      (0): Bottleneck(
+        (conv1): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(1024, 2048, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(2048, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+  )
+  (decoder): PanopticDeepLabDecoder(
+    (semantic_decoder): SinglePanopticDeepLabDecoder(
+      (aspp): ASPP(
+        (convs): ModuleList(
+          (0): Sequential(
+            (0): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (1): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(3, 3), dilation=(3, 3), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (2): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(6, 6), dilation=(6, 6), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (3): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(9, 9), dilation=(9, 9), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (4): ASPPPooling(
+            (aspp_pooling): Sequential(
+              (0): AvgPool2d(kernel_size=(33, 65), stride=1, padding=0)
+              (1): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (2): ReLU()
+            )
+          )
+        )
+        (project): Sequential(
+          (0): Conv2d(1280, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+          (3): Dropout(p=0.5, inplace=False)
+        )
+      )
+      (project): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(1024, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+        (1): Sequential(
+          (0): Conv2d(512, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+        (2): Sequential(
+          (0): Conv2d(256, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(32, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+      )
+      (fuse): ModuleList(
+        (0): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(384, 384, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=384, bias=False)
+              (1): BatchNorm2d(384, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(384, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+        (1): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(320, 320, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=320, bias=False)
+              (1): BatchNorm2d(320, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(320, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+        (2): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(288, 288, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=288, bias=False)
+              (1): BatchNorm2d(288, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(288, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+      )
+    )
+    (semantic_head): SinglePanopticDeepLabHead(
+      (classifier): ModuleDict(
+        (semantic): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Sequential(
+                (0): Conv2d(256, 256, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=256, bias=False)
+                (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+                (2): ReLU()
+              )
+              (1): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (3): ReLU()
+            )
+          )
+          (1): Conv2d(256, 19, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+    )
+    (instance_decoder): SinglePanopticDeepLabDecoder(
+      (aspp): ASPP(
+        (convs): ModuleList(
+          (0): Sequential(
+            (0): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (1): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(3, 3), dilation=(3, 3), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (2): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(6, 6), dilation=(6, 6), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (3): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(9, 9), dilation=(9, 9), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (4): ASPPPooling(
+            (aspp_pooling): Sequential(
+              (0): AvgPool2d(kernel_size=(33, 65), stride=1, padding=0)
+              (1): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (2): ReLU()
+            )
+          )
+        )
+        (project): Sequential(
+          (0): Conv2d(1280, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+          (3): Dropout(p=0.5, inplace=False)
+        )
+      )
+      (project): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(1024, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+        (1): Sequential(
+          (0): Conv2d(512, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(32, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+        (2): Sequential(
+          (0): Conv2d(256, 16, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(16, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+      )
+      (fuse): ModuleList(
+        (0): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(320, 320, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=320, bias=False)
+              (1): BatchNorm2d(320, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(320, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+        (1): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(160, 160, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=160, bias=False)
+              (1): BatchNorm2d(160, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(160, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+        (2): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(144, 144, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=144, bias=False)
+              (1): BatchNorm2d(144, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(144, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+      )
+    )
+    (instance_head): SinglePanopticDeepLabHead(
+      (classifier): ModuleDict(
+        (center): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Sequential(
+                (0): Conv2d(128, 128, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=128, bias=False)
+                (1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+                (2): ReLU()
+              )
+              (1): Conv2d(128, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (2): BatchNorm2d(32, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (3): ReLU()
+            )
+          )
+          (1): Conv2d(32, 1, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (offset): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Sequential(
+                (0): Conv2d(128, 128, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=128, bias=False)
+                (1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+                (2): ReLU()
+              )
+              (1): Conv2d(128, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (2): BatchNorm2d(32, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (3): ReLU()
+            )
+          )
+          (1): Conv2d(32, 2, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+    )
+  )
+  (semantic_loss): DeepLabCE(
+    (criterion): CrossEntropyLoss()
+  )
+  (center_loss): MSELoss()
+  (offset_loss): L1Loss()
+)
+[07/27 20:50:28 segmentation_test]: Test model loaded from ./output/approach_2_solution_2_refine_on_approach_1/final_state.pth
+/pytorch/torch/csrc/utils/python_arg_parser.cpp:756: UserWarning: This overload of nonzero is deprecated:
+	nonzero(Tensor input, *, Tensor out)
+Consider using one of the following signatures instead:
+	nonzero(Tensor input, *, bool as_tuple)
+[07/27 20:50:35 segmentation_test]: [0/500]	Data Time: 0.052s (0.052s)	Network Time: 0.524s (0.524s)	Post-processing Time: 0.052s (0.052s)	
+[07/27 20:50:37 segmentation_test]: [1/500]	Data Time: 0.077s (0.065s)	Network Time: 0.080s (0.302s)	Post-processing Time: 0.442s (0.247s)	
+[07/27 20:50:44 segmentation_test]: [2/500]	Data Time: 0.064s (0.064s)	Network Time: 0.088s (0.230s)	Post-processing Time: 0.072s (0.189s)	
+[07/27 20:50:46 segmentation_test]: [3/500]	Data Time: 0.050s (0.061s)	Network Time: 0.082s (0.193s)	Post-processing Time: 0.114s (0.170s)	
+[07/27 20:50:49 segmentation_test]: [4/500]	Data Time: 0.074s (0.063s)	Network Time: 0.079s (0.171s)	Post-processing Time: 0.106s (0.157s)	
+[07/27 20:50:51 segmentation_test]: [5/500]	Data Time: 0.068s (0.064s)	Network Time: 0.079s (0.155s)	Post-processing Time: 0.090s (0.146s)	
+[07/27 20:50:53 segmentation_test]: [6/500]	Data Time: 0.078s (0.066s)	Network Time: 0.079s (0.145s)	Post-processing Time: 0.093s (0.139s)	
+[07/27 20:50:55 segmentation_test]: [7/500]	Data Time: 0.056s (0.065s)	Network Time: 0.079s (0.136s)	Post-processing Time: 0.084s (0.132s)	
+[07/27 20:50:57 segmentation_test]: [8/500]	Data Time: 0.075s (0.066s)	Network Time: 0.080s (0.130s)	Post-processing Time: 0.072s (0.125s)	
+[07/27 20:50:59 segmentation_test]: [9/500]	Data Time: 0.066s (0.066s)	Network Time: 0.079s (0.125s)	Post-processing Time: 0.053s (0.118s)	
+[07/27 20:51:01 segmentation_test]: [10/500]	Data Time: 0.078s (0.078s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.063s (0.063s)	
+[07/27 20:51:02 segmentation_test]: [11/500]	Data Time: 0.075s (0.076s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.089s (0.076s)	
+[07/27 20:51:04 segmentation_test]: [12/500]	Data Time: 0.069s (0.074s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.066s (0.073s)	
+[07/27 20:51:06 segmentation_test]: [13/500]	Data Time: 0.068s (0.072s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.055s (0.068s)	
+[07/27 20:51:07 segmentation_test]: [14/500]	Data Time: 0.076s (0.073s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.046s (0.064s)	
+[07/27 20:51:08 segmentation_test]: [15/500]	Data Time: 0.072s (0.073s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.100s (0.070s)	
+[07/27 20:51:10 segmentation_test]: [16/500]	Data Time: 0.069s (0.072s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.077s (0.071s)	
+[07/27 20:51:12 segmentation_test]: [17/500]	Data Time: 0.064s (0.071s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.072s (0.071s)	
+[07/27 20:51:14 segmentation_test]: [18/500]	Data Time: 0.073s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.069s (0.071s)	
+[07/27 20:51:16 segmentation_test]: [19/500]	Data Time: 0.069s (0.071s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.064s (0.070s)	
+[07/27 20:51:17 segmentation_test]: [20/500]	Data Time: 0.074s (0.071s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.063s (0.069s)	
+[07/27 20:51:19 segmentation_test]: [21/500]	Data Time: 0.067s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.046s (0.068s)	
+[07/27 20:51:20 segmentation_test]: [22/500]	Data Time: 0.067s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.066s (0.067s)	
+[07/27 20:51:22 segmentation_test]: [23/500]	Data Time: 0.056s (0.070s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.054s (0.066s)	
+[07/27 20:51:23 segmentation_test]: [24/500]	Data Time: 0.090s (0.071s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.049s (0.065s)	
+[07/27 20:51:24 segmentation_test]: [25/500]	Data Time: 0.086s (0.072s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.087s (0.067s)	
+[07/27 20:51:26 segmentation_test]: [26/500]	Data Time: 0.073s (0.072s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.127s (0.070s)	
+[07/27 20:51:28 segmentation_test]: [27/500]	Data Time: 0.073s (0.072s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.084s (0.071s)	
+[07/27 20:51:30 segmentation_test]: [28/500]	Data Time: 0.066s (0.072s)	Network Time: 0.080s (0.079s)	Post-processing Time: 0.098s (0.072s)	
+[07/27 20:51:33 segmentation_test]: [29/500]	Data Time: 0.067s (0.072s)	Network Time: 0.080s (0.079s)	Post-processing Time: 0.107s (0.074s)	
+[07/27 20:51:35 segmentation_test]: [30/500]	Data Time: 0.066s (0.071s)	Network Time: 0.080s (0.079s)	Post-processing Time: 0.069s (0.074s)	
+[07/27 20:51:37 segmentation_test]: [31/500]	Data Time: 0.067s (0.071s)	Network Time: 0.080s (0.079s)	Post-processing Time: 0.075s (0.074s)	
+[07/27 20:51:38 segmentation_test]: [32/500]	Data Time: 0.066s (0.071s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.083s (0.074s)	
+[07/27 20:51:40 segmentation_test]: [33/500]	Data Time: 0.078s (0.071s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.065s (0.074s)	
+[07/27 20:51:42 segmentation_test]: [34/500]	Data Time: 0.067s (0.071s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.047s (0.073s)	
+[07/27 20:51:43 segmentation_test]: [35/500]	Data Time: 0.073s (0.071s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.075s (0.073s)	
+[07/27 20:51:45 segmentation_test]: [36/500]	Data Time: 0.068s (0.071s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.080s (0.073s)	
+[07/27 20:51:47 segmentation_test]: [37/500]	Data Time: 0.065s (0.071s)	Network Time: 0.080s (0.079s)	Post-processing Time: 0.072s (0.073s)	
+[07/27 20:51:49 segmentation_test]: [38/500]	Data Time: 0.072s (0.071s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.068s (0.073s)	
+[07/27 20:51:50 segmentation_test]: [39/500]	Data Time: 0.073s (0.071s)	Network Time: 0.080s (0.079s)	Post-processing Time: 0.081s (0.073s)	
+[07/27 20:51:52 segmentation_test]: [40/500]	Data Time: 0.067s (0.071s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.104s (0.074s)	
+[07/27 20:51:55 segmentation_test]: [41/500]	Data Time: 0.077s (0.071s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.077s (0.074s)	
+[07/27 20:51:57 segmentation_test]: [42/500]	Data Time: 0.067s (0.071s)	Network Time: 0.080s (0.079s)	Post-processing Time: 0.102s (0.075s)	
+[07/27 20:51:59 segmentation_test]: [43/500]	Data Time: 0.066s (0.071s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.076s (0.075s)	
+[07/27 20:52:01 segmentation_test]: [44/500]	Data Time: 0.067s (0.071s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.107s (0.076s)	
+[07/27 20:52:03 segmentation_test]: [45/500]	Data Time: 0.065s (0.070s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.099s (0.077s)	
+[07/27 20:52:06 segmentation_test]: [46/500]	Data Time: 0.067s (0.070s)	Network Time: 0.079s (0.079s)	Post-processing Time: 0.058s (0.076s)	
+[07/27 20:52:08 segmentation_test]: [47/500]	Data Time: 0.142s (0.072s)	Network Time: 0.085s (0.080s)	Post-processing Time: 0.088s (0.077s)	
+[07/27 20:52:11 segmentation_test]: [48/500]	Data Time: 0.146s (0.074s)	Network Time: 0.091s (0.080s)	Post-processing Time: 0.097s (0.077s)	
+[07/27 20:52:13 segmentation_test]: [49/500]	Data Time: 0.064s (0.074s)	Network Time: 0.081s (0.080s)	Post-processing Time: 0.103s (0.078s)	
+[07/27 20:52:15 segmentation_test]: [50/500]	Data Time: 0.059s (0.074s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.077s (0.078s)	
+[07/27 20:52:17 segmentation_test]: [51/500]	Data Time: 0.070s (0.073s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.047s (0.077s)	
+[07/27 20:52:18 segmentation_test]: [52/500]	Data Time: 0.068s (0.073s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.090s (0.077s)	
+[07/27 20:52:20 segmentation_test]: [53/500]	Data Time: 0.066s (0.073s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.168s (0.079s)	
+[07/27 20:52:23 segmentation_test]: [54/500]	Data Time: 0.068s (0.073s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.091s (0.080s)	
+[07/27 20:52:25 segmentation_test]: [55/500]	Data Time: 0.062s (0.073s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.056s (0.079s)	
+[07/27 20:52:27 segmentation_test]: [56/500]	Data Time: 0.072s (0.073s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.141s (0.080s)	
+[07/27 20:52:29 segmentation_test]: [57/500]	Data Time: 0.066s (0.073s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.058s (0.080s)	
+[07/27 20:52:31 segmentation_test]: [58/500]	Data Time: 0.067s (0.073s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.076s (0.080s)	
+[07/27 20:52:33 segmentation_test]: [59/500]	Data Time: 0.063s (0.072s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.077s (0.080s)	
+[07/27 20:52:35 segmentation_test]: [60/500]	Data Time: 0.067s (0.072s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.106s (0.080s)	
+[07/27 20:52:37 segmentation_test]: [61/500]	Data Time: 0.064s (0.072s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.114s (0.081s)	
+[07/27 20:52:40 segmentation_test]: [62/500]	Data Time: 0.073s (0.072s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.104s (0.081s)	
+[07/27 20:52:42 segmentation_test]: [63/500]	Data Time: 0.064s (0.072s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.068s (0.081s)	
+[07/27 20:52:44 segmentation_test]: [64/500]	Data Time: 0.067s (0.072s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.064s (0.081s)	
+[07/27 20:52:45 segmentation_test]: [65/500]	Data Time: 0.068s (0.072s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.057s (0.080s)	
+[07/27 20:52:47 segmentation_test]: [66/500]	Data Time: 0.066s (0.072s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.083s (0.080s)	
+[07/27 20:52:49 segmentation_test]: [67/500]	Data Time: 0.064s (0.072s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.095s (0.081s)	
+[07/27 20:52:51 segmentation_test]: [68/500]	Data Time: 0.067s (0.071s)	Network Time: 0.083s (0.080s)	Post-processing Time: 0.116s (0.081s)	
+[07/27 20:52:53 segmentation_test]: [69/500]	Data Time: 0.063s (0.071s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.065s (0.081s)	
+[07/27 20:52:55 segmentation_test]: [70/500]	Data Time: 0.076s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.065s (0.081s)	
+[07/27 20:52:57 segmentation_test]: [71/500]	Data Time: 0.067s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.088s (0.081s)	
+[07/27 20:52:59 segmentation_test]: [72/500]	Data Time: 0.066s (0.071s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.124s (0.082s)	
+[07/27 20:53:02 segmentation_test]: [73/500]	Data Time: 0.064s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.110s (0.082s)	
+[07/27 20:53:04 segmentation_test]: [74/500]	Data Time: 0.065s (0.071s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.127s (0.083s)	
+[07/27 20:53:07 segmentation_test]: [75/500]	Data Time: 0.065s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.109s (0.083s)	
+[07/27 20:53:09 segmentation_test]: [76/500]	Data Time: 0.069s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.113s (0.084s)	
+[07/27 20:53:12 segmentation_test]: [77/500]	Data Time: 0.063s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.114s (0.084s)	
+[07/27 20:53:14 segmentation_test]: [78/500]	Data Time: 0.065s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.112s (0.084s)	
+[07/27 20:53:17 segmentation_test]: [79/500]	Data Time: 0.066s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.102s (0.085s)	
+[07/27 20:53:19 segmentation_test]: [80/500]	Data Time: 0.066s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.101s (0.085s)	
+[07/27 20:53:22 segmentation_test]: [81/500]	Data Time: 0.062s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.085s (0.085s)	
+[07/27 20:53:24 segmentation_test]: [82/500]	Data Time: 0.065s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.108s (0.085s)	
+[07/27 20:53:26 segmentation_test]: [83/500]	Data Time: 0.062s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.117s (0.086s)	
+[07/27 20:53:29 segmentation_test]: [84/500]	Data Time: 0.065s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.079s (0.086s)	
+[07/27 20:53:31 segmentation_test]: [85/500]	Data Time: 0.071s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.137s (0.086s)	
+[07/27 20:53:34 segmentation_test]: [86/500]	Data Time: 0.066s (0.070s)	Network Time: 0.088s (0.080s)	Post-processing Time: 0.131s (0.087s)	
+[07/27 20:53:37 segmentation_test]: [87/500]	Data Time: 0.062s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.100s (0.087s)	
+[07/27 20:53:39 segmentation_test]: [88/500]	Data Time: 0.068s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.073s (0.087s)	
+[07/27 20:53:41 segmentation_test]: [89/500]	Data Time: 0.079s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.094s (0.087s)	
+[07/27 20:53:44 segmentation_test]: [90/500]	Data Time: 0.064s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.091s (0.087s)	
+[07/27 20:53:46 segmentation_test]: [91/500]	Data Time: 0.066s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.075s (0.087s)	
+[07/27 20:53:48 segmentation_test]: [92/500]	Data Time: 0.146s (0.071s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.112s (0.087s)	
+[07/27 20:53:51 segmentation_test]: [93/500]	Data Time: 0.065s (0.071s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.062s (0.087s)	
+[07/27 20:53:53 segmentation_test]: [94/500]	Data Time: 0.068s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.090s (0.087s)	
+[07/27 20:53:55 segmentation_test]: [95/500]	Data Time: 0.062s (0.071s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.068s (0.087s)	
+[07/27 20:53:57 segmentation_test]: [96/500]	Data Time: 0.065s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.082s (0.087s)	
+[07/27 20:53:59 segmentation_test]: [97/500]	Data Time: 0.072s (0.071s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.068s (0.086s)	
+[07/27 20:54:01 segmentation_test]: [98/500]	Data Time: 0.066s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.117s (0.087s)	
+[07/27 20:54:03 segmentation_test]: [99/500]	Data Time: 0.071s (0.071s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.136s (0.087s)	
+[07/27 20:54:06 segmentation_test]: [100/500]	Data Time: 0.064s (0.071s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.106s (0.087s)	
+[07/27 20:54:08 segmentation_test]: [101/500]	Data Time: 0.063s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.099s (0.088s)	
+[07/27 20:54:10 segmentation_test]: [102/500]	Data Time: 0.066s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.064s (0.087s)	
+[07/27 20:54:12 segmentation_test]: [103/500]	Data Time: 0.062s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.051s (0.087s)	
+[07/27 20:54:14 segmentation_test]: [104/500]	Data Time: 0.069s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.056s (0.087s)	
+[07/27 20:54:15 segmentation_test]: [105/500]	Data Time: 0.067s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.063s (0.086s)	
+[07/27 20:54:16 segmentation_test]: [106/500]	Data Time: 0.074s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.071s (0.086s)	
+[07/27 20:54:18 segmentation_test]: [107/500]	Data Time: 0.068s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.089s (0.086s)	
+[07/27 20:54:20 segmentation_test]: [108/500]	Data Time: 0.068s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.079s (0.086s)	
+[07/27 20:54:22 segmentation_test]: [109/500]	Data Time: 0.062s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.062s (0.086s)	
+[07/27 20:54:23 segmentation_test]: [110/500]	Data Time: 0.064s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.075s (0.086s)	
+[07/27 20:54:25 segmentation_test]: [111/500]	Data Time: 0.066s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.049s (0.085s)	
+[07/27 20:54:27 segmentation_test]: [112/500]	Data Time: 0.067s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.075s (0.085s)	
+[07/27 20:54:28 segmentation_test]: [113/500]	Data Time: 0.071s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.071s (0.085s)	
+[07/27 20:54:30 segmentation_test]: [114/500]	Data Time: 0.069s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.082s (0.085s)	
+[07/27 20:54:32 segmentation_test]: [115/500]	Data Time: 0.066s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.081s (0.085s)	
+[07/27 20:54:34 segmentation_test]: [116/500]	Data Time: 0.053s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.081s (0.085s)	
+[07/27 20:54:36 segmentation_test]: [117/500]	Data Time: 0.062s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.067s (0.085s)	
+[07/27 20:54:37 segmentation_test]: [118/500]	Data Time: 0.063s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.046s (0.085s)	
+[07/27 20:54:38 segmentation_test]: [119/500]	Data Time: 0.066s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.066s (0.084s)	
+[07/27 20:54:40 segmentation_test]: [120/500]	Data Time: 0.067s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.101s (0.085s)	
+[07/27 20:54:42 segmentation_test]: [121/500]	Data Time: 0.065s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.089s (0.085s)	
+[07/27 20:54:44 segmentation_test]: [122/500]	Data Time: 0.065s (0.070s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.075s (0.084s)	
+[07/27 20:54:46 segmentation_test]: [123/500]	Data Time: 0.065s (0.070s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.078s (0.084s)	
+[07/27 20:54:48 segmentation_test]: [124/500]	Data Time: 0.062s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.085s (0.084s)	
+[07/27 20:54:50 segmentation_test]: [125/500]	Data Time: 0.068s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.063s (0.084s)	
+[07/27 20:54:52 segmentation_test]: [126/500]	Data Time: 0.068s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.085s (0.084s)	
+[07/27 20:54:54 segmentation_test]: [127/500]	Data Time: 0.065s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.092s (0.084s)	
+[07/27 20:54:56 segmentation_test]: [128/500]	Data Time: 0.057s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.062s (0.084s)	
+[07/27 20:54:58 segmentation_test]: [129/500]	Data Time: 0.067s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.109s (0.084s)	
+[07/27 20:55:00 segmentation_test]: [130/500]	Data Time: 0.077s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.106s (0.085s)	
+[07/27 20:55:02 segmentation_test]: [131/500]	Data Time: 0.067s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.101s (0.085s)	
+[07/27 20:55:05 segmentation_test]: [132/500]	Data Time: 0.063s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.082s (0.085s)	
+[07/27 20:55:07 segmentation_test]: [133/500]	Data Time: 0.063s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.101s (0.085s)	
+[07/27 20:55:09 segmentation_test]: [134/500]	Data Time: 0.063s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.099s (0.085s)	
+[07/27 20:55:12 segmentation_test]: [135/500]	Data Time: 0.064s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.123s (0.085s)	
+[07/27 20:55:14 segmentation_test]: [136/500]	Data Time: 0.062s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.082s (0.085s)	
+[07/27 20:55:16 segmentation_test]: [137/500]	Data Time: 0.074s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.052s (0.085s)	
+[07/27 20:55:18 segmentation_test]: [138/500]	Data Time: 0.064s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.091s (0.085s)	
+[07/27 20:55:20 segmentation_test]: [139/500]	Data Time: 0.064s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.052s (0.085s)	
+[07/27 20:55:22 segmentation_test]: [140/500]	Data Time: 0.065s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.117s (0.085s)	
+[07/27 20:55:24 segmentation_test]: [141/500]	Data Time: 0.066s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.126s (0.085s)	
+[07/27 20:55:28 segmentation_test]: [142/500]	Data Time: 0.140s (0.070s)	Network Time: 0.088s (0.080s)	Post-processing Time: 0.097s (0.085s)	
+[07/27 20:55:31 segmentation_test]: [143/500]	Data Time: 0.063s (0.069s)	Network Time: 0.082s (0.080s)	Post-processing Time: 0.121s (0.086s)	
+[07/27 20:55:33 segmentation_test]: [144/500]	Data Time: 0.063s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.079s (0.086s)	
+[07/27 20:55:35 segmentation_test]: [145/500]	Data Time: 0.063s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.046s (0.085s)	
+[07/27 20:55:36 segmentation_test]: [146/500]	Data Time: 0.077s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.092s (0.085s)	
+[07/27 20:55:38 segmentation_test]: [147/500]	Data Time: 0.065s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.070s (0.085s)	
+[07/27 20:55:40 segmentation_test]: [148/500]	Data Time: 0.062s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.053s (0.085s)	
+[07/27 20:55:41 segmentation_test]: [149/500]	Data Time: 0.063s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.038s (0.085s)	
+[07/27 20:55:42 segmentation_test]: [150/500]	Data Time: 0.065s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.045s (0.084s)	
+[07/27 20:55:43 segmentation_test]: [151/500]	Data Time: 0.063s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.069s (0.084s)	
+[07/27 20:55:44 segmentation_test]: [152/500]	Data Time: 0.068s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.053s (0.084s)	
+[07/27 20:55:46 segmentation_test]: [153/500]	Data Time: 0.096s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.062s (0.084s)	
+[07/27 20:55:47 segmentation_test]: [154/500]	Data Time: 0.065s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.072s (0.084s)	
+[07/27 20:55:49 segmentation_test]: [155/500]	Data Time: 0.070s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.079s (0.084s)	
+[07/27 20:55:50 segmentation_test]: [156/500]	Data Time: 0.066s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.080s (0.084s)	
+[07/27 20:55:52 segmentation_test]: [157/500]	Data Time: 0.068s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.055s (0.084s)	
+[07/27 20:55:53 segmentation_test]: [158/500]	Data Time: 0.064s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.064s (0.083s)	
+[07/27 20:55:55 segmentation_test]: [159/500]	Data Time: 0.064s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.079s (0.083s)	
+[07/27 20:55:56 segmentation_test]: [160/500]	Data Time: 0.066s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.079s (0.083s)	
+[07/27 20:55:58 segmentation_test]: [161/500]	Data Time: 0.079s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.104s (0.083s)	
+[07/27 20:56:00 segmentation_test]: [162/500]	Data Time: 0.070s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.073s (0.083s)	
+[07/27 20:56:02 segmentation_test]: [163/500]	Data Time: 0.064s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.119s (0.084s)	
+[07/27 20:56:05 segmentation_test]: [164/500]	Data Time: 0.070s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.104s (0.084s)	
+[07/27 20:56:07 segmentation_test]: [165/500]	Data Time: 0.064s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.105s (0.084s)	
+[07/27 20:56:09 segmentation_test]: [166/500]	Data Time: 0.056s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.080s (0.084s)	
+[07/27 20:56:11 segmentation_test]: [167/500]	Data Time: 0.065s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.078s (0.084s)	
+[07/27 20:56:13 segmentation_test]: [168/500]	Data Time: 0.062s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.074s (0.084s)	
+[07/27 20:56:15 segmentation_test]: [169/500]	Data Time: 0.063s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.050s (0.084s)	
+[07/27 20:56:16 segmentation_test]: [170/500]	Data Time: 0.090s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.101s (0.084s)	
+[07/27 20:56:18 segmentation_test]: [171/500]	Data Time: 0.064s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.061s (0.084s)	
+[07/27 20:56:20 segmentation_test]: [172/500]	Data Time: 0.062s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.095s (0.084s)	
+[07/27 20:56:22 segmentation_test]: [173/500]	Data Time: 0.066s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.085s (0.084s)	
+[07/27 20:56:24 segmentation_test]: [174/500]	Data Time: 0.064s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.072s (0.084s)	
+[07/27 20:56:26 segmentation_test]: [175/500]	Data Time: 0.065s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.093s (0.084s)	
+[07/27 20:56:28 segmentation_test]: [176/500]	Data Time: 0.061s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.112s (0.084s)	
+[07/27 20:56:30 segmentation_test]: [177/500]	Data Time: 0.063s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.070s (0.084s)	
+[07/27 20:56:32 segmentation_test]: [178/500]	Data Time: 0.063s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.034s (0.083s)	
+[07/27 20:56:33 segmentation_test]: [179/500]	Data Time: 0.071s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.117s (0.084s)	
+[07/27 20:56:36 segmentation_test]: [180/500]	Data Time: 0.065s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.095s (0.084s)	
+[07/27 20:56:38 segmentation_test]: [181/500]	Data Time: 0.054s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.081s (0.084s)	
+[07/27 20:56:40 segmentation_test]: [182/500]	Data Time: 0.067s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.131s (0.084s)	
+[07/27 20:56:43 segmentation_test]: [183/500]	Data Time: 0.062s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.105s (0.084s)	
+[07/27 20:56:45 segmentation_test]: [184/500]	Data Time: 0.065s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.058s (0.084s)	
+[07/27 20:56:47 segmentation_test]: [185/500]	Data Time: 0.070s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.114s (0.084s)	
+[07/27 20:56:49 segmentation_test]: [186/500]	Data Time: 0.065s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.125s (0.084s)	
+[07/27 20:56:52 segmentation_test]: [187/500]	Data Time: 0.064s (0.069s)	Network Time: 0.086s (0.080s)	Post-processing Time: 0.133s (0.085s)	
+[07/27 20:56:55 segmentation_test]: [188/500]	Data Time: 0.061s (0.069s)	Network Time: 0.082s (0.080s)	Post-processing Time: 0.085s (0.085s)	
+[07/27 20:56:57 segmentation_test]: [189/500]	Data Time: 0.063s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.169s (0.085s)	
+[07/27 20:57:00 segmentation_test]: [190/500]	Data Time: 0.063s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.065s (0.085s)	
+[07/27 20:57:02 segmentation_test]: [191/500]	Data Time: 0.069s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.139s (0.085s)	
+[07/27 20:57:04 segmentation_test]: [192/500]	Data Time: 0.066s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.117s (0.085s)	
+[07/27 20:57:07 segmentation_test]: [193/500]	Data Time: 0.089s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.126s (0.086s)	
+[07/27 20:57:11 segmentation_test]: [194/500]	Data Time: 0.090s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.107s (0.086s)	
+[07/27 20:57:13 segmentation_test]: [195/500]	Data Time: 0.063s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.123s (0.086s)	
+[07/27 20:57:16 segmentation_test]: [196/500]	Data Time: 0.065s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.092s (0.086s)	
+[07/27 20:57:18 segmentation_test]: [197/500]	Data Time: 0.066s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.112s (0.086s)	
+[07/27 20:57:21 segmentation_test]: [198/500]	Data Time: 0.064s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.136s (0.086s)	
+[07/27 20:57:24 segmentation_test]: [199/500]	Data Time: 0.068s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.123s (0.087s)	
+[07/27 20:57:27 segmentation_test]: [200/500]	Data Time: 0.075s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.095s (0.087s)	
+[07/27 20:57:29 segmentation_test]: [201/500]	Data Time: 0.082s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.102s (0.087s)	
+[07/27 20:57:32 segmentation_test]: [202/500]	Data Time: 0.071s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.083s (0.087s)	
+[07/27 20:57:34 segmentation_test]: [203/500]	Data Time: 0.069s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.094s (0.087s)	
+[07/27 20:57:36 segmentation_test]: [204/500]	Data Time: 0.064s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.084s (0.087s)	
+[07/27 20:57:39 segmentation_test]: [205/500]	Data Time: 0.065s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.084s (0.087s)	
+[07/27 20:57:41 segmentation_test]: [206/500]	Data Time: 0.063s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.083s (0.087s)	
+[07/27 20:57:43 segmentation_test]: [207/500]	Data Time: 0.062s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.067s (0.087s)	
+[07/27 20:57:45 segmentation_test]: [208/500]	Data Time: 0.065s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.114s (0.087s)	
+[07/27 20:57:47 segmentation_test]: [209/500]	Data Time: 0.062s (0.069s)	Network Time: 0.082s (0.080s)	Post-processing Time: 0.091s (0.087s)	
+[07/27 20:57:49 segmentation_test]: [210/500]	Data Time: 0.069s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.089s (0.087s)	
+[07/27 20:57:51 segmentation_test]: [211/500]	Data Time: 0.063s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.070s (0.087s)	
+[07/27 20:57:53 segmentation_test]: [212/500]	Data Time: 0.062s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.058s (0.087s)	
+[07/27 20:57:55 segmentation_test]: [213/500]	Data Time: 0.075s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.075s (0.086s)	
+[07/27 20:57:56 segmentation_test]: [214/500]	Data Time: 0.067s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.103s (0.087s)	
+[07/27 20:57:58 segmentation_test]: [215/500]	Data Time: 0.071s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.084s (0.087s)	
+[07/27 20:58:00 segmentation_test]: [216/500]	Data Time: 0.061s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.086s (0.087s)	
+[07/27 20:58:02 segmentation_test]: [217/500]	Data Time: 0.067s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.101s (0.087s)	
+[07/27 20:58:04 segmentation_test]: [218/500]	Data Time: 0.062s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.105s (0.087s)	
+[07/27 20:58:07 segmentation_test]: [219/500]	Data Time: 0.063s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.120s (0.087s)	
+[07/27 20:58:09 segmentation_test]: [220/500]	Data Time: 0.064s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.119s (0.087s)	
+[07/27 20:58:12 segmentation_test]: [221/500]	Data Time: 0.063s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.086s (0.087s)	
+[07/27 20:58:14 segmentation_test]: [222/500]	Data Time: 0.064s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.084s (0.087s)	
+[07/27 20:58:16 segmentation_test]: [223/500]	Data Time: 0.069s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.094s (0.087s)	
+[07/27 20:58:18 segmentation_test]: [224/500]	Data Time: 0.063s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.091s (0.087s)	
+[07/27 20:58:21 segmentation_test]: [225/500]	Data Time: 0.057s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.064s (0.087s)	
+[07/27 20:58:22 segmentation_test]: [226/500]	Data Time: 0.069s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.093s (0.087s)	
+[07/27 20:58:24 segmentation_test]: [227/500]	Data Time: 0.064s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.094s (0.087s)	
+[07/27 20:58:26 segmentation_test]: [228/500]	Data Time: 0.064s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.045s (0.087s)	
+[07/27 20:58:27 segmentation_test]: [229/500]	Data Time: 0.064s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.067s (0.087s)	
+[07/27 20:58:29 segmentation_test]: [230/500]	Data Time: 0.073s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.086s (0.087s)	
+[07/27 20:58:31 segmentation_test]: [231/500]	Data Time: 0.067s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.088s (0.087s)	
+[07/27 20:58:33 segmentation_test]: [232/500]	Data Time: 0.068s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.141s (0.087s)	
+[07/27 20:58:36 segmentation_test]: [233/500]	Data Time: 0.068s (0.068s)	Network Time: 0.088s (0.080s)	Post-processing Time: 0.088s (0.087s)	
+[07/27 20:58:38 segmentation_test]: [234/500]	Data Time: 0.065s (0.068s)	Network Time: 0.082s (0.080s)	Post-processing Time: 0.128s (0.087s)	
+[07/27 20:58:41 segmentation_test]: [235/500]	Data Time: 0.066s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.075s (0.087s)	
+[07/27 20:58:43 segmentation_test]: [236/500]	Data Time: 0.067s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.085s (0.087s)	
+[07/27 20:58:45 segmentation_test]: [237/500]	Data Time: 0.063s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.078s (0.087s)	
+[07/27 20:58:48 segmentation_test]: [238/500]	Data Time: 0.146s (0.069s)	Network Time: 0.088s (0.080s)	Post-processing Time: 0.086s (0.087s)	
+[07/27 20:58:51 segmentation_test]: [239/500]	Data Time: 0.065s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.077s (0.087s)	
+[07/27 20:58:53 segmentation_test]: [240/500]	Data Time: 0.062s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.082s (0.087s)	
+[07/27 20:58:55 segmentation_test]: [241/500]	Data Time: 0.063s (0.069s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.107s (0.087s)	
+[07/27 20:58:57 segmentation_test]: [242/500]	Data Time: 0.062s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.073s (0.087s)	
+[07/27 20:58:59 segmentation_test]: [243/500]	Data Time: 0.064s (0.069s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.072s (0.087s)	
+[07/27 20:59:01 segmentation_test]: [244/500]	Data Time: 0.056s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.057s (0.087s)	
+[07/27 20:59:02 segmentation_test]: [245/500]	Data Time: 0.066s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.065s (0.087s)	
+[07/27 20:59:03 segmentation_test]: [246/500]	Data Time: 0.066s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.075s (0.087s)	
+[07/27 20:59:05 segmentation_test]: [247/500]	Data Time: 0.065s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.058s (0.087s)	
+[07/27 20:59:06 segmentation_test]: [248/500]	Data Time: 0.058s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.126s (0.087s)	
+[07/27 20:59:09 segmentation_test]: [249/500]	Data Time: 0.066s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.116s (0.087s)	
+[07/27 20:59:12 segmentation_test]: [250/500]	Data Time: 0.063s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.082s (0.087s)	
+[07/27 20:59:14 segmentation_test]: [251/500]	Data Time: 0.067s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.127s (0.087s)	
+[07/27 20:59:16 segmentation_test]: [252/500]	Data Time: 0.064s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.084s (0.087s)	
+[07/27 20:59:19 segmentation_test]: [253/500]	Data Time: 0.062s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.091s (0.087s)	
+[07/27 20:59:21 segmentation_test]: [254/500]	Data Time: 0.063s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.123s (0.087s)	
+[07/27 20:59:23 segmentation_test]: [255/500]	Data Time: 0.065s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.084s (0.087s)	
+[07/27 20:59:25 segmentation_test]: [256/500]	Data Time: 0.065s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.074s (0.087s)	
+[07/27 20:59:27 segmentation_test]: [257/500]	Data Time: 0.064s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.056s (0.087s)	
+[07/27 20:59:29 segmentation_test]: [258/500]	Data Time: 0.067s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.071s (0.087s)	
+[07/27 20:59:30 segmentation_test]: [259/500]	Data Time: 0.071s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.088s (0.087s)	
+[07/27 20:59:32 segmentation_test]: [260/500]	Data Time: 0.063s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.078s (0.087s)	
+[07/27 20:59:34 segmentation_test]: [261/500]	Data Time: 0.061s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.060s (0.087s)	
+[07/27 20:59:35 segmentation_test]: [262/500]	Data Time: 0.067s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.075s (0.087s)	
+[07/27 20:59:37 segmentation_test]: [263/500]	Data Time: 0.062s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.067s (0.087s)	
+[07/27 20:59:39 segmentation_test]: [264/500]	Data Time: 0.075s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.065s (0.087s)	
+[07/27 20:59:41 segmentation_test]: [265/500]	Data Time: 0.071s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.089s (0.087s)	
+[07/27 20:59:43 segmentation_test]: [266/500]	Data Time: 0.070s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.094s (0.087s)	
+[07/27 20:59:44 segmentation_test]: [267/500]	Data Time: 0.073s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.076s (0.087s)	
+[07/27 20:59:46 segmentation_test]: [268/500]	Data Time: 0.051s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.038s (0.086s)	
+[07/27 20:59:47 segmentation_test]: [269/500]	Data Time: 0.052s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.047s (0.086s)	
+[07/27 20:59:48 segmentation_test]: [270/500]	Data Time: 0.051s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.046s (0.086s)	
+[07/27 20:59:50 segmentation_test]: [271/500]	Data Time: 0.051s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.047s (0.086s)	
+[07/27 20:59:52 segmentation_test]: [272/500]	Data Time: 0.050s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.115s (0.086s)	
+[07/27 20:59:54 segmentation_test]: [273/500]	Data Time: 0.052s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.075s (0.086s)	
+[07/27 20:59:56 segmentation_test]: [274/500]	Data Time: 0.050s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.064s (0.086s)	
+[07/27 20:59:57 segmentation_test]: [275/500]	Data Time: 0.064s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.028s (0.086s)	
+[07/27 20:59:59 segmentation_test]: [276/500]	Data Time: 0.050s (0.068s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.065s (0.086s)	
+[07/27 21:00:01 segmentation_test]: [277/500]	Data Time: 0.050s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.051s (0.085s)	
+[07/27 21:00:02 segmentation_test]: [278/500]	Data Time: 0.053s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.044s (0.085s)	
+[07/27 21:00:04 segmentation_test]: [279/500]	Data Time: 0.050s (0.068s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.047s (0.085s)	
+[07/27 21:00:06 segmentation_test]: [280/500]	Data Time: 0.050s (0.067s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.075s (0.085s)	
+[07/27 21:00:07 segmentation_test]: [281/500]	Data Time: 0.049s (0.067s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.037s (0.085s)	
+[07/27 21:00:09 segmentation_test]: [282/500]	Data Time: 0.054s (0.067s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.039s (0.085s)	
+[07/27 21:00:10 segmentation_test]: [283/500]	Data Time: 0.050s (0.067s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.048s (0.085s)	
+[07/27 21:00:13 segmentation_test]: [284/500]	Data Time: 0.049s (0.067s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.023s (0.084s)	
+[07/27 21:00:14 segmentation_test]: [285/500]	Data Time: 0.052s (0.067s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.030s (0.084s)	
+[07/27 21:00:15 segmentation_test]: [286/500]	Data Time: 0.052s (0.067s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.020s (0.084s)	
+[07/27 21:00:17 segmentation_test]: [287/500]	Data Time: 0.050s (0.067s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.023s (0.084s)	
+[07/27 21:00:18 segmentation_test]: [288/500]	Data Time: 0.050s (0.067s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.023s (0.084s)	
+[07/27 21:00:20 segmentation_test]: [289/500]	Data Time: 0.050s (0.067s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.029s (0.083s)	
+[07/27 21:00:21 segmentation_test]: [290/500]	Data Time: 0.053s (0.067s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.070s (0.083s)	
+[07/27 21:00:23 segmentation_test]: [291/500]	Data Time: 0.050s (0.067s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.072s (0.083s)	
+[07/27 21:00:25 segmentation_test]: [292/500]	Data Time: 0.051s (0.067s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.052s (0.083s)	
+[07/27 21:00:27 segmentation_test]: [293/500]	Data Time: 0.064s (0.067s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.044s (0.083s)	
+[07/27 21:00:29 segmentation_test]: [294/500]	Data Time: 0.065s (0.067s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.044s (0.083s)	
+[07/27 21:00:31 segmentation_test]: [295/500]	Data Time: 0.050s (0.067s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.039s (0.083s)	
+[07/27 21:00:32 segmentation_test]: [296/500]	Data Time: 0.049s (0.067s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.055s (0.083s)	
+[07/27 21:00:34 segmentation_test]: [297/500]	Data Time: 0.049s (0.067s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.043s (0.082s)	
+[07/27 21:00:35 segmentation_test]: [298/500]	Data Time: 0.049s (0.067s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.050s (0.082s)	
+[07/27 21:00:36 segmentation_test]: [299/500]	Data Time: 0.049s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.027s (0.082s)	
+[07/27 21:00:38 segmentation_test]: [300/500]	Data Time: 0.049s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.049s (0.082s)	
+[07/27 21:00:40 segmentation_test]: [301/500]	Data Time: 0.050s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.042s (0.082s)	
+[07/27 21:00:41 segmentation_test]: [302/500]	Data Time: 0.050s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.044s (0.082s)	
+[07/27 21:00:43 segmentation_test]: [303/500]	Data Time: 0.049s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.035s (0.082s)	
+[07/27 21:00:44 segmentation_test]: [304/500]	Data Time: 0.061s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.049s (0.082s)	
+[07/27 21:00:46 segmentation_test]: [305/500]	Data Time: 0.050s (0.066s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.079s (0.082s)	
+[07/27 21:00:48 segmentation_test]: [306/500]	Data Time: 0.054s (0.066s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.043s (0.081s)	
+[07/27 21:00:49 segmentation_test]: [307/500]	Data Time: 0.051s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.024s (0.081s)	
+[07/27 21:00:51 segmentation_test]: [308/500]	Data Time: 0.049s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.049s (0.081s)	
+[07/27 21:00:52 segmentation_test]: [309/500]	Data Time: 0.049s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.050s (0.081s)	
+[07/27 21:00:54 segmentation_test]: [310/500]	Data Time: 0.052s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.033s (0.081s)	
+[07/27 21:00:55 segmentation_test]: [311/500]	Data Time: 0.053s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.025s (0.081s)	
+[07/27 21:00:57 segmentation_test]: [312/500]	Data Time: 0.050s (0.066s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.020s (0.080s)	
+[07/27 21:00:58 segmentation_test]: [313/500]	Data Time: 0.049s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.028s (0.080s)	
+[07/27 21:01:00 segmentation_test]: [314/500]	Data Time: 0.050s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.024s (0.080s)	
+[07/27 21:01:01 segmentation_test]: [315/500]	Data Time: 0.050s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.028s (0.080s)	
+[07/27 21:01:03 segmentation_test]: [316/500]	Data Time: 0.049s (0.066s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.027s (0.080s)	
+[07/27 21:01:04 segmentation_test]: [317/500]	Data Time: 0.050s (0.066s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.026s (0.080s)	
+[07/27 21:01:06 segmentation_test]: [318/500]	Data Time: 0.063s (0.066s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.047s (0.079s)	
+[07/27 21:01:07 segmentation_test]: [319/500]	Data Time: 0.050s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.033s (0.079s)	
+[07/27 21:01:08 segmentation_test]: [320/500]	Data Time: 0.049s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.034s (0.079s)	
+[07/27 21:01:10 segmentation_test]: [321/500]	Data Time: 0.049s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.028s (0.079s)	
+[07/27 21:01:12 segmentation_test]: [322/500]	Data Time: 0.077s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.056s (0.079s)	
+[07/27 21:01:13 segmentation_test]: [323/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.067s (0.079s)	
+[07/27 21:01:15 segmentation_test]: [324/500]	Data Time: 0.051s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.058s (0.079s)	
+[07/27 21:01:17 segmentation_test]: [325/500]	Data Time: 0.049s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.033s (0.079s)	
+[07/27 21:01:19 segmentation_test]: [326/500]	Data Time: 0.049s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.099s (0.079s)	
+[07/27 21:01:21 segmentation_test]: [327/500]	Data Time: 0.064s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.070s (0.079s)	
+[07/27 21:01:23 segmentation_test]: [328/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.062s (0.079s)	
+[07/27 21:01:25 segmentation_test]: [329/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.090s (0.079s)	
+[07/27 21:01:27 segmentation_test]: [330/500]	Data Time: 0.049s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.080s (0.079s)	
+[07/27 21:01:28 segmentation_test]: [331/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.048s (0.079s)	
+[07/27 21:01:30 segmentation_test]: [332/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.047s (0.079s)	
+[07/27 21:01:32 segmentation_test]: [333/500]	Data Time: 0.051s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.088s (0.079s)	
+[07/27 21:01:34 segmentation_test]: [334/500]	Data Time: 0.049s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.071s (0.079s)	
+[07/27 21:01:36 segmentation_test]: [335/500]	Data Time: 0.049s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.067s (0.078s)	
+[07/27 21:01:38 segmentation_test]: [336/500]	Data Time: 0.050s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.115s (0.079s)	
+[07/27 21:01:41 segmentation_test]: [337/500]	Data Time: 0.052s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.120s (0.079s)	
+[07/27 21:01:43 segmentation_test]: [338/500]	Data Time: 0.070s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.097s (0.079s)	
+[07/27 21:01:45 segmentation_test]: [339/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.138s (0.079s)	
+[07/27 21:01:49 segmentation_test]: [340/500]	Data Time: 0.050s (0.065s)	Network Time: 0.088s (0.080s)	Post-processing Time: 0.143s (0.079s)	
+[07/27 21:01:51 segmentation_test]: [341/500]	Data Time: 0.050s (0.065s)	Network Time: 0.082s (0.080s)	Post-processing Time: 0.142s (0.079s)	
+[07/27 21:01:55 segmentation_test]: [342/500]	Data Time: 0.050s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.075s (0.079s)	
+[07/27 21:01:57 segmentation_test]: [343/500]	Data Time: 0.065s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.088s (0.079s)	
+[07/27 21:01:58 segmentation_test]: [344/500]	Data Time: 0.079s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.092s (0.079s)	
+[07/27 21:02:00 segmentation_test]: [345/500]	Data Time: 0.074s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.088s (0.079s)	
+[07/27 21:02:02 segmentation_test]: [346/500]	Data Time: 0.051s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.121s (0.080s)	
+[07/27 21:02:04 segmentation_test]: [347/500]	Data Time: 0.055s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.108s (0.080s)	
+[07/27 21:02:08 segmentation_test]: [348/500]	Data Time: 0.161s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.225s (0.080s)	
+[07/27 21:02:10 segmentation_test]: [349/500]	Data Time: 0.073s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.094s (0.080s)	
+[07/27 21:02:12 segmentation_test]: [350/500]	Data Time: 0.064s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.086s (0.080s)	
+[07/27 21:02:14 segmentation_test]: [351/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.081s (0.080s)	
+[07/27 21:02:16 segmentation_test]: [352/500]	Data Time: 0.072s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.132s (0.080s)	
+[07/27 21:02:19 segmentation_test]: [353/500]	Data Time: 0.070s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.123s (0.080s)	
+[07/27 21:02:21 segmentation_test]: [354/500]	Data Time: 0.072s (0.065s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.092s (0.080s)	
+[07/27 21:02:23 segmentation_test]: [355/500]	Data Time: 0.054s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.092s (0.080s)	
+[07/27 21:02:25 segmentation_test]: [356/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.073s (0.080s)	
+[07/27 21:02:26 segmentation_test]: [357/500]	Data Time: 0.051s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.099s (0.080s)	
+[07/27 21:02:29 segmentation_test]: [358/500]	Data Time: 0.051s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.097s (0.081s)	
+[07/27 21:02:31 segmentation_test]: [359/500]	Data Time: 0.051s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.091s (0.081s)	
+[07/27 21:02:33 segmentation_test]: [360/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.070s (0.081s)	
+[07/27 21:02:34 segmentation_test]: [361/500]	Data Time: 0.051s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.057s (0.080s)	
+[07/27 21:02:36 segmentation_test]: [362/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.063s (0.080s)	
+[07/27 21:02:38 segmentation_test]: [363/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.064s (0.080s)	
+[07/27 21:02:40 segmentation_test]: [364/500]	Data Time: 0.050s (0.065s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.111s (0.080s)	
+[07/27 21:02:43 segmentation_test]: [365/500]	Data Time: 0.049s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.095s (0.080s)	
+[07/27 21:02:45 segmentation_test]: [366/500]	Data Time: 0.050s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.097s (0.081s)	
+[07/27 21:02:47 segmentation_test]: [367/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.161s (0.081s)	
+[07/27 21:02:51 segmentation_test]: [368/500]	Data Time: 0.052s (0.064s)	Network Time: 0.088s (0.080s)	Post-processing Time: 0.178s (0.081s)	
+[07/27 21:02:54 segmentation_test]: [369/500]	Data Time: 0.055s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.070s (0.081s)	
+[07/27 21:02:56 segmentation_test]: [370/500]	Data Time: 0.068s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.119s (0.081s)	
+[07/27 21:02:58 segmentation_test]: [371/500]	Data Time: 0.065s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.097s (0.081s)	
+[07/27 21:03:00 segmentation_test]: [372/500]	Data Time: 0.067s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.121s (0.081s)	
+[07/27 21:03:03 segmentation_test]: [373/500]	Data Time: 0.065s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.110s (0.081s)	
+[07/27 21:03:05 segmentation_test]: [374/500]	Data Time: 0.069s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.127s (0.081s)	
+[07/27 21:03:07 segmentation_test]: [375/500]	Data Time: 0.068s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.154s (0.082s)	
+[07/27 21:03:10 segmentation_test]: [376/500]	Data Time: 0.052s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.072s (0.082s)	
+[07/27 21:03:12 segmentation_test]: [377/500]	Data Time: 0.066s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.142s (0.082s)	
+[07/27 21:03:14 segmentation_test]: [378/500]	Data Time: 0.063s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.163s (0.082s)	
+[07/27 21:03:17 segmentation_test]: [379/500]	Data Time: 0.053s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.108s (0.082s)	
+[07/27 21:03:20 segmentation_test]: [380/500]	Data Time: 0.052s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.087s (0.082s)	
+[07/27 21:03:22 segmentation_test]: [381/500]	Data Time: 0.065s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.095s (0.082s)	
+[07/27 21:03:24 segmentation_test]: [382/500]	Data Time: 0.068s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.131s (0.082s)	
+[07/27 21:03:26 segmentation_test]: [383/500]	Data Time: 0.069s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.138s (0.082s)	
+[07/27 21:03:29 segmentation_test]: [384/500]	Data Time: 0.070s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.074s (0.082s)	
+[07/27 21:03:30 segmentation_test]: [385/500]	Data Time: 0.068s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.128s (0.083s)	
+[07/27 21:03:33 segmentation_test]: [386/500]	Data Time: 0.076s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.116s (0.083s)	
+[07/27 21:03:35 segmentation_test]: [387/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.089s (0.083s)	
+[07/27 21:03:37 segmentation_test]: [388/500]	Data Time: 0.063s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.101s (0.083s)	
+[07/27 21:03:40 segmentation_test]: [389/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.098s (0.083s)	
+[07/27 21:03:42 segmentation_test]: [390/500]	Data Time: 0.052s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.094s (0.083s)	
+[07/27 21:03:43 segmentation_test]: [391/500]	Data Time: 0.063s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.070s (0.083s)	
+[07/27 21:03:46 segmentation_test]: [392/500]	Data Time: 0.066s (0.064s)	Network Time: 0.086s (0.080s)	Post-processing Time: 0.112s (0.083s)	
+[07/27 21:03:49 segmentation_test]: [393/500]	Data Time: 0.052s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.066s (0.083s)	
+[07/27 21:03:51 segmentation_test]: [394/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.093s (0.083s)	
+[07/27 21:03:53 segmentation_test]: [395/500]	Data Time: 0.050s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.105s (0.083s)	
+[07/27 21:03:56 segmentation_test]: [396/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.129s (0.083s)	
+[07/27 21:03:59 segmentation_test]: [397/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.109s (0.083s)	
+[07/27 21:04:02 segmentation_test]: [398/500]	Data Time: 0.065s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.101s (0.083s)	
+[07/27 21:04:04 segmentation_test]: [399/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.102s (0.083s)	
+[07/27 21:04:06 segmentation_test]: [400/500]	Data Time: 0.051s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.113s (0.083s)	
+[07/27 21:04:08 segmentation_test]: [401/500]	Data Time: 0.071s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.085s (0.083s)	
+[07/27 21:04:10 segmentation_test]: [402/500]	Data Time: 0.071s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.064s (0.083s)	
+[07/27 21:04:11 segmentation_test]: [403/500]	Data Time: 0.073s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.053s (0.083s)	
+[07/27 21:04:13 segmentation_test]: [404/500]	Data Time: 0.052s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.111s (0.083s)	
+[07/27 21:04:16 segmentation_test]: [405/500]	Data Time: 0.072s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.088s (0.083s)	
+[07/27 21:04:18 segmentation_test]: [406/500]	Data Time: 0.054s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.105s (0.083s)	
+[07/27 21:04:20 segmentation_test]: [407/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.066s (0.083s)	
+[07/27 21:04:22 segmentation_test]: [408/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.061s (0.083s)	
+[07/27 21:04:23 segmentation_test]: [409/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.062s (0.083s)	
+[07/27 21:04:25 segmentation_test]: [410/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.112s (0.083s)	
+[07/27 21:04:28 segmentation_test]: [411/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.102s (0.083s)	
+[07/27 21:04:30 segmentation_test]: [412/500]	Data Time: 0.063s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.085s (0.083s)	
+[07/27 21:04:32 segmentation_test]: [413/500]	Data Time: 0.063s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.075s (0.083s)	
+[07/27 21:04:34 segmentation_test]: [414/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.081s (0.083s)	
+[07/27 21:04:36 segmentation_test]: [415/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.102s (0.083s)	
+[07/27 21:04:39 segmentation_test]: [416/500]	Data Time: 0.052s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.101s (0.083s)	
+[07/27 21:04:41 segmentation_test]: [417/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.080s (0.083s)	
+[07/27 21:04:43 segmentation_test]: [418/500]	Data Time: 0.053s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.106s (0.083s)	
+[07/27 21:04:45 segmentation_test]: [419/500]	Data Time: 0.064s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.075s (0.083s)	
+[07/27 21:04:48 segmentation_test]: [420/500]	Data Time: 0.050s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.115s (0.083s)	
+[07/27 21:04:50 segmentation_test]: [421/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.071s (0.083s)	
+[07/27 21:04:52 segmentation_test]: [422/500]	Data Time: 0.050s (0.064s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.076s (0.083s)	
+[07/27 21:04:54 segmentation_test]: [423/500]	Data Time: 0.051s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.096s (0.083s)	
+[07/27 21:04:56 segmentation_test]: [424/500]	Data Time: 0.052s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.080s (0.083s)	
+[07/27 21:04:58 segmentation_test]: [425/500]	Data Time: 0.050s (0.064s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.084s (0.083s)	
+[07/27 21:05:00 segmentation_test]: [426/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.025s (0.083s)	
+[07/27 21:05:02 segmentation_test]: [427/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.065s (0.083s)	
+[07/27 21:05:04 segmentation_test]: [428/500]	Data Time: 0.050s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.074s (0.083s)	
+[07/27 21:05:06 segmentation_test]: [429/500]	Data Time: 0.065s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.082s (0.083s)	
+[07/27 21:05:08 segmentation_test]: [430/500]	Data Time: 0.051s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.086s (0.083s)	
+[07/27 21:05:10 segmentation_test]: [431/500]	Data Time: 0.051s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.085s (0.083s)	
+[07/27 21:05:12 segmentation_test]: [432/500]	Data Time: 0.051s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.080s (0.083s)	
+[07/27 21:05:14 segmentation_test]: [433/500]	Data Time: 0.051s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.048s (0.083s)	
+[07/27 21:05:16 segmentation_test]: [434/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.056s (0.083s)	
+[07/27 21:05:18 segmentation_test]: [435/500]	Data Time: 0.050s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.052s (0.083s)	
+[07/27 21:05:20 segmentation_test]: [436/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.071s (0.083s)	
+[07/27 21:05:23 segmentation_test]: [437/500]	Data Time: 0.067s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.092s (0.083s)	
+[07/27 21:05:26 segmentation_test]: [438/500]	Data Time: 0.051s (0.063s)	Network Time: 0.088s (0.080s)	Post-processing Time: 0.086s (0.083s)	
+[07/27 21:05:28 segmentation_test]: [439/500]	Data Time: 0.050s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.049s (0.083s)	
+[07/27 21:05:29 segmentation_test]: [440/500]	Data Time: 0.050s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.061s (0.083s)	
+[07/27 21:05:31 segmentation_test]: [441/500]	Data Time: 0.051s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.067s (0.083s)	
+[07/27 21:05:33 segmentation_test]: [442/500]	Data Time: 0.049s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.056s (0.083s)	
+[07/27 21:05:35 segmentation_test]: [443/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.047s (0.083s)	
+[07/27 21:05:36 segmentation_test]: [444/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.050s (0.083s)	
+[07/27 21:05:38 segmentation_test]: [445/500]	Data Time: 0.052s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.067s (0.082s)	
+[07/27 21:05:40 segmentation_test]: [446/500]	Data Time: 0.051s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.057s (0.082s)	
+[07/27 21:05:42 segmentation_test]: [447/500]	Data Time: 0.055s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.057s (0.082s)	
+[07/27 21:05:43 segmentation_test]: [448/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.049s (0.082s)	
+[07/27 21:05:45 segmentation_test]: [449/500]	Data Time: 0.064s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.061s (0.082s)	
+[07/27 21:05:47 segmentation_test]: [450/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.070s (0.082s)	
+[07/27 21:05:49 segmentation_test]: [451/500]	Data Time: 0.049s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.061s (0.082s)	
+[07/27 21:05:50 segmentation_test]: [452/500]	Data Time: 0.050s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.060s (0.082s)	
+[07/27 21:05:52 segmentation_test]: [453/500]	Data Time: 0.049s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.066s (0.082s)	
+[07/27 21:05:54 segmentation_test]: [454/500]	Data Time: 0.049s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.077s (0.082s)	
+[07/27 21:05:56 segmentation_test]: [455/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.101s (0.082s)	
+[07/27 21:05:59 segmentation_test]: [456/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.082s (0.082s)	
+[07/27 21:06:00 segmentation_test]: [457/500]	Data Time: 0.051s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.068s (0.082s)	
+[07/27 21:06:02 segmentation_test]: [458/500]	Data Time: 0.049s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.062s (0.082s)	
+[07/27 21:06:04 segmentation_test]: [459/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.051s (0.082s)	
+[07/27 21:06:06 segmentation_test]: [460/500]	Data Time: 0.051s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.089s (0.082s)	
+[07/27 21:06:08 segmentation_test]: [461/500]	Data Time: 0.049s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.053s (0.082s)	
+[07/27 21:06:09 segmentation_test]: [462/500]	Data Time: 0.051s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.055s (0.082s)	
+[07/27 21:06:11 segmentation_test]: [463/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.069s (0.082s)	
+[07/27 21:06:13 segmentation_test]: [464/500]	Data Time: 0.059s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.113s (0.082s)	
+[07/27 21:06:16 segmentation_test]: [465/500]	Data Time: 0.050s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.133s (0.082s)	
+[07/27 21:06:19 segmentation_test]: [466/500]	Data Time: 0.057s (0.062s)	Network Time: 0.087s (0.080s)	Post-processing Time: 0.114s (0.082s)	
+[07/27 21:06:22 segmentation_test]: [467/500]	Data Time: 0.054s (0.062s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.152s (0.082s)	
+[07/27 21:06:25 segmentation_test]: [468/500]	Data Time: 0.051s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.114s (0.082s)	
+[07/27 21:06:27 segmentation_test]: [469/500]	Data Time: 0.058s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.097s (0.082s)	
+[07/27 21:06:30 segmentation_test]: [470/500]	Data Time: 0.050s (0.062s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.155s (0.082s)	
+[07/27 21:06:33 segmentation_test]: [471/500]	Data Time: 0.052s (0.062s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.139s (0.083s)	
+[07/27 21:06:36 segmentation_test]: [472/500]	Data Time: 0.078s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.158s (0.083s)	
+[07/27 21:06:40 segmentation_test]: [473/500]	Data Time: 0.065s (0.062s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.126s (0.083s)	
+[07/27 21:06:42 segmentation_test]: [474/500]	Data Time: 0.077s (0.062s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.147s (0.083s)	
+[07/27 21:06:45 segmentation_test]: [475/500]	Data Time: 0.052s (0.062s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.079s (0.083s)	
+[07/27 21:06:47 segmentation_test]: [476/500]	Data Time: 0.066s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.092s (0.083s)	
+[07/27 21:06:49 segmentation_test]: [477/500]	Data Time: 0.051s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.082s (0.083s)	
+[07/27 21:06:51 segmentation_test]: [478/500]	Data Time: 0.089s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.072s (0.083s)	
+[07/27 21:06:53 segmentation_test]: [479/500]	Data Time: 0.072s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.104s (0.083s)	
+[07/27 21:06:55 segmentation_test]: [480/500]	Data Time: 0.083s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.088s (0.083s)	
+[07/27 21:06:57 segmentation_test]: [481/500]	Data Time: 0.053s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.106s (0.083s)	
+[07/27 21:06:59 segmentation_test]: [482/500]	Data Time: 0.165s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.180s (0.083s)	
+[07/27 21:07:03 segmentation_test]: [483/500]	Data Time: 0.074s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.067s (0.083s)	
+[07/27 21:07:04 segmentation_test]: [484/500]	Data Time: 0.057s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.094s (0.083s)	
+[07/27 21:07:06 segmentation_test]: [485/500]	Data Time: 0.053s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.062s (0.083s)	
+[07/27 21:07:08 segmentation_test]: [486/500]	Data Time: 0.052s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.096s (0.083s)	
+[07/27 21:07:10 segmentation_test]: [487/500]	Data Time: 0.051s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.051s (0.083s)	
+[07/27 21:07:11 segmentation_test]: [488/500]	Data Time: 0.052s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.059s (0.083s)	
+[07/27 21:07:13 segmentation_test]: [489/500]	Data Time: 0.052s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.046s (0.083s)	
+[07/27 21:07:14 segmentation_test]: [490/500]	Data Time: 0.051s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.049s (0.083s)	
+[07/27 21:07:16 segmentation_test]: [491/500]	Data Time: 0.050s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.081s (0.083s)	
+[07/27 21:07:19 segmentation_test]: [492/500]	Data Time: 0.051s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.094s (0.083s)	
+[07/27 21:07:21 segmentation_test]: [493/500]	Data Time: 0.055s (0.063s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.109s (0.083s)	
+[07/27 21:07:23 segmentation_test]: [494/500]	Data Time: 0.051s (0.063s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.061s (0.083s)	
+[07/27 21:07:25 segmentation_test]: [495/500]	Data Time: 0.054s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.146s (0.083s)	
+[07/27 21:07:28 segmentation_test]: [496/500]	Data Time: 0.050s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.051s (0.083s)	
+[07/27 21:07:29 segmentation_test]: [497/500]	Data Time: 0.050s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.057s (0.083s)	
+[07/27 21:07:31 segmentation_test]: [498/500]	Data Time: 0.051s (0.062s)	Network Time: 0.079s (0.080s)	Post-processing Time: 0.080s (0.083s)	
+[07/27 21:07:33 segmentation_test]: [499/500]	Data Time: 0.050s (0.062s)	Network Time: 0.080s (0.080s)	Post-processing Time: 0.043s (0.083s)	
+[07/27 21:07:34 segmentation_test]: Inference finished.
+[07/27 21:07:34 segmentation_test]: OrderedDict([('sem_seg', {'mIoU': 66.94478400735713, 'fwIoU': 90.45995125098881, 'mACC': 76.15233235909798, 'pACC': 94.71920647392749})])
+Creating ground truth instances from png files.
+Processing 500 images...
+Images Processed: 500 
+Matching 500 pairs of images...
+Images Processed: 500 
+
+##################################################
+what           :             AP         AP_50%
+##################################################
+person         :          0.157          0.373
+rider          :          0.086          0.322
+car            :          0.384          0.632
+truck          :          0.259          0.354
+bus            :          0.394          0.546
+train          :          0.067          0.113
+motorcycle     :          0.068          0.218
+bicycle        :          0.062          0.233
+--------------------------------------------------
+average        :          0.185          0.349
+
+[07/27 21:15:47 segmentation_test]: OrderedDict([('segm', {'AP': 18.461445546363233, 'AP50': 34.90108993032721})])
+[07/27 21:18:18 segmentation_test]: {'All': {'pq': 0.5071617269891036, 'sq': 0.7805709342617998, 'rq': 0.6313295484993035, 'n': 19}, 'per_class': {7: {'pq': 0.9686650000721851, 'sq': 0.9716795177072646, 'rq': 0.9968976215098242}, 8: {'pq': 0.7100252158640574, 'sq': 0.8214722117718335, 'rq': 0.8643326039387309}, 11: {'pq': 0.8594156776022547, 'sq': 0.8830860246548592, 'rq': 0.9731958762886598}, 12: {'pq': 0.23885209342179306, 'sq': 0.7577376756829297, 'rq': 0.31521739130434784}, 13: {'pq': 0.27497494961629104, 'sq': 0.7274653730355041, 'rq': 0.37799043062200954}, 17: {'pq': 0.5222301177490276, 'sq': 0.6548276085837417, 'rq': 0.7975077881619937}, 19: {'pq': 0.43575611201986475, 'sq': 0.690688259187949, 'rq': 0.630901287553648}, 20: {'pq': 0.654175406267272, 'sq': 0.7687435589691606, 'rq': 0.850967007963595}, 21: {'pq': 0.8718012070109716, 'sq': 0.8919478735595445, 'rq': 0.9774127310061602}, 22: {'pq': 0.26976848235816014, 'sq': 0.7112078171260585, 'rq': 0.3793103448275862}, 23: {'pq': 0.8582136387118229, 'sq': 0.9169666506529747, 'rq': 0.9359267734553776}, 24: {'pq': 0.39998645877122835, 'sq': 0.7334820000303885, 'rq': 0.5453255277629945}, 25: {'pq': 0.32836089060922974, 'sq': 0.6529183732191247, 'rq': 0.5029126213592233}, 26: {'pq': 0.5880225464686639, 'sq': 0.8205877427541773, 'rq': 0.7165870458837907}, 27: {'pq': 0.3631218066587656, 'sq': 0.848919899350898, 'rq': 0.4277456647398844}, 28: {'pq': 0.564560644253157, 'sq': 0.8619631264936594, 'rq': 0.6549707602339181}, 31: {'pq': 0.1368283257423564, 'sq': 0.7525557915829603, 'rq': 0.18181818181818182}, 32: {'pq': 0.31064959436869644, 'sq': 0.690640616051834, 'rq': 0.4497991967871486}, 33: {'pq': 0.28066464522716833, 'sq': 0.673957630559335, 'rq': 0.41644256626968884}}, 
+'Things': {'pq': 0.3715243640124083, 'sq': 0.7543781475052971, 'rq': 0.4869501956068537, 'n': 8}, 'Stuff': {'pq': 0.6058070818812455, 'sq': 0.7996202337210746, 'rq': 0.7363327142392666, 'n': 11}}

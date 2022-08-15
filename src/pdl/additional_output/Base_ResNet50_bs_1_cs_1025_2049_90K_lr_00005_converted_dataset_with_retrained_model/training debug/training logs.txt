@@ -1,0 +1,1084 @@
+[07/13 16:12:46 segmentation]: Namespace(cfg='configs/Base-Panoptic-DeepLab_converted_dataset.yaml', local_rank=0, opts=[])
+[07/13 16:12:46 segmentation]: CKPT_FREQ: 5000
+CUDNN:
+  BENCHMARK: True
+  DETERMINISTIC: False
+  ENABLED: True
+DATALOADER:
+  NUM_WORKERS: 1
+  SAMPLER_TRAIN: TrainingSampler
+  TRAIN_SHUFFLE: True
+DATASET:
+  CROP_SIZE: (1025, 2049)
+  DATASET: cityscapes_panoptic
+  IGNORE_STUFF_IN_OFFSET: True
+  MAX_RESIZE_VALUE: -1
+  MAX_SCALE: 2.0
+  MEAN: (0.485, 0.456, 0.406)
+  MIN_RESIZE_VALUE: -1
+  MIN_SCALE: 0.5
+  MIRROR: True
+  NUM_CLASSES: 19
+  RESIZE_FACTOR: -1
+  ROOT: ./datasets/cityscapes
+  SCALE_STEP_SIZE: 0.1
+  SEMANTIC_ONLY: False
+  SMALL_INSTANCE_AREA: 4096
+  SMALL_INSTANCE_WEIGHT: 3
+  STD: (0.229, 0.224, 0.225)
+  TEST_SPLIT: val
+  TRAIN_SPLIT: train
+DEBUG:
+  DEBUG: True
+  DEBUG_FREQ: 100
+  KEEP_INTERVAL: 1000
+  OUTPUT_KEYS: ('semantic', 'center', 'offset')
+  TARGET_KEYS: ('semantic', 'center', 'offset', 'semantic_weights', 'center_weights', 'offset_weights')
+GPUS: (0,)
+LOSS:
+  CENTER:
+    NAME: mse
+    REDUCTION: none
+    WEIGHT: 200.0
+  FOREGROUND:
+    IGNORE: 255
+    MIN_KEPT: 100000
+    NAME: cross_entropy
+    REDUCTION: mean
+    THRESHOLD: 0.7
+    TOP_K_PERCENT: 1.0
+    WEIGHT: 1.0
+  OFFSET:
+    NAME: l1
+    REDUCTION: none
+    WEIGHT: 0.01
+  SEMANTIC:
+    IGNORE: 255
+    MIN_KEPT: 100000
+    NAME: hard_pixel_mining
+    REDUCTION: mean
+    THRESHOLD: 0.7
+    TOP_K_PERCENT: 0.2
+    WEIGHT: 1.0
+MODEL:
+  BACKBONE:
+    DILATION: (False, False, False)
+    META: resnet
+    NAME: resnet50
+    PRETRAINED: True
+    WEIGHTS: 
+  BN_MOMENTUM: 0.01
+  DECODER:
+    ATROUS_RATES: (3, 6, 9)
+    CONV_KERNEL: 5
+    CONV_PADDING: 2
+    CONV_STACK: 1
+    CONV_TYPE: depthwise_separable_conv
+    DECODER_CHANNELS: 256
+    FEATURE_KEY: res5
+    IN_CHANNELS: 2048
+  META_ARCHITECTURE: panoptic_deeplab
+  PANOPTIC_DEEPLAB:
+    INSTANCE:
+      ASPP_CHANNELS: 256
+      CLASS_KEY: ('center', 'offset')
+      DECODER_CHANNELS: 128
+      ENABLE: True
+      FOREGROUND_ARCH: v1
+      FOREGROUND_SEG: False
+      HEAD_CHANNELS: 32
+      LOW_LEVEL_CHANNELS_PROJECT: (64, 32, 16)
+      NUM_CLASSES: (1, 2)
+    LOW_LEVEL_CHANNELS: (1024, 512, 256)
+    LOW_LEVEL_CHANNELS_PROJECT: (128, 64, 32)
+    LOW_LEVEL_KEY: ('res4', 'res3', 'res2')
+  WEIGHTS: 
+OUTPUT_DIR: ./output/ps_converted_data_R50_bs_1_90K_lr_00005
+POST_PROCESSING:
+  CENTER_THRESHOLD: 0.1
+  NMS_KERNEL: 7
+  STUFF_AREA: 2048
+  TOP_K_INSTANCE: 200
+PRINT_FREQ: 20
+SOLVER:
+  ADAM_BETAS: (0.9, 0.999)
+  ADAM_EPS: 1e-08
+  BASE_LR: 5e-05
+  BIAS_LR_FACTOR: 1.0
+  CLIP_GRADIENTS:
+    CLIP_TYPE: value
+    CLIP_VALUE: 1.0
+    ENABLED: False
+    NORM_TYPE: 2.0
+  GAMMA: 0.1
+  LR_SCHEDULER_NAME: WarmupPolyLR
+  MOMENTUM: 0.9
+  OPTIMIZER: adam
+  POLY_LR_CONSTANT_ENDING: 0
+  POLY_LR_POWER: 0.9
+  STEPS: (30000,)
+  WARMUP_FACTOR: 0.001
+  WARMUP_ITERS: 0
+  WARMUP_METHOD: linear
+  WEIGHT_DECAY: 0.0
+  WEIGHT_DECAY_BIAS: 0.0
+  WEIGHT_DECAY_NORM: 0.0
+TEST:
+  CROP_SIZE: (1025, 2049)
+  DEBUG: False
+  EVAL_FOREGROUND: False
+  EVAL_INSTANCE: True
+  EVAL_PANOPTIC: True
+  FLIP_TEST: False
+  FOREGROUND_FOLDER: foreground
+  GPUS: (0,)
+  INSTANCE_FOLDER: instance
+  INSTANCE_SCORE_TYPE: semantic
+  MODEL_FILE: 
+  ORACLE_CENTER: False
+  ORACLE_FOREGROUND: False
+  ORACLE_OFFSET: False
+  ORACLE_SEMANTIC: False
+  PANOPTIC_FOLDER: panoptic
+  SCALE_LIST: [1]
+  SEMANTIC_FOLDER: semantic
+  TEST_TIME_AUGMENTATION: False
+TRAIN:
+  IMS_PER_BATCH: 1
+  MAX_ITER: 90000
+  RESUME: True
+WORKERS: 1
+Downloading: "https://download.pytorch.org/models/resnet50-19c8e357.pth" to /root/.cache/torch/checkpoints/resnet50-19c8e357.pth
+100% 97.8M/97.8M [00:00<00:00, 261MB/s]
+[07/13 16:12:47 segmentation]: Model:
+PanopticDeepLab(
+  (backbone): ResNet(
+    (conv1): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+    (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+    (relu): ReLU(inplace=True)
+    (maxpool): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+    (layer1): Sequential(
+      (0): Bottleneck(
+        (conv1): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer2): Sequential(
+      (0): Bottleneck(
+        (conv1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (3): Bottleneck(
+        (conv1): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer3): Sequential(
+      (0): Bottleneck(
+        (conv1): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(512, 1024, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (3): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (4): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (5): Bottleneck(
+        (conv1): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(1024, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+    (layer4): Sequential(
+      (0): Bottleneck(
+        (conv1): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+        (downsample): Sequential(
+          (0): Conv2d(1024, 2048, kernel_size=(1, 1), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(2048, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (1): Bottleneck(
+        (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+      (2): Bottleneck(
+        (conv1): Conv2d(2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (conv3): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn3): BatchNorm2d(2048, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+        (relu): ReLU(inplace=True)
+      )
+    )
+  )
+  (decoder): PanopticDeepLabDecoder(
+    (semantic_decoder): SinglePanopticDeepLabDecoder(
+      (aspp): ASPP(
+        (convs): ModuleList(
+          (0): Sequential(
+            (0): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (1): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(3, 3), dilation=(3, 3), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (2): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(6, 6), dilation=(6, 6), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (3): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(9, 9), dilation=(9, 9), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (4): ASPPPooling(
+            (aspp_pooling): Sequential(
+              (0): AdaptiveAvgPool2d(output_size=1)
+              (1): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (2): ReLU()
+            )
+          )
+        )
+        (project): Sequential(
+          (0): Conv2d(1280, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+          (3): Dropout(p=0.5, inplace=False)
+        )
+      )
+      (project): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(1024, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+        (1): Sequential(
+          (0): Conv2d(512, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+        (2): Sequential(
+          (0): Conv2d(256, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(32, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+      )
+      (fuse): ModuleList(
+        (0): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(384, 384, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=384, bias=False)
+              (1): BatchNorm2d(384, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(384, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+        (1): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(320, 320, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=320, bias=False)
+              (1): BatchNorm2d(320, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(320, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+        (2): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(288, 288, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=288, bias=False)
+              (1): BatchNorm2d(288, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(288, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+      )
+    )
+    (semantic_head): SinglePanopticDeepLabHead(
+      (classifier): ModuleDict(
+        (semantic): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Sequential(
+                (0): Conv2d(256, 256, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=256, bias=False)
+                (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+                (2): ReLU()
+              )
+              (1): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (2): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (3): ReLU()
+            )
+          )
+          (1): Conv2d(256, 19, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+    )
+    (instance_decoder): SinglePanopticDeepLabDecoder(
+      (aspp): ASPP(
+        (convs): ModuleList(
+          (0): Sequential(
+            (0): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (1): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(3, 3), dilation=(3, 3), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (2): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(6, 6), dilation=(6, 6), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (3): ASPPConv(
+            (0): Conv2d(2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(9, 9), dilation=(9, 9), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (2): ReLU()
+          )
+          (4): ASPPPooling(
+            (aspp_pooling): Sequential(
+              (0): AdaptiveAvgPool2d(output_size=1)
+              (1): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (2): ReLU()
+            )
+          )
+        )
+        (project): Sequential(
+          (0): Conv2d(1280, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(256, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+          (3): Dropout(p=0.5, inplace=False)
+        )
+      )
+      (project): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(1024, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(64, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+        (1): Sequential(
+          (0): Conv2d(512, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(32, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+        (2): Sequential(
+          (0): Conv2d(256, 16, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(16, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+      )
+      (fuse): ModuleList(
+        (0): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(320, 320, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=320, bias=False)
+              (1): BatchNorm2d(320, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(320, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+        (1): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(160, 160, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=160, bias=False)
+              (1): BatchNorm2d(160, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(160, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+        (2): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Conv2d(144, 144, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=144, bias=False)
+              (1): BatchNorm2d(144, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(144, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (2): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+            (3): ReLU()
+          )
+        )
+      )
+    )
+    (instance_head): SinglePanopticDeepLabHead(
+      (classifier): ModuleDict(
+        (center): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Sequential(
+                (0): Conv2d(128, 128, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=128, bias=False)
+                (1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+                (2): ReLU()
+              )
+              (1): Conv2d(128, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (2): BatchNorm2d(32, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (3): ReLU()
+            )
+          )
+          (1): Conv2d(32, 1, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (offset): Sequential(
+          (0): Sequential(
+            (0): Sequential(
+              (0): Sequential(
+                (0): Conv2d(128, 128, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), groups=128, bias=False)
+                (1): BatchNorm2d(128, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+                (2): ReLU()
+              )
+              (1): Conv2d(128, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (2): BatchNorm2d(32, eps=1e-05, momentum=0.01, affine=True, track_running_stats=True)
+              (3): ReLU()
+            )
+          )
+          (1): Conv2d(32, 2, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+    )
+  )
+  (semantic_loss): DeepLabCE(
+    (criterion): CrossEntropyLoss()
+  )
+  (center_loss): MSELoss()
+  (offset_loss): L1Loss()
+)
+[07/13 16:12:47 segmentation]: Rank of current process: 0. World size: 1
+[build.py]: number of workers1
+[build.py]: images per batch1
+[build.py]: Dataset length2975
+[07/13 16:13:28 seg.data.build]: Using training sampler TrainingSampler
+[07/13 16:13:33 segmentation]: Loaded checkpoint (starting from iter 80000)
+[07/13 16:14:27 segmentation]: [80020/90000] LR: 0.0000069	Time: 1.684s (2.712s)	Data: 1.355s (2.320s)	Loss: 8.308e-01 (6.451e-01)	Semantic loss: 5.015e-01 (3.712e-01)	Center loss: 2.401e-01 (1.824e-01)	Offset loss: 8.922e-02 (9.158e-02)	
+[07/13 16:15:05 segmentation]: [80040/90000] LR: 0.0000069	Time: 1.908s (2.291s)	Data: 1.563s (1.929s)	Loss: 1.098e+00 (6.691e-01)	Semantic loss: 9.266e-01 (4.176e-01)	Center loss: 1.399e-01 (1.644e-01)	Offset loss: 3.166e-02 (8.717e-02)	
+[07/13 16:15:39 segmentation]: [80060/90000] LR: 0.0000069	Time: 1.452s (2.102s)	Data: 1.110s (1.748s)	Loss: 4.655e-01 (6.560e-01)	Semantic loss: 3.866e-01 (4.202e-01)	Center loss: 5.271e-02 (1.521e-01)	Offset loss: 2.618e-02 (8.376e-02)	
+[07/13 16:16:15 segmentation]: [80080/90000] LR: 0.0000069	Time: 2.339s (2.023s)	Data: 2.008s (1.674s)	Loss: 1.153e+00 (6.768e-01)	Semantic loss: 5.294e-01 (4.346e-01)	Center loss: 4.746e-01 (1.546e-01)	Offset loss: 1.493e-01 (8.764e-02)	
+[07/13 16:16:49 segmentation]: [80100/90000] LR: 0.0000069	Time: 1.474s (1.957s)	Data: 1.138s (1.612s)	Loss: 3.622e-01 (6.525e-01)	Semantic loss: 2.751e-01 (4.188e-01)	Center loss: 4.776e-02 (1.475e-01)	Offset loss: 3.935e-02 (8.615e-02)	
+[07/13 16:17:24 segmentation]: [80120/90000] LR: 0.0000068	Time: 1.398s (1.890s)	Data: 1.066s (1.547s)	Loss: 2.108e-01 (6.443e-01)	Semantic loss: 1.370e-01 (4.186e-01)	Center loss: 1.869e-02 (1.426e-01)	Offset loss: 5.517e-02 (8.315e-02)	
+[07/13 16:17:57 segmentation]: [80140/90000] LR: 0.0000068	Time: 1.475s (1.855s)	Data: 1.129s (1.513s)	Loss: 3.259e-01 (6.242e-01)	Semantic loss: 2.844e-01 (4.080e-01)	Center loss: 1.764e-02 (1.341e-01)	Offset loss: 2.379e-02 (8.211e-02)	
+[07/13 16:18:31 segmentation]: [80160/90000] LR: 0.0000068	Time: 1.754s (1.834s)	Data: 1.424s (1.493s)	Loss: 5.402e-01 (6.178e-01)	Semantic loss: 1.481e-01 (4.056e-01)	Center loss: 3.601e-01 (1.311e-01)	Offset loss: 3.196e-02 (8.104e-02)	
+[07/13 16:19:06 segmentation]: [80180/90000] LR: 0.0000068	Time: 1.780s (1.824s)	Data: 1.441s (1.484s)	Loss: 1.520e+00 (6.264e-01)	Semantic loss: 9.970e-01 (4.106e-01)	Center loss: 2.173e-01 (1.297e-01)	Offset loss: 3.058e-01 (8.609e-02)	
+[07/13 16:19:40 segmentation]: [80200/90000] LR: 0.0000068	Time: 1.465s (1.812s)	Data: 1.133s (1.473s)	Loss: 5.498e-01 (6.340e-01)	Semantic loss: 4.927e-01 (4.142e-01)	Center loss: 2.030e-02 (1.306e-01)	Offset loss: 3.684e-02 (8.909e-02)	
+[07/13 16:20:15 segmentation]: [80220/90000] LR: 0.0000068	Time: 1.955s (1.790s)	Data: 1.623s (1.451s)	Loss: 1.701e+00 (6.409e-01)	Semantic loss: 1.520e+00 (4.207e-01)	Center loss: 1.322e-01 (1.294e-01)	Offset loss: 4.952e-02 (9.073e-02)	
+[07/13 16:20:49 segmentation]: [80240/90000] LR: 0.0000068	Time: 1.462s (1.782s)	Data: 1.131s (1.444s)	Loss: 6.857e-01 (6.390e-01)	Semantic loss: 5.892e-01 (4.212e-01)	Center loss: 6.106e-02 (1.276e-01)	Offset loss: 3.550e-02 (9.019e-02)	
+[07/13 16:21:23 segmentation]: [80260/90000] LR: 0.0000068	Time: 1.524s (1.776s)	Data: 1.194s (1.439s)	Loss: 3.842e-01 (6.382e-01)	Semantic loss: 1.643e-01 (4.220e-01)	Center loss: 1.106e-01 (1.256e-01)	Offset loss: 1.093e-01 (9.066e-02)	
+[07/13 16:21:58 segmentation]: [80280/90000] LR: 0.0000067	Time: 1.544s (1.774s)	Data: 1.212s (1.437s)	Loss: 1.152e+00 (6.460e-01)	Semantic loss: 9.468e-01 (4.247e-01)	Center loss: 7.057e-02 (1.277e-01)	Offset loss: 1.351e-01 (9.363e-02)	
+[07/13 16:22:32 segmentation]: [80300/90000] LR: 0.0000067	Time: 1.638s (1.770s)	Data: 1.297s (1.433s)	Loss: 6.059e-01 (6.429e-01)	Semantic loss: 4.145e-01 (4.197e-01)	Center loss: 1.458e-01 (1.281e-01)	Offset loss: 4.562e-02 (9.518e-02)	
+[07/13 16:23:06 segmentation]: [80320/90000] LR: 0.0000067	Time: 1.804s (1.755s)	Data: 1.468s (1.418s)	Loss: 7.723e-01 (6.422e-01)	Semantic loss: 3.893e-01 (4.222e-01)	Center loss: 2.891e-01 (1.259e-01)	Offset loss: 9.393e-02 (9.401e-02)	
+[07/13 16:23:38 segmentation]: [80340/90000] LR: 0.0000067	Time: 2.206s (1.743s)	Data: 1.877s (1.407s)	Loss: 4.179e-01 (6.337e-01)	Semantic loss: 3.746e-01 (4.193e-01)	Center loss: 1.106e-02 (1.230e-01)	Offset loss: 3.220e-02 (9.137e-02)	
+[07/13 16:24:09 segmentation]: [80360/90000] LR: 0.0000067	Time: 1.564s (1.733s)	Data: 1.230s (1.397s)	Loss: 4.305e-01 (6.324e-01)	Semantic loss: 2.713e-01 (4.194e-01)	Center loss: 7.742e-02 (1.217e-01)	Offset loss: 8.182e-02 (9.119e-02)	
+[07/13 16:24:46 segmentation]: [80380/90000] LR: 0.0000067	Time: 1.706s (1.739s)	Data: 1.376s (1.403s)	Loss: 6.994e-01 (6.358e-01)	Semantic loss: 3.230e-01 (4.205e-01)	Center loss: 3.447e-01 (1.250e-01)	Offset loss: 3.172e-02 (9.026e-02)	
+[07/13 16:25:23 segmentation]: [80400/90000] LR: 0.0000067	Time: 1.646s (1.745s)	Data: 1.316s (1.409s)	Loss: 3.990e-01 (6.332e-01)	Semantic loss: 1.984e-01 (4.183e-01)	Center loss: 1.519e-01 (1.258e-01)	Offset loss: 4.871e-02 (8.912e-02)	
+[07/13 16:25:56 segmentation]: [80420/90000] LR: 0.0000067	Time: 1.524s (1.733s)	Data: 1.193s (1.397s)	Loss: 9.897e-01 (6.309e-01)	Semantic loss: 6.009e-01 (4.176e-01)	Center loss: 1.866e-01 (1.244e-01)	Offset loss: 2.023e-01 (8.895e-02)	
+[07/13 16:26:30 segmentation]: [80440/90000] LR: 0.0000066	Time: 1.438s (1.732s)	Data: 1.108s (1.397s)	Loss: 4.726e-01 (6.367e-01)	Semantic loss: 4.102e-01 (4.189e-01)	Center loss: 3.680e-02 (1.276e-01)	Offset loss: 2.558e-02 (9.017e-02)	
+[07/13 16:27:06 segmentation]: [80460/90000] LR: 0.0000066	Time: 1.627s (1.734s)	Data: 1.295s (1.399s)	Loss: 5.743e-01 (6.360e-01)	Semantic loss: 4.391e-01 (4.171e-01)	Center loss: 7.717e-02 (1.293e-01)	Offset loss: 5.801e-02 (8.967e-02)	
+[07/13 16:27:39 segmentation]: [80480/90000] LR: 0.0000066	Time: 1.831s (1.731s)	Data: 1.501s (1.396s)	Loss: 4.390e-01 (6.357e-01)	Semantic loss: 2.581e-01 (4.187e-01)	Center loss: 1.057e-01 (1.285e-01)	Offset loss: 7.525e-02 (8.853e-02)	
+[07/13 16:28:15 segmentation]: [80500/90000] LR: 0.0000066	Time: 1.879s (1.734s)	Data: 1.551s (1.399s)	Loss: 8.652e-01 (6.365e-01)	Semantic loss: 7.501e-01 (4.193e-01)	Center loss: 5.668e-02 (1.290e-01)	Offset loss: 5.842e-02 (8.822e-02)	
+[07/13 16:28:51 segmentation]: [80520/90000] LR: 0.0000066	Time: 2.119s (1.728s)	Data: 1.762s (1.393s)	Loss: 9.661e-01 (6.402e-01)	Semantic loss: 3.562e-01 (4.196e-01)	Center loss: 4.476e-01 (1.314e-01)	Offset loss: 1.623e-01 (8.918e-02)	
+[07/13 16:29:25 segmentation]: [80540/90000] LR: 0.0000066	Time: 2.240s (1.727s)	Data: 1.898s (1.392s)	Loss: 1.048e+00 (6.415e-01)	Semantic loss: 5.139e-01 (4.198e-01)	Center loss: 3.504e-01 (1.327e-01)	Offset loss: 1.835e-01 (8.901e-02)	
+[07/13 16:30:01 segmentation]: [80560/90000] LR: 0.0000066	Time: 1.909s (1.730s)	Data: 1.571s (1.395s)	Loss: 7.189e-01 (6.420e-01)	Semantic loss: 4.589e-01 (4.195e-01)	Center loss: 1.964e-01 (1.340e-01)	Offset loss: 6.364e-02 (8.854e-02)	
+[07/13 16:30:35 segmentation]: [80580/90000] LR: 0.0000066	Time: 1.919s (1.729s)	Data: 1.589s (1.394s)	Loss: 1.724e-01 (6.395e-01)	Semantic loss: 8.034e-02 (4.165e-01)	Center loss: 4.663e-02 (1.354e-01)	Offset loss: 4.545e-02 (8.749e-02)	
+[07/13 16:31:08 segmentation]: [80600/90000] LR: 0.0000065	Time: 1.753s (1.726s)	Data: 1.415s (1.392s)	Loss: 4.905e-01 (6.364e-01)	Semantic loss: 1.727e-01 (4.158e-01)	Center loss: 2.844e-01 (1.344e-01)	Offset loss: 3.338e-02 (8.620e-02)	
+[07/13 16:31:40 segmentation]: [80620/90000] LR: 0.0000065	Time: 1.692s (1.715s)	Data: 1.355s (1.381s)	Loss: 9.053e-01 (6.353e-01)	Semantic loss: 7.737e-01 (4.161e-01)	Center loss: 7.519e-02 (1.325e-01)	Offset loss: 5.646e-02 (8.676e-02)	
+[07/13 16:32:13 segmentation]: [80640/90000] LR: 0.0000065	Time: 1.312s (1.713s)	Data: 0.980s (1.379s)	Loss: 7.896e-01 (6.357e-01)	Semantic loss: 1.879e-01 (4.159e-01)	Center loss: 5.641e-01 (1.326e-01)	Offset loss: 3.757e-02 (8.715e-02)	
+[07/13 16:32:48 segmentation]: [80660/90000] LR: 0.0000065	Time: 2.590s (1.715s)	Data: 2.260s (1.380s)	Loss: 5.818e-01 (6.363e-01)	Semantic loss: 2.765e-01 (4.168e-01)	Center loss: 2.121e-01 (1.327e-01)	Offset loss: 9.322e-02 (8.679e-02)	
+[07/13 16:33:26 segmentation]: [80680/90000] LR: 0.0000065	Time: 2.037s (1.719s)	Data: 1.710s (1.385s)	Loss: 1.082e+00 (6.374e-01)	Semantic loss: 6.310e-01 (4.181e-01)	Center loss: 1.479e-01 (1.322e-01)	Offset loss: 3.029e-01 (8.714e-02)	
+[07/13 16:33:58 segmentation]: [80700/90000] LR: 0.0000065	Time: 1.995s (1.716s)	Data: 1.664s (1.381s)	Loss: 5.047e-01 (6.390e-01)	Semantic loss: 2.801e-01 (4.208e-01)	Center loss: 1.952e-01 (1.315e-01)	Offset loss: 2.941e-02 (8.676e-02)	
+[07/13 16:34:33 segmentation]: [80720/90000] LR: 0.0000065	Time: 1.555s (1.712s)	Data: 1.218s (1.377s)	Loss: 7.297e-01 (6.422e-01)	Semantic loss: 6.311e-01 (4.250e-01)	Center loss: 5.235e-02 (1.306e-01)	Offset loss: 4.632e-02 (8.654e-02)	
+[07/13 16:35:06 segmentation]: [80740/90000] LR: 0.0000065	Time: 1.616s (1.709s)	Data: 1.287s (1.375s)	Loss: 2.460e+00 (6.434e-01)	Semantic loss: 9.132e-01 (4.247e-01)	Center loss: 8.847e-02 (1.309e-01)	Offset loss: 1.458e+00 (8.778e-02)	
+[07/13 16:35:39 segmentation]: [80760/90000] LR: 0.0000064	Time: 1.590s (1.709s)	Data: 1.261s (1.375s)	Loss: 4.668e-01 (6.423e-01)	Semantic loss: 1.709e-01 (4.236e-01)	Center loss: 2.565e-01 (1.314e-01)	Offset loss: 3.936e-02 (8.726e-02)	
+[07/13 16:36:15 segmentation]: [80780/90000] LR: 0.0000064	Time: 1.494s (1.711s)	Data: 1.163s (1.377s)	Loss: 4.000e-01 (6.446e-01)	Semantic loss: 2.677e-01 (4.253e-01)	Center loss: 9.756e-02 (1.317e-01)	Offset loss: 3.478e-02 (8.757e-02)	
+[07/13 16:36:47 segmentation]: [80800/90000] LR: 0.0000064	Time: 1.193s (1.708s)	Data: 0.863s (1.374s)	Loss: 6.140e-01 (6.435e-01)	Semantic loss: 1.350e-01 (4.253e-01)	Center loss: 3.291e-01 (1.315e-01)	Offset loss: 1.499e-01 (8.663e-02)	
+[07/13 16:37:24 segmentation]: [80820/90000] LR: 0.0000064	Time: 2.331s (1.705s)	Data: 1.995s (1.371s)	Loss: 7.454e-01 (6.456e-01)	Semantic loss: 4.346e-01 (4.265e-01)	Center loss: 2.713e-01 (1.309e-01)	Offset loss: 3.948e-02 (8.814e-02)	
+[07/13 16:37:58 segmentation]: [80840/90000] LR: 0.0000064	Time: 1.458s (1.706s)	Data: 1.127s (1.372s)	Loss: 5.795e-01 (6.420e-01)	Semantic loss: 3.539e-01 (4.240e-01)	Center loss: 1.842e-01 (1.306e-01)	Offset loss: 4.138e-02 (8.741e-02)	
+[07/13 16:38:31 segmentation]: [80860/90000] LR: 0.0000064	Time: 1.410s (1.705s)	Data: 1.079s (1.371s)	Loss: 2.401e-01 (6.434e-01)	Semantic loss: 1.705e-01 (4.263e-01)	Center loss: 5.550e-02 (1.299e-01)	Offset loss: 1.412e-02 (8.718e-02)	
+[07/13 16:39:06 segmentation]: [80880/90000] LR: 0.0000064	Time: 1.425s (1.705s)	Data: 1.090s (1.371s)	Loss: 7.304e-01 (6.447e-01)	Semantic loss: 3.770e-01 (4.261e-01)	Center loss: 1.182e-01 (1.300e-01)	Offset loss: 2.352e-01 (8.863e-02)	
+[07/13 16:39:39 segmentation]: [80900/90000] LR: 0.0000064	Time: 1.602s (1.704s)	Data: 1.271s (1.370s)	Loss: 4.196e-01 (6.442e-01)	Semantic loss: 1.699e-01 (4.255e-01)	Center loss: 2.313e-01 (1.304e-01)	Offset loss: 1.837e-02 (8.839e-02)	
+[07/13 16:40:15 segmentation]: [80920/90000] LR: 0.0000063	Time: 1.872s (1.701s)	Data: 1.541s (1.368s)	Loss: 3.604e-01 (6.422e-01)	Semantic loss: 2.541e-01 (4.249e-01)	Center loss: 7.341e-02 (1.296e-01)	Offset loss: 3.287e-02 (8.766e-02)	
+[07/13 16:40:47 segmentation]: [80940/90000] LR: 0.0000063	Time: 1.385s (1.700s)	Data: 1.054s (1.366s)	Loss: 8.035e-01 (6.428e-01)	Semantic loss: 5.536e-01 (4.246e-01)	Center loss: 1.591e-01 (1.302e-01)	Offset loss: 9.073e-02 (8.797e-02)	
+[07/13 16:41:21 segmentation]: [80960/90000] LR: 0.0000063	Time: 1.908s (1.700s)	Data: 1.579s (1.366s)	Loss: 3.420e-01 (6.437e-01)	Semantic loss: 3.211e-01 (4.256e-01)	Center loss: 5.393e-03 (1.300e-01)	Offset loss: 1.551e-02 (8.816e-02)	
+[07/13 16:41:55 segmentation]: [80980/90000] LR: 0.0000063	Time: 1.629s (1.700s)	Data: 1.298s (1.366s)	Loss: 2.482e-01 (6.430e-01)	Semantic loss: 1.579e-01 (4.251e-01)	Center loss: 3.244e-02 (1.299e-01)	Offset loss: 5.791e-02 (8.796e-02)	
+[07/13 16:42:30 segmentation]: [81000/90000] LR: 0.0000063	Time: 1.886s (1.701s)	Data: 1.556s (1.367s)	Loss: 3.936e-01 (6.418e-01)	Semantic loss: 3.098e-01 (4.239e-01)	Center loss: 1.836e-02 (1.303e-01)	Offset loss: 6.546e-02 (8.757e-02)	
+[07/13 16:43:06 segmentation]: [81020/90000] LR: 0.0000063	Time: 1.469s (1.698s)	Data: 1.138s (1.364s)	Loss: 4.279e-01 (6.432e-01)	Semantic loss: 3.457e-01 (4.249e-01)	Center loss: 4.111e-02 (1.305e-01)	Offset loss: 4.113e-02 (8.771e-02)	
+[07/13 16:43:39 segmentation]: [81040/90000] LR: 0.0000063	Time: 1.550s (1.696s)	Data: 1.221s (1.363s)	Loss: 5.953e-01 (6.468e-01)	Semantic loss: 4.756e-01 (4.267e-01)	Center loss: 7.301e-02 (1.306e-01)	Offset loss: 4.663e-02 (8.950e-02)	
+[07/13 16:44:13 segmentation]: [81060/90000] LR: 0.0000063	Time: 1.468s (1.696s)	Data: 1.133s (1.363s)	Loss: 4.744e-01 (6.466e-01)	Semantic loss: 3.424e-01 (4.265e-01)	Center loss: 7.802e-02 (1.304e-01)	Offset loss: 5.394e-02 (8.958e-02)	
+[07/13 16:44:46 segmentation]: [81080/90000] LR: 0.0000062	Time: 1.861s (1.696s)	Data: 1.529s (1.363s)	Loss: 6.783e-01 (6.460e-01)	Semantic loss: 4.661e-01 (4.263e-01)	Center loss: 1.455e-01 (1.302e-01)	Offset loss: 6.669e-02 (8.939e-02)	
+[07/13 16:45:19 segmentation]: [81100/90000] LR: 0.0000062	Time: 1.856s (1.695s)	Data: 1.516s (1.362s)	Loss: 5.441e-01 (6.464e-01)	Semantic loss: 4.213e-01 (4.274e-01)	Center loss: 8.718e-02 (1.298e-01)	Offset loss: 3.565e-02 (8.911e-02)	
+[07/13 16:45:54 segmentation]: [81120/90000] LR: 0.0000062	Time: 1.659s (1.692s)	Data: 1.322s (1.358s)	Loss: 1.178e+00 (6.454e-01)	Semantic loss: 7.926e-01 (4.264e-01)	Center loss: 2.107e-02 (1.298e-01)	Offset loss: 3.642e-01 (8.915e-02)	
+[07/13 16:46:27 segmentation]: [81140/90000] LR: 0.0000062	Time: 2.077s (1.691s)	Data: 1.740s (1.358s)	Loss: 3.307e-01 (6.458e-01)	Semantic loss: 2.176e-01 (4.265e-01)	Center loss: 6.560e-02 (1.295e-01)	Offset loss: 4.747e-02 (8.986e-02)	
+[07/13 16:47:01 segmentation]: [81160/90000] LR: 0.0000062	Time: 1.523s (1.691s)	Data: 1.172s (1.358s)	Loss: 1.124e+00 (6.503e-01)	Semantic loss: 6.943e-01 (4.289e-01)	Center loss: 2.985e-01 (1.301e-01)	Offset loss: 1.307e-01 (9.123e-02)	
+[07/13 16:47:32 segmentation]: [81180/90000] LR: 0.0000062	Time: 1.564s (1.689s)	Data: 1.234s (1.356s)	Loss: 3.034e-01 (6.500e-01)	Semantic loss: 2.186e-01 (4.280e-01)	Center loss: 4.818e-02 (1.301e-01)	Offset loss: 3.665e-02 (9.195e-02)	
+[07/13 16:48:07 segmentation]: [81200/90000] LR: 0.0000062	Time: 2.240s (1.690s)	Data: 1.902s (1.356s)	Loss: 6.585e-01 (6.479e-01)	Semantic loss: 4.290e-01 (4.268e-01)	Center loss: 1.614e-01 (1.298e-01)	Offset loss: 6.808e-02 (9.128e-02)	
+[07/13 16:48:42 segmentation]: [81220/90000] LR: 0.0000062	Time: 1.448s (1.686s)	Data: 1.116s (1.353s)	Loss: 1.722e+00 (6.491e-01)	Semantic loss: 6.372e-01 (4.264e-01)	Center loss: 7.036e-02 (1.301e-01)	Offset loss: 1.014e+00 (9.265e-02)	
+[07/13 16:49:15 segmentation]: [81240/90000] LR: 0.0000061	Time: 1.491s (1.686s)	Data: 1.153s (1.353s)	Loss: 7.133e-01 (6.484e-01)	Semantic loss: 5.499e-01 (4.261e-01)	Center loss: 2.847e-02 (1.300e-01)	Offset loss: 1.349e-01 (9.238e-02)	
+[07/13 16:49:49 segmentation]: [81260/90000] LR: 0.0000061	Time: 1.271s (1.686s)	Data: 0.941s (1.352s)	Loss: 5.163e-01 (6.481e-01)	Semantic loss: 2.591e-01 (4.257e-01)	Center loss: 1.856e-01 (1.302e-01)	Offset loss: 7.162e-02 (9.231e-02)	
+[07/13 16:50:24 segmentation]: [81280/90000] LR: 0.0000061	Time: 1.509s (1.687s)	Data: 1.180s (1.354s)	Loss: 6.456e-01 (6.518e-01)	Semantic loss: 9.375e-02 (4.273e-01)	Center loss: 4.395e-01 (1.315e-01)	Offset loss: 1.124e-01 (9.295e-02)	
+[07/13 16:50:55 segmentation]: [81300/90000] LR: 0.0000061	Time: 1.562s (1.685s)	Data: 1.232s (1.352s)	Loss: 3.929e-01 (6.515e-01)	Semantic loss: 2.666e-01 (4.270e-01)	Center loss: 8.367e-02 (1.313e-01)	Offset loss: 4.269e-02 (9.314e-02)	
+[07/13 16:51:31 segmentation]: [81320/90000] LR: 0.0000061	Time: 1.693s (1.684s)	Data: 1.349s (1.350s)	Loss: 3.221e-01 (6.533e-01)	Semantic loss: 1.824e-01 (4.284e-01)	Center loss: 9.936e-02 (1.311e-01)	Offset loss: 4.034e-02 (9.370e-02)	
+[07/13 16:52:05 segmentation]: [81340/90000] LR: 0.0000061	Time: 1.519s (1.684s)	Data: 1.190s (1.351s)	Loss: 1.981e-01 (6.537e-01)	Semantic loss: 1.463e-01 (4.289e-01)	Center loss: 1.093e-02 (1.313e-01)	Offset loss: 4.078e-02 (9.346e-02)	
+[07/13 16:52:40 segmentation]: [81360/90000] LR: 0.0000061	Time: 1.292s (1.685s)	Data: 0.961s (1.351s)	Loss: 6.167e-01 (6.539e-01)	Semantic loss: 4.421e-01 (4.290e-01)	Center loss: 1.200e-01 (1.310e-01)	Offset loss: 5.455e-02 (9.389e-02)	
+[07/13 16:53:14 segmentation]: [81380/90000] LR: 0.0000061	Time: 1.522s (1.685s)	Data: 1.192s (1.352s)	Loss: 4.783e-01 (6.544e-01)	Semantic loss: 3.601e-01 (4.290e-01)	Center loss: 2.524e-02 (1.317e-01)	Offset loss: 9.293e-02 (9.367e-02)	
+[07/13 16:53:51 segmentation]: [81400/90000] LR: 0.0000060	Time: 1.328s (1.687s)	Data: 0.998s (1.354s)	Loss: 2.902e-01 (6.525e-01)	Semantic loss: 2.128e-01 (4.275e-01)	Center loss: 3.622e-02 (1.315e-01)	Offset loss: 4.113e-02 (9.356e-02)	
+[07/13 16:54:29 segmentation]: [81420/90000] LR: 0.0000060	Time: 1.684s (1.688s)	Data: 1.353s (1.354s)	Loss: 8.752e-01 (6.552e-01)	Semantic loss: 5.800e-01 (4.291e-01)	Center loss: 1.227e-01 (1.317e-01)	Offset loss: 1.725e-01 (9.435e-02)	
+[07/13 16:55:06 segmentation]: [81440/90000] LR: 0.0000060	Time: 2.131s (1.690s)	Data: 1.799s (1.356s)	Loss: 8.532e-01 (6.599e-01)	Semantic loss: 6.687e-01 (4.316e-01)	Center loss: 8.197e-02 (1.314e-01)	Offset loss: 1.025e-01 (9.682e-02)	
+[07/13 16:55:43 segmentation]: [81460/90000] LR: 0.0000060	Time: 1.855s (1.692s)	Data: 1.524s (1.358s)	Loss: 5.869e-01 (6.606e-01)	Semantic loss: 4.546e-01 (4.326e-01)	Center loss: 8.130e-02 (1.313e-01)	Offset loss: 5.104e-02 (9.664e-02)	
+[07/13 16:56:18 segmentation]: [81480/90000] LR: 0.0000060	Time: 1.771s (1.693s)	Data: 1.440s (1.359s)	Loss: 5.894e-01 (6.588e-01)	Semantic loss: 4.685e-01 (4.306e-01)	Center loss: 7.215e-02 (1.310e-01)	Offset loss: 4.880e-02 (9.722e-02)	
+[07/13 16:56:54 segmentation]: [81500/90000] LR: 0.0000060	Time: 2.069s (1.694s)	Data: 1.725s (1.361s)	Loss: 4.788e-01 (6.609e-01)	Semantic loss: 3.990e-01 (4.329e-01)	Center loss: 1.273e-02 (1.307e-01)	Offset loss: 6.708e-02 (9.731e-02)	
+[07/13 16:57:31 segmentation]: [81520/90000] LR: 0.0000060	Time: 1.872s (1.693s)	Data: 1.541s (1.360s)	Loss: 7.037e-01 (6.639e-01)	Semantic loss: 5.242e-01 (4.346e-01)	Center loss: 1.310e-01 (1.305e-01)	Offset loss: 4.852e-02 (9.870e-02)	
+[07/13 16:58:05 segmentation]: [81540/90000] LR: 0.0000060	Time: 1.645s (1.694s)	Data: 1.308s (1.360s)	Loss: 3.369e-01 (6.620e-01)	Semantic loss: 1.135e-01 (4.334e-01)	Center loss: 1.529e-01 (1.304e-01)	Offset loss: 7.061e-02 (9.815e-02)	
+[07/13 16:58:40 segmentation]: [81560/90000] LR: 0.0000059	Time: 1.636s (1.694s)	Data: 1.303s (1.361s)	Loss: 2.274e-01 (6.607e-01)	Semantic loss: 1.229e-01 (4.328e-01)	Center loss: 7.537e-02 (1.302e-01)	Offset loss: 2.920e-02 (9.773e-02)	
+[07/13 16:59:17 segmentation]: [81580/90000] LR: 0.0000059	Time: 1.533s (1.696s)	Data: 1.202s (1.363s)	Loss: 1.006e+00 (6.626e-01)	Semantic loss: 5.063e-01 (4.334e-01)	Center loss: 5.193e-02 (1.315e-01)	Offset loss: 4.476e-01 (9.771e-02)	
+[07/13 16:59:53 segmentation]: [81600/90000] LR: 0.0000059	Time: 1.551s (1.698s)	Data: 1.220s (1.364s)	Loss: 4.082e-01 (6.624e-01)	Semantic loss: 3.817e-01 (4.339e-01)	Center loss: 5.622e-03 (1.313e-01)	Offset loss: 2.084e-02 (9.716e-02)	
+[07/13 17:00:30 segmentation]: [81620/90000] LR: 0.0000059	Time: 2.595s (1.697s)	Data: 2.264s (1.363s)	Loss: 5.541e-01 (6.616e-01)	Semantic loss: 3.799e-01 (4.335e-01)	Center loss: 8.484e-02 (1.313e-01)	Offset loss: 8.929e-02 (9.675e-02)	
+[07/13 17:01:05 segmentation]: [81640/90000] LR: 0.0000059	Time: 1.804s (1.697s)	Data: 1.465s (1.364s)	Loss: 6.355e-01 (6.633e-01)	Semantic loss: 2.582e-01 (4.341e-01)	Center loss: 3.086e-01 (1.308e-01)	Offset loss: 6.866e-02 (9.848e-02)	
+[07/13 17:01:40 segmentation]: [81660/90000] LR: 0.0000059	Time: 2.166s (1.698s)	Data: 1.835s (1.365s)	Loss: 7.088e-01 (6.631e-01)	Semantic loss: 5.521e-01 (4.340e-01)	Center loss: 9.252e-02 (1.304e-01)	Offset loss: 6.426e-02 (9.869e-02)	
+[07/13 17:02:15 segmentation]: [81680/90000] LR: 0.0000059	Time: 1.995s (1.698s)	Data: 1.656s (1.365s)	Loss: 1.134e+00 (6.630e-01)	Semantic loss: 8.292e-01 (4.346e-01)	Center loss: 2.325e-01 (1.302e-01)	Offset loss: 7.235e-02 (9.825e-02)	
+[07/13 17:02:49 segmentation]: [81700/90000] LR: 0.0000059	Time: 1.865s (1.699s)	Data: 1.534s (1.365s)	Loss: 8.675e-01 (6.619e-01)	Semantic loss: 5.651e-01 (4.339e-01)	Center loss: 2.413e-01 (1.300e-01)	Offset loss: 6.101e-02 (9.790e-02)	
+[07/13 17:03:27 segmentation]: [81720/90000] LR: 0.0000058	Time: 1.942s (1.698s)	Data: 1.602s (1.365s)	Loss: 7.445e-01 (6.611e-01)	Semantic loss: 6.973e-01 (4.332e-01)	Center loss: 2.416e-02 (1.304e-01)	Offset loss: 2.301e-02 (9.751e-02)	
+[07/13 17:04:00 segmentation]: [81740/90000] LR: 0.0000058	Time: 1.541s (1.698s)	Data: 1.208s (1.365s)	Loss: 3.146e-01 (6.605e-01)	Semantic loss: 2.643e-01 (4.329e-01)	Center loss: 9.201e-03 (1.302e-01)	Offset loss: 4.118e-02 (9.745e-02)	
+[07/13 17:04:37 segmentation]: [81760/90000] LR: 0.0000058	Time: 2.159s (1.700s)	Data: 1.828s (1.366s)	Loss: 7.823e-01 (6.602e-01)	Semantic loss: 5.728e-01 (4.327e-01)	Center loss: 1.549e-01 (1.305e-01)	Offset loss: 5.455e-02 (9.704e-02)	
+[07/13 17:05:12 segmentation]: [81780/90000] LR: 0.0000058	Time: 1.828s (1.701s)	Data: 1.497s (1.367s)	Loss: 3.841e-01 (6.595e-01)	Semantic loss: 3.123e-01 (4.323e-01)	Center loss: 3.431e-02 (1.305e-01)	Offset loss: 3.756e-02 (9.669e-02)	
+[07/13 17:05:49 segmentation]: [81800/90000] LR: 0.0000058	Time: 1.806s (1.702s)	Data: 1.474s (1.369s)	Loss: 9.251e-01 (6.592e-01)	Semantic loss: 5.406e-01 (4.323e-01)	Center loss: 5.908e-02 (1.304e-01)	Offset loss: 3.254e-01 (9.652e-02)	
+[07/13 17:06:28 segmentation]: [81820/90000] LR: 0.0000058	Time: 2.221s (1.703s)	Data: 1.886s (1.369s)	Loss: 8.857e-01 (6.591e-01)	Semantic loss: 5.094e-01 (4.320e-01)	Center loss: 2.592e-01 (1.308e-01)	Offset loss: 1.171e-01 (9.628e-02)	
+[07/13 17:07:03 segmentation]: [81840/90000] LR: 0.0000058	Time: 1.708s (1.703s)	Data: 1.377s (1.370s)	Loss: 1.077e+00 (6.583e-01)	Semantic loss: 8.529e-01 (4.316e-01)	Center loss: 1.479e-01 (1.307e-01)	Offset loss: 7.647e-02 (9.599e-02)	
+[07/13 17:07:36 segmentation]: [81860/90000] LR: 0.0000058	Time: 1.830s (1.703s)	Data: 1.492s (1.369s)	Loss: 4.886e-01 (6.586e-01)	Semantic loss: 3.159e-01 (4.314e-01)	Center loss: 9.737e-02 (1.307e-01)	Offset loss: 7.525e-02 (9.641e-02)	
+[07/13 17:08:11 segmentation]: [81880/90000] LR: 0.0000057	Time: 1.465s (1.703s)	Data: 1.135s (1.369s)	Loss: 6.086e-01 (6.601e-01)	Semantic loss: 5.414e-01 (4.327e-01)	Center loss: 1.758e-02 (1.305e-01)	Offset loss: 4.962e-02 (9.692e-02)	
+[07/13 17:08:45 segmentation]: [81900/90000] LR: 0.0000057	Time: 1.772s (1.703s)	Data: 1.440s (1.370s)	Loss: 5.342e-01 (6.616e-01)	Semantic loss: 3.747e-01 (4.346e-01)	Center loss: 1.052e-01 (1.303e-01)	Offset loss: 5.427e-02 (9.669e-02)	
+[07/13 17:09:22 segmentation]: [81920/90000] LR: 0.0000057	Time: 2.035s (1.703s)	Data: 1.699s (1.369s)	Loss: 5.898e-01 (6.610e-01)	Semantic loss: 3.788e-01 (4.345e-01)	Center loss: 1.664e-01 (1.302e-01)	Offset loss: 4.462e-02 (9.631e-02)	
+[07/13 17:09:58 segmentation]: [81940/90000] LR: 0.0000057	Time: 1.584s (1.704s)	Data: 1.247s (1.370s)	Loss: 3.307e-01 (6.615e-01)	Semantic loss: 1.964e-01 (4.349e-01)	Center loss: 1.200e-01 (1.304e-01)	Offset loss: 1.438e-02 (9.616e-02)	
+[07/13 17:10:32 segmentation]: [81960/90000] LR: 0.0000057	Time: 1.527s (1.704s)	Data: 1.193s (1.370s)	Loss: 1.804e-01 (6.604e-01)	Semantic loss: 1.296e-01 (4.343e-01)	Center loss: 2.104e-02 (1.300e-01)	Offset loss: 2.980e-02 (9.607e-02)	
+[07/13 17:11:08 segmentation]: [81980/90000] LR: 0.0000057	Time: 1.740s (1.705s)	Data: 1.414s (1.371s)	Loss: 5.357e-01 (6.613e-01)	Semantic loss: 4.373e-01 (4.344e-01)	Center loss: 4.770e-02 (1.304e-01)	Offset loss: 5.074e-02 (9.645e-02)	
+[07/13 17:11:45 segmentation]: [82000/90000] LR: 0.0000057	Time: 1.943s (1.706s)	Data: 1.613s (1.373s)	Loss: 5.105e-01 (6.610e-01)	Semantic loss: 2.866e-01 (4.341e-01)	Center loss: 9.510e-02 (1.306e-01)	Offset loss: 1.288e-01 (9.621e-02)	
+[07/13 17:12:25 segmentation]: [82020/90000] LR: 0.0000056	Time: 1.629s (1.707s)	Data: 1.295s (1.374s)	Loss: 5.763e-01 (6.610e-01)	Semantic loss: 4.718e-01 (4.341e-01)	Center loss: 3.882e-02 (1.309e-01)	Offset loss: 6.569e-02 (9.605e-02)	
+[07/13 17:12:59 segmentation]: [82040/90000] LR: 0.0000056	Time: 1.546s (1.707s)	Data: 1.217s (1.373s)	Loss: 1.114e+00 (6.619e-01)	Semantic loss: 8.514e-01 (4.345e-01)	Center loss: 1.038e-01 (1.308e-01)	Offset loss: 1.584e-01 (9.659e-02)	
+[07/13 17:13:33 segmentation]: [82060/90000] LR: 0.0000056	Time: 1.726s (1.707s)	Data: 1.388s (1.373s)	Loss: 5.734e-01 (6.612e-01)	Semantic loss: 1.939e-01 (4.341e-01)	Center loss: 2.866e-01 (1.306e-01)	Offset loss: 9.287e-02 (9.649e-02)	
+[07/13 17:14:08 segmentation]: [82080/90000] LR: 0.0000056	Time: 2.069s (1.707s)	Data: 1.739s (1.374s)	Loss: 8.840e-01 (6.603e-01)	Semantic loss: 5.914e-01 (4.333e-01)	Center loss: 1.782e-01 (1.305e-01)	Offset loss: 1.144e-01 (9.650e-02)	
+[07/13 17:14:45 segmentation]: [82100/90000] LR: 0.0000056	Time: 1.955s (1.708s)	Data: 1.625s (1.375s)	Loss: 1.207e+00 (6.610e-01)	Semantic loss: 8.721e-01 (4.340e-01)	Center loss: 1.465e-01 (1.305e-01)	Offset loss: 1.882e-01 (9.648e-02)	
+[07/13 17:15:27 segmentation]: [82120/90000] LR: 0.0000056	Time: 1.734s (1.710s)	Data: 1.398s (1.377s)	Loss: 6.506e-01 (6.618e-01)	Semantic loss: 4.618e-01 (4.346e-01)	Center loss: 1.425e-01 (1.306e-01)	Offset loss: 4.630e-02 (9.659e-02)	
+[07/13 17:16:02 segmentation]: [82140/90000] LR: 0.0000056	Time: 2.187s (1.711s)	Data: 1.855s (1.377s)	Loss: 7.854e-01 (6.619e-01)	Semantic loss: 4.720e-01 (4.349e-01)	Center loss: 2.080e-01 (1.303e-01)	Offset loss: 1.054e-01 (9.669e-02)	
+[07/13 17:16:40 segmentation]: [82160/90000] LR: 0.0000056	Time: 1.798s (1.712s)	Data: 1.458s (1.379s)	Loss: 6.458e-01 (6.606e-01)	Semantic loss: 4.385e-01 (4.342e-01)	Center loss: 1.085e-01 (1.299e-01)	Offset loss: 9.887e-02 (9.655e-02)	
+[07/13 17:17:16 segmentation]: [82180/90000] LR: 0.0000055	Time: 1.780s (1.713s)	Data: 1.450s (1.380s)	Loss: 4.377e-01 (6.615e-01)	Semantic loss: 2.401e-01 (4.355e-01)	Center loss: 1.594e-01 (1.295e-01)	Offset loss: 3.817e-02 (9.657e-02)	
+[07/13 17:17:52 segmentation]: [82200/90000] LR: 0.0000055	Time: 1.639s (1.714s)	Data: 1.309s (1.381s)	Loss: 7.643e-01 (6.605e-01)	Semantic loss: 6.614e-01 (4.348e-01)	Center loss: 2.047e-02 (1.292e-01)	Offset loss: 8.245e-02 (9.646e-02)	
+[07/13 17:18:27 segmentation]: [82220/90000] LR: 0.0000055	Time: 1.058s (1.712s)	Data: 0.720s (1.379s)	Loss: 2.852e-01 (6.608e-01)	Semantic loss: 1.763e-01 (4.346e-01)	Center loss: 7.887e-02 (1.292e-01)	Offset loss: 3.001e-02 (9.698e-02)	
+[07/13 17:19:03 segmentation]: [82240/90000] LR: 0.0000055	Time: 1.727s (1.714s)	Data: 1.397s (1.380s)	Loss: 4.967e-01 (6.592e-01)	Semantic loss: 2.945e-01 (4.333e-01)	Center loss: 1.495e-01 (1.292e-01)	Offset loss: 5.269e-02 (9.665e-02)	
+[07/13 17:19:40 segmentation]: [82260/90000] LR: 0.0000055	Time: 1.903s (1.714s)	Data: 1.563s (1.381s)	Loss: 4.797e-01 (6.591e-01)	Semantic loss: 3.250e-01 (4.330e-01)	Center loss: 1.061e-01 (1.294e-01)	Offset loss: 4.849e-02 (9.669e-02)	
+[07/13 17:20:15 segmentation]: [82280/90000] LR: 0.0000055	Time: 2.465s (1.715s)	Data: 2.133s (1.381s)	Loss: 8.132e-01 (6.587e-01)	Semantic loss: 5.413e-01 (4.330e-01)	Center loss: 2.258e-01 (1.292e-01)	Offset loss: 4.609e-02 (9.649e-02)	
+[07/13 17:20:54 segmentation]: [82300/90000] LR: 0.0000055	Time: 2.257s (1.717s)	Data: 1.883s (1.383s)	Loss: 8.215e-01 (6.585e-01)	Semantic loss: 6.213e-01 (4.327e-01)	Center loss: 1.521e-01 (1.294e-01)	Offset loss: 4.817e-02 (9.635e-02)	
+[07/13 17:21:33 segmentation]: [82320/90000] LR: 0.0000055	Time: 1.967s (1.717s)	Data: 1.631s (1.383s)	Loss: 5.359e-01 (6.595e-01)	Semantic loss: 3.373e-01 (4.333e-01)	Center loss: 1.064e-01 (1.299e-01)	Offset loss: 9.219e-02 (9.631e-02)	
+[07/13 17:22:17 segmentation]: [82340/90000] LR: 0.0000054	Time: 2.048s (1.721s)	Data: 1.716s (1.387s)	Loss: 5.126e-01 (6.590e-01)	Semantic loss: 3.356e-01 (4.328e-01)	Center loss: 1.307e-01 (1.301e-01)	Offset loss: 4.621e-02 (9.603e-02)	
+[07/13 17:22:52 segmentation]: [82360/90000] LR: 0.0000054	Time: 1.984s (1.722s)	Data: 1.656s (1.388s)	Loss: 1.584e+00 (6.596e-01)	Semantic loss: 1.019e+00 (4.335e-01)	Center loss: 4.776e-01 (1.304e-01)	Offset loss: 8.674e-02 (9.575e-02)	
+[07/13 17:23:32 segmentation]: [82380/90000] LR: 0.0000054	Time: 1.755s (1.724s)	Data: 1.424s (1.390s)	Loss: 3.249e-01 (6.592e-01)	Semantic loss: 2.733e-01 (4.331e-01)	Center loss: 5.685e-03 (1.304e-01)	Offset loss: 4.594e-02 (9.563e-02)	
+[07/13 17:24:08 segmentation]: [82400/90000] LR: 0.0000054	Time: 1.786s (1.724s)	Data: 1.454s (1.391s)	Loss: 5.261e-01 (6.586e-01)	Semantic loss: 3.800e-01 (4.331e-01)	Center loss: 7.557e-02 (1.302e-01)	Offset loss: 7.059e-02 (9.526e-02)	
+[07/13 17:24:47 segmentation]: [82420/90000] LR: 0.0000054	Time: 1.855s (1.724s)	Data: 1.518s (1.391s)	Loss: 6.503e-01 (6.585e-01)	Semantic loss: 2.926e-01 (4.331e-01)	Center loss: 2.653e-01 (1.303e-01)	Offset loss: 9.238e-02 (9.509e-02)	
+[07/13 17:25:23 segmentation]: [82440/90000] LR: 0.0000054	Time: 1.830s (1.725s)	Data: 1.499s (1.391s)	Loss: 6.805e-01 (6.580e-01)	Semantic loss: 6.035e-01 (4.332e-01)	Center loss: 4.577e-02 (1.300e-01)	Offset loss: 3.125e-02 (9.479e-02)	
+[07/13 17:26:00 segmentation]: [82460/90000] LR: 0.0000054	Time: 1.678s (1.726s)	Data: 1.346s (1.392s)	Loss: 3.376e-01 (6.570e-01)	Semantic loss: 2.601e-01 (4.326e-01)	Center loss: 3.992e-02 (1.300e-01)	Offset loss: 3.751e-02 (9.438e-02)	
+[07/13 17:26:37 segmentation]: [82480/90000] LR: 0.0000054	Time: 2.245s (1.727s)	Data: 1.914s (1.394s)	Loss: 4.122e-01 (6.576e-01)	Semantic loss: 1.744e-01 (4.328e-01)	Center loss: 2.175e-01 (1.301e-01)	Offset loss: 2.031e-02 (9.466e-02)	
+[07/13 17:27:14 segmentation]: [82500/90000] LR: 0.0000053	Time: 2.049s (1.728s)	Data: 1.721s (1.394s)	Loss: 1.104e+00 (6.568e-01)	Semantic loss: 7.767e-01 (4.325e-01)	Center loss: 1.908e-01 (1.298e-01)	Offset loss: 1.364e-01 (9.447e-02)	
+[07/13 17:27:48 segmentation]: [82520/90000] LR: 0.0000053	Time: 1.585s (1.726s)	Data: 1.254s (1.393s)	Loss: 2.651e-01 (6.558e-01)	Semantic loss: 1.192e-01 (4.321e-01)	Center loss: 1.238e-01 (1.296e-01)	Offset loss: 2.215e-02 (9.411e-02)	
+[07/13 17:28:19 segmentation]: [82540/90000] LR: 0.0000053	Time: 1.645s (1.725s)	Data: 1.314s (1.391s)	Loss: 7.058e-01 (6.560e-01)	Semantic loss: 1.105e-01 (4.322e-01)	Center loss: 5.269e-01 (1.295e-01)	Offset loss: 6.843e-02 (9.433e-02)	
+[07/13 17:28:54 segmentation]: [82560/90000] LR: 0.0000053	Time: 1.493s (1.725s)	Data: 1.162s (1.391s)	Loss: 3.007e-01 (6.559e-01)	Semantic loss: 2.775e-01 (4.319e-01)	Center loss: 9.697e-04 (1.296e-01)	Offset loss: 2.223e-02 (9.440e-02)	
+[07/13 17:29:27 segmentation]: [82580/90000] LR: 0.0000053	Time: 1.663s (1.724s)	Data: 1.332s (1.391s)	Loss: 3.311e-01 (6.563e-01)	Semantic loss: 2.778e-01 (4.322e-01)	Center loss: 2.708e-02 (1.295e-01)	Offset loss: 2.625e-02 (9.465e-02)	
+[07/13 17:30:02 segmentation]: [82600/90000] LR: 0.0000053	Time: 1.541s (1.725s)	Data: 1.206s (1.391s)	Loss: 7.134e-01 (6.551e-01)	Semantic loss: 5.339e-01 (4.315e-01)	Center loss: 1.384e-01 (1.293e-01)	Offset loss: 4.109e-02 (9.437e-02)	
+[07/13 17:30:37 segmentation]: [82620/90000] LR: 0.0000053	Time: 1.777s (1.723s)	Data: 1.447s (1.390s)	Loss: 6.126e-01 (6.553e-01)	Semantic loss: 4.750e-01 (4.320e-01)	Center loss: 5.750e-02 (1.291e-01)	Offset loss: 8.005e-02 (9.424e-02)	
+[07/13 17:31:10 segmentation]: [82640/90000] LR: 0.0000053	Time: 1.805s (1.723s)	Data: 1.473s (1.389s)	Loss: 5.233e-01 (6.553e-01)	Semantic loss: 4.871e-01 (4.319e-01)	Center loss: 1.372e-02 (1.290e-01)	Offset loss: 2.245e-02 (9.435e-02)	
+[07/13 17:31:47 segmentation]: [82660/90000] LR: 0.0000052	Time: 1.559s (1.724s)	Data: 1.224s (1.390s)	Loss: 5.855e-01 (6.550e-01)	Semantic loss: 4.963e-01 (4.318e-01)	Center loss: 5.490e-02 (1.290e-01)	Offset loss: 3.428e-02 (9.414e-02)	
+[07/13 17:32:20 segmentation]: [82680/90000] LR: 0.0000052	Time: 1.994s (1.723s)	Data: 1.662s (1.389s)	Loss: 1.065e+00 (6.550e-01)	Semantic loss: 2.821e-01 (4.315e-01)	Center loss: 7.077e-01 (1.292e-01)	Offset loss: 7.520e-02 (9.438e-02)	
+[07/13 17:32:52 segmentation]: [82700/90000] LR: 0.0000052	Time: 1.064s (1.722s)	Data: 0.720s (1.389s)	Loss: 6.341e-01 (6.553e-01)	Semantic loss: 5.841e-01 (4.316e-01)	Center loss: 1.851e-02 (1.291e-01)	Offset loss: 3.148e-02 (9.458e-02)	
+[07/13 17:33:25 segmentation]: [82720/90000] LR: 0.0000052	Time: 1.856s (1.720s)	Data: 1.526s (1.387s)	Loss: 8.050e-01 (6.542e-01)	Semantic loss: 6.431e-01 (4.309e-01)	Center loss: 8.602e-02 (1.289e-01)	Offset loss: 7.591e-02 (9.441e-02)	
+[07/13 17:33:59 segmentation]: [82740/90000] LR: 0.0000052	Time: 1.614s (1.720s)	Data: 1.282s (1.386s)	Loss: 6.244e-01 (6.535e-01)	Semantic loss: 4.463e-01 (4.305e-01)	Center loss: 1.024e-01 (1.287e-01)	Offset loss: 7.565e-02 (9.431e-02)	
+[07/13 17:34:32 segmentation]: [82760/90000] LR: 0.0000052	Time: 1.642s (1.720s)	Data: 1.299s (1.386s)	Loss: 3.764e-01 (6.543e-01)	Semantic loss: 1.687e-01 (4.309e-01)	Center loss: 1.777e-01 (1.288e-01)	Offset loss: 3.008e-02 (9.457e-02)	
+[07/13 17:35:06 segmentation]: [82780/90000] LR: 0.0000052	Time: 1.677s (1.720s)	Data: 1.345s (1.386s)	Loss: 8.049e-01 (6.549e-01)	Semantic loss: 5.554e-01 (4.313e-01)	Center loss: 1.112e-01 (1.290e-01)	Offset loss: 1.382e-01 (9.465e-02)	
+[07/13 17:35:39 segmentation]: [82800/90000] LR: 0.0000051	Time: 1.727s (1.719s)	Data: 1.396s (1.385s)	Loss: 3.263e-01 (6.545e-01)	Semantic loss: 1.511e-01 (4.312e-01)	Center loss: 1.460e-01 (1.288e-01)	Offset loss: 2.912e-02 (9.453e-02)	
+[07/13 17:36:12 segmentation]: [82820/90000] LR: 0.0000051	Time: 1.818s (1.717s)	Data: 1.489s (1.384s)	Loss: 4.570e-01 (6.539e-01)	Semantic loss: 1.392e-01 (4.306e-01)	Center loss: 2.457e-01 (1.289e-01)	Offset loss: 7.198e-02 (9.429e-02)	
+[07/13 17:36:46 segmentation]: [82840/90000] LR: 0.0000051	Time: 1.606s (1.717s)	Data: 1.275s (1.383s)	Loss: 2.838e-01 (6.534e-01)	Semantic loss: 1.846e-01 (4.304e-01)	Center loss: 7.663e-02 (1.289e-01)	Offset loss: 2.254e-02 (9.407e-02)	
+[07/13 17:37:20 segmentation]: [82860/90000] LR: 0.0000051	Time: 1.952s (1.717s)	Data: 1.605s (1.383s)	Loss: 2.496e+00 (6.534e-01)	Semantic loss: 2.000e+00 (4.305e-01)	Center loss: 2.613e-01 (1.290e-01)	Offset loss: 2.341e-01 (9.400e-02)	
+[07/13 17:37:53 segmentation]: [82880/90000] LR: 0.0000051	Time: 1.409s (1.716s)	Data: 1.080s (1.383s)	Loss: 3.620e-01 (6.534e-01)	Semantic loss: 3.388e-01 (4.306e-01)	Center loss: 1.573e-03 (1.289e-01)	Offset loss: 2.155e-02 (9.387e-02)	
+[07/13 17:38:26 segmentation]: [82900/90000] LR: 0.0000051	Time: 1.466s (1.716s)	Data: 1.134s (1.382s)	Loss: 5.673e+00 (6.549e-01)	Semantic loss: 5.572e+00 (4.321e-01)	Center loss: 4.261e-02 (1.285e-01)	Offset loss: 5.860e-02 (9.425e-02)	
+[07/13 17:39:00 segmentation]: [82920/90000] LR: 0.0000051	Time: 1.765s (1.715s)	Data: 1.426s (1.381s)	Loss: 6.099e-01 (6.555e-01)	Semantic loss: 4.934e-01 (4.322e-01)	Center loss: 7.344e-02 (1.287e-01)	Offset loss: 4.303e-02 (9.460e-02)	
+[07/13 17:39:35 segmentation]: [82940/90000] LR: 0.0000051	Time: 1.923s (1.715s)	Data: 1.598s (1.382s)	Loss: 8.330e-01 (6.555e-01)	Semantic loss: 5.245e-01 (4.321e-01)	Center loss: 2.125e-01 (1.287e-01)	Offset loss: 9.599e-02 (9.468e-02)	
+[07/13 17:40:09 segmentation]: [82960/90000] LR: 0.0000050	Time: 1.825s (1.715s)	Data: 1.496s (1.381s)	Loss: 8.157e-01 (6.559e-01)	Semantic loss: 6.370e-01 (4.325e-01)	Center loss: 1.007e-01 (1.284e-01)	Offset loss: 7.799e-02 (9.500e-02)	
+[07/13 17:40:41 segmentation]: [82980/90000] LR: 0.0000050	Time: 1.656s (1.714s)	Data: 1.314s (1.380s)	Loss: 8.014e-01 (6.558e-01)	Semantic loss: 3.995e-01 (4.326e-01)	Center loss: 3.262e-01 (1.283e-01)	Offset loss: 7.572e-02 (9.494e-02)	
+[07/13 17:41:01 segmentation]: [83000/90000] LR: 0.0000050	Time: 1.039s (1.709s)	Data: 0.697s (1.376s)	Loss: 6.257e-01 (6.553e-01)	Semantic loss: 3.387e-01 (4.320e-01)	Center loss: 2.166e-01 (1.285e-01)	Offset loss: 7.046e-02 (9.480e-02)	
+[07/13 17:41:22 segmentation]: [83020/90000] LR: 0.0000050	Time: 0.969s (1.704s)	Data: 0.624s (1.370s)	Loss: 7.877e-01 (6.554e-01)	Semantic loss: 6.160e-01 (4.323e-01)	Center loss: 7.971e-02 (1.283e-01)	Offset loss: 9.201e-02 (9.472e-02)	
+[07/13 17:41:42 segmentation]: [83040/90000] LR: 0.0000050	Time: 0.912s (1.699s)	Data: 0.573s (1.365s)	Loss: 4.906e-01 (6.554e-01)	Semantic loss: 2.542e-01 (4.321e-01)	Center loss: 1.699e-01 (1.284e-01)	Offset loss: 6.655e-02 (9.485e-02)	
+[07/13 17:42:01 segmentation]: [83060/90000] LR: 0.0000050	Time: 0.838s (1.694s)	Data: 0.500s (1.360s)	Loss: 4.417e-01 (6.554e-01)	Semantic loss: 3.011e-01 (4.321e-01)	Center loss: 7.449e-02 (1.287e-01)	Offset loss: 6.615e-02 (9.467e-02)	
+[07/13 17:42:23 segmentation]: [83080/90000] LR: 0.0000050	Time: 1.399s (1.690s)	Data: 1.061s (1.357s)	Loss: 1.448e+00 (6.555e-01)	Semantic loss: 9.563e-01 (4.320e-01)	Center loss: 3.199e-01 (1.290e-01)	Offset loss: 1.721e-01 (9.448e-02)	
+[07/13 17:42:43 segmentation]: [83100/90000] LR: 0.0000050	Time: 0.766s (1.686s)	Data: 0.419s (1.352s)	Loss: 7.802e-01 (6.550e-01)	Semantic loss: 6.684e-01 (4.317e-01)	Center loss: 3.826e-02 (1.291e-01)	Offset loss: 7.351e-02 (9.424e-02)	
+[07/13 17:43:05 segmentation]: [83120/90000] LR: 0.0000049	Time: 0.708s (1.681s)	Data: 0.369s (1.347s)	Loss: 2.379e-01 (6.545e-01)	Semantic loss: 2.070e-01 (4.314e-01)	Center loss: 1.894e-02 (1.288e-01)	Offset loss: 1.200e-02 (9.420e-02)	
+[07/13 17:43:24 segmentation]: [83140/90000] LR: 0.0000049	Time: 0.929s (1.676s)	Data: 0.587s (1.342s)	Loss: 6.431e-01 (6.539e-01)	Semantic loss: 4.150e-01 (4.309e-01)	Center loss: 6.471e-02 (1.289e-01)	Offset loss: 1.634e-01 (9.411e-02)	
+[07/13 17:43:43 segmentation]: [83160/90000] LR: 0.0000049	Time: 1.040s (1.671s)	Data: 0.697s (1.337s)	Loss: 5.214e-01 (6.531e-01)	Semantic loss: 3.501e-01 (4.305e-01)	Center loss: 1.173e-01 (1.287e-01)	Offset loss: 5.394e-02 (9.393e-02)	
+[07/13 17:44:02 segmentation]: [83180/90000] LR: 0.0000049	Time: 0.969s (1.667s)	Data: 0.623s (1.333s)	Loss: 5.351e-01 (6.533e-01)	Semantic loss: 4.000e-01 (4.306e-01)	Center loss: 6.746e-02 (1.285e-01)	Offset loss: 6.758e-02 (9.420e-02)	
+[07/13 17:44:20 segmentation]: [83200/90000] LR: 0.0000049	Time: 0.903s (1.662s)	Data: 0.563s (1.328s)	Loss: 6.556e-01 (6.531e-01)	Semantic loss: 4.805e-01 (4.302e-01)	Center loss: 1.204e-01 (1.286e-01)	Offset loss: 5.463e-02 (9.435e-02)	
+[07/13 17:44:43 segmentation]: [83220/90000] LR: 0.0000049	Time: 1.200s (1.658s)	Data: 0.865s (1.324s)	Loss: 1.022e+00 (6.541e-01)	Semantic loss: 6.696e-01 (4.308e-01)	Center loss: 2.069e-01 (1.286e-01)	Offset loss: 1.456e-01 (9.465e-02)	
+[07/13 17:45:03 segmentation]: [83240/90000] LR: 0.0000049	Time: 1.230s (1.654s)	Data: 0.887s (1.320s)	Loss: 1.438e+00 (6.541e-01)	Semantic loss: 8.798e-01 (4.308e-01)	Center loss: 1.296e-01 (1.286e-01)	Offset loss: 4.285e-01 (9.469e-02)	
+[07/13 17:45:22 segmentation]: [83260/90000] LR: 0.0000049	Time: 0.992s (1.649s)	Data: 0.655s (1.315s)	Loss: 5.912e-01 (6.541e-01)	Semantic loss: 4.593e-01 (4.309e-01)	Center loss: 8.870e-02 (1.285e-01)	Offset loss: 4.321e-02 (9.470e-02)	
+[07/13 17:45:42 segmentation]: [83280/90000] LR: 0.0000048	Time: 0.728s (1.645s)	Data: 0.390s (1.311s)	Loss: 1.614e-01 (6.537e-01)	Semantic loss: 9.954e-02 (4.308e-01)	Center loss: 2.228e-02 (1.284e-01)	Offset loss: 3.958e-02 (9.450e-02)	
+[07/13 17:46:01 segmentation]: [83300/90000] LR: 0.0000048	Time: 0.793s (1.641s)	Data: 0.451s (1.307s)	Loss: 2.929e-01 (6.531e-01)	Semantic loss: 1.985e-01 (4.305e-01)	Center loss: 2.630e-02 (1.284e-01)	Offset loss: 6.811e-02 (9.425e-02)	
+[07/13 17:46:23 segmentation]: [83320/90000] LR: 0.0000048	Time: 0.888s (1.637s)	Data: 0.540s (1.303s)	Loss: 5.654e-01 (6.529e-01)	Semantic loss: 4.752e-01 (4.303e-01)	Center loss: 5.607e-02 (1.285e-01)	Offset loss: 3.409e-02 (9.410e-02)	
+[07/13 17:46:43 segmentation]: [83340/90000] LR: 0.0000048	Time: 2.017s (1.633s)	Data: 1.653s (1.299s)	Loss: 1.325e+00 (6.531e-01)	Semantic loss: 1.337e-01 (4.303e-01)	Center loss: 1.118e+00 (1.287e-01)	Offset loss: 7.280e-02 (9.419e-02)	
+[07/13 17:47:05 segmentation]: [83360/90000] LR: 0.0000048	Time: 0.851s (1.630s)	Data: 0.514s (1.295s)	Loss: 8.478e-01 (6.529e-01)	Semantic loss: 7.898e-01 (4.300e-01)	Center loss: 1.732e-02 (1.285e-01)	Offset loss: 4.072e-02 (9.428e-02)	
+[07/13 17:47:24 segmentation]: [83380/90000] LR: 0.0000048	Time: 1.173s (1.626s)	Data: 0.828s (1.291s)	Loss: 9.657e-01 (6.526e-01)	Semantic loss: 6.965e-01 (4.298e-01)	Center loss: 2.003e-01 (1.288e-01)	Offset loss: 6.890e-02 (9.411e-02)	
+[07/13 17:47:43 segmentation]: [83400/90000] LR: 0.0000048	Time: 0.805s (1.622s)	Data: 0.463s (1.287s)	Loss: 6.066e-01 (6.523e-01)	Semantic loss: 5.608e-01 (4.295e-01)	Center loss: 2.348e-02 (1.288e-01)	Offset loss: 2.233e-02 (9.398e-02)	
+[07/13 17:48:06 segmentation]: [83420/90000] LR: 0.0000047	Time: 0.923s (1.618s)	Data: 0.583s (1.283s)	Loss: 1.162e+00 (6.524e-01)	Semantic loss: 9.428e-01 (4.297e-01)	Center loss: 1.325e-01 (1.288e-01)	Offset loss: 8.702e-02 (9.378e-02)	
+[07/13 17:48:24 segmentation]: [83440/90000] LR: 0.0000047	Time: 0.750s (1.614s)	Data: 0.404s (1.279s)	Loss: 1.254e+00 (6.524e-01)	Semantic loss: 1.173e+00 (4.299e-01)	Center loss: 2.286e-02 (1.288e-01)	Offset loss: 5.805e-02 (9.365e-02)	
+[07/13 17:48:43 segmentation]: [83460/90000] LR: 0.0000047	Time: 0.816s (1.610s)	Data: 0.467s (1.275s)	Loss: 2.780e-01 (6.530e-01)	Semantic loss: 9.522e-02 (4.303e-01)	Center loss: 1.471e-01 (1.289e-01)	Offset loss: 3.571e-02 (9.380e-02)	
+[07/13 17:49:05 segmentation]: [83480/90000] LR: 0.0000047	Time: 0.945s (1.607s)	Data: 0.609s (1.272s)	Loss: 9.589e-01 (6.535e-01)	Semantic loss: 8.011e-01 (4.305e-01)	Center loss: 6.866e-02 (1.291e-01)	Offset loss: 8.917e-02 (9.389e-02)	
+[07/13 17:49:23 segmentation]: [83500/90000] LR: 0.0000047	Time: 0.919s (1.603s)	Data: 0.573s (1.268s)	Loss: 4.574e-01 (6.531e-01)	Semantic loss: 2.555e-01 (4.302e-01)	Center loss: 1.122e-01 (1.292e-01)	Offset loss: 8.969e-02 (9.376e-02)	
+[07/13 17:49:44 segmentation]: [83520/90000] LR: 0.0000047	Time: 0.957s (1.599s)	Data: 0.618s (1.264s)	Loss: 7.723e-01 (6.528e-01)	Semantic loss: 6.123e-01 (4.300e-01)	Center loss: 7.886e-02 (1.291e-01)	Offset loss: 8.112e-02 (9.375e-02)	
+[07/13 17:50:02 segmentation]: [83540/90000] LR: 0.0000047	Time: 1.011s (1.595s)	Data: 0.669s (1.260s)	Loss: 4.526e-01 (6.524e-01)	Semantic loss: 2.403e-01 (4.295e-01)	Center loss: 1.761e-01 (1.289e-01)	Offset loss: 3.628e-02 (9.398e-02)	
+[07/13 17:50:21 segmentation]: [83560/90000] LR: 0.0000047	Time: 0.853s (1.591s)	Data: 0.516s (1.256s)	Loss: 2.438e-01 (6.522e-01)	Semantic loss: 1.088e-01 (4.294e-01)	Center loss: 1.019e-01 (1.288e-01)	Offset loss: 3.307e-02 (9.405e-02)	
+[07/13 17:50:40 segmentation]: [83580/90000] LR: 0.0000046	Time: 0.969s (1.588s)	Data: 0.625s (1.253s)	Loss: 2.518e-01 (6.521e-01)	Semantic loss: 1.384e-01 (4.293e-01)	Center loss: 6.039e-02 (1.286e-01)	Offset loss: 5.298e-02 (9.416e-02)	
+[07/13 17:51:00 segmentation]: [83600/90000] LR: 0.0000046	Time: 1.491s (1.584s)	Data: 1.117s (1.249s)	Loss: 5.652e-01 (6.520e-01)	Semantic loss: 4.532e-01 (4.293e-01)	Center loss: 6.188e-02 (1.286e-01)	Offset loss: 5.018e-02 (9.407e-02)	
+[07/13 17:51:23 segmentation]: [83620/90000] LR: 0.0000046	Time: 1.165s (1.581s)	Data: 0.825s (1.245s)	Loss: 4.578e-01 (6.524e-01)	Semantic loss: 3.134e-01 (4.296e-01)	Center loss: 8.920e-02 (1.284e-01)	Offset loss: 5.521e-02 (9.433e-02)	
+[07/13 17:51:42 segmentation]: [83640/90000] LR: 0.0000046	Time: 0.797s (1.577s)	Data: 0.455s (1.242s)	Loss: 2.428e-01 (6.521e-01)	Semantic loss: 1.786e-01 (4.296e-01)	Center loss: 2.969e-02 (1.282e-01)	Offset loss: 3.451e-02 (9.424e-02)	
+[07/13 17:52:02 segmentation]: [83660/90000] LR: 0.0000046	Time: 0.924s (1.574s)	Data: 0.588s (1.239s)	Loss: 8.080e-01 (6.522e-01)	Semantic loss: 2.102e-01 (4.295e-01)	Center loss: 4.930e-01 (1.284e-01)	Offset loss: 1.048e-01 (9.423e-02)	
+[07/13 17:52:22 segmentation]: [83680/90000] LR: 0.0000046	Time: 1.171s (1.571s)	Data: 0.834s (1.236s)	Loss: 6.108e-01 (6.522e-01)	Semantic loss: 4.325e-01 (4.294e-01)	Center loss: 1.127e-01 (1.287e-01)	Offset loss: 6.563e-02 (9.414e-02)	
+[07/13 17:52:40 segmentation]: [83700/90000] LR: 0.0000046	Time: 1.093s (1.567s)	Data: 0.746s (1.232s)	Loss: 6.762e-01 (6.520e-01)	Semantic loss: 4.023e-01 (4.294e-01)	Center loss: 1.938e-01 (1.284e-01)	Offset loss: 8.012e-02 (9.410e-02)	
+[07/13 17:53:05 segmentation]: [83720/90000] LR: 0.0000046	Time: 2.557s (1.564s)	Data: 2.219s (1.229s)	Loss: 1.828e+00 (6.526e-01)	Semantic loss: 1.055e+00 (4.297e-01)	Center loss: 6.988e-01 (1.286e-01)	Offset loss: 7.426e-02 (9.430e-02)	
+[07/13 17:53:25 segmentation]: [83740/90000] LR: 0.0000045	Time: 0.918s (1.561s)	Data: 0.579s (1.226s)	Loss: 5.518e-01 (6.520e-01)	Semantic loss: 4.128e-01 (4.293e-01)	Center loss: 5.439e-02 (1.285e-01)	Offset loss: 8.463e-02 (9.415e-02)	
+[07/13 17:53:46 segmentation]: [83760/90000] LR: 0.0000045	Time: 0.926s (1.559s)	Data: 0.581s (1.223s)	Loss: 7.117e-01 (6.528e-01)	Semantic loss: 5.600e-01 (4.299e-01)	Center loss: 1.014e-01 (1.287e-01)	Offset loss: 5.025e-02 (9.424e-02)	
+[07/13 17:54:05 segmentation]: [83780/90000] LR: 0.0000045	Time: 0.756s (1.556s)	Data: 0.419s (1.220s)	Loss: 3.542e-01 (6.529e-01)	Semantic loss: 2.618e-01 (4.301e-01)	Center loss: 7.141e-02 (1.287e-01)	Offset loss: 2.094e-02 (9.415e-02)	
+[07/13 17:54:24 segmentation]: [83800/90000] LR: 0.0000045	Time: 1.393s (1.552s)	Data: 1.049s (1.217s)	Loss: 1.231e+00 (6.525e-01)	Semantic loss: 8.321e-01 (4.297e-01)	Center loss: 2.800e-01 (1.287e-01)	Offset loss: 1.186e-01 (9.408e-02)	
+[07/13 17:54:46 segmentation]: [83820/90000] LR: 0.0000045	Time: 0.886s (1.549s)	Data: 0.548s (1.213s)	Loss: 3.900e-01 (6.521e-01)	Semantic loss: 2.901e-01 (4.296e-01)	Center loss: 5.324e-02 (1.286e-01)	Offset loss: 4.666e-02 (9.390e-02)	
+[07/13 17:55:06 segmentation]: [83840/90000] LR: 0.0000045	Time: 0.984s (1.546s)	Data: 0.646s (1.210s)	Loss: 6.030e-01 (6.521e-01)	Semantic loss: 3.150e-01 (4.298e-01)	Center loss: 8.714e-02 (1.285e-01)	Offset loss: 2.008e-01 (9.383e-02)	
+[07/13 17:55:26 segmentation]: [83860/90000] LR: 0.0000045	Time: 1.094s (1.543s)	Data: 0.748s (1.208s)	Loss: 6.790e-01 (6.526e-01)	Semantic loss: 4.344e-01 (4.303e-01)	Center loss: 1.104e-01 (1.286e-01)	Offset loss: 1.342e-01 (9.378e-02)	
+[07/13 17:55:45 segmentation]: [83880/90000] LR: 0.0000044	Time: 0.894s (1.540s)	Data: 0.545s (1.205s)	Loss: 2.894e-01 (6.521e-01)	Semantic loss: 1.845e-01 (4.300e-01)	Center loss: 6.804e-02 (1.286e-01)	Offset loss: 3.687e-02 (9.361e-02)	
+[07/13 17:56:06 segmentation]: [83900/90000] LR: 0.0000044	Time: 1.169s (1.538s)	Data: 0.833s (1.202s)	Loss: 4.754e-01 (6.519e-01)	Semantic loss: 2.817e-01 (4.300e-01)	Center loss: 1.228e-01 (1.284e-01)	Offset loss: 7.089e-02 (9.352e-02)	
+[07/13 17:56:28 segmentation]: [83920/90000] LR: 0.0000044	Time: 0.914s (1.535s)	Data: 0.578s (1.199s)	Loss: 4.058e-01 (6.515e-01)	Semantic loss: 1.756e-01 (4.293e-01)	Center loss: 2.047e-01 (1.286e-01)	Offset loss: 2.547e-02 (9.351e-02)	
+[07/13 17:56:48 segmentation]: [83940/90000] LR: 0.0000044	Time: 0.734s (1.532s)	Data: 0.389s (1.196s)	Loss: 4.470e-01 (6.521e-01)	Semantic loss: 3.085e-01 (4.297e-01)	Center loss: 5.285e-02 (1.288e-01)	Offset loss: 8.563e-02 (9.364e-02)	
+[07/13 17:57:08 segmentation]: [83960/90000] LR: 0.0000044	Time: 0.977s (1.529s)	Data: 0.637s (1.193s)	Loss: 3.077e-01 (6.517e-01)	Semantic loss: 1.876e-01 (4.295e-01)	Center loss: 5.449e-02 (1.286e-01)	Offset loss: 6.565e-02 (9.364e-02)	
+[07/13 17:57:31 segmentation]: [83980/90000] LR: 0.0000044	Time: 1.045s (1.527s)	Data: 0.677s (1.191s)	Loss: 7.175e-01 (6.525e-01)	Semantic loss: 5.270e-01 (4.300e-01)	Center loss: 1.399e-01 (1.288e-01)	Offset loss: 5.058e-02 (9.374e-02)	
+[07/13 17:57:50 segmentation]: [84000/90000] LR: 0.0000044	Time: 1.016s (1.524s)	Data: 0.677s (1.188s)	Loss: 5.167e-01 (6.528e-01)	Semantic loss: 4.073e-01 (4.301e-01)	Center loss: 7.075e-02 (1.290e-01)	Offset loss: 3.858e-02 (9.365e-02)	
+[07/13 17:58:13 segmentation]: [84020/90000] LR: 0.0000044	Time: 0.855s (1.521s)	Data: 0.519s (1.185s)	Loss: 4.086e-01 (6.529e-01)	Semantic loss: 2.093e-01 (4.302e-01)	Center loss: 1.572e-01 (1.292e-01)	Offset loss: 4.205e-02 (9.353e-02)	
+[07/13 17:58:33 segmentation]: [84040/90000] LR: 0.0000043	Time: 0.859s (1.519s)	Data: 0.515s (1.183s)	Loss: 4.035e-01 (6.523e-01)	Semantic loss: 3.230e-01 (4.297e-01)	Center loss: 2.996e-02 (1.293e-01)	Offset loss: 5.058e-02 (9.335e-02)	
+[07/13 17:58:52 segmentation]: [84060/90000] LR: 0.0000043	Time: 0.810s (1.516s)	Data: 0.451s (1.180s)	Loss: 2.459e-01 (6.522e-01)	Semantic loss: 1.722e-01 (4.296e-01)	Center loss: 2.573e-02 (1.292e-01)	Offset loss: 4.799e-02 (9.345e-02)	
+[07/13 17:59:13 segmentation]: [84080/90000] LR: 0.0000043	Time: 1.257s (1.514s)	Data: 0.902s (1.178s)	Loss: 7.085e-01 (6.522e-01)	Semantic loss: 4.173e-01 (4.295e-01)	Center loss: 2.524e-01 (1.292e-01)	Offset loss: 3.879e-02 (9.351e-02)	
+[07/13 17:59:33 segmentation]: [84100/90000] LR: 0.0000043	Time: 1.267s (1.511s)	Data: 0.924s (1.175s)	Loss: 3.968e-01 (6.516e-01)	Semantic loss: 2.083e-01 (4.293e-01)	Center loss: 9.886e-02 (1.290e-01)	Offset loss: 8.964e-02 (9.334e-02)	
+[07/13 17:59:54 segmentation]: [84120/90000] LR: 0.0000043	Time: 0.848s (1.508s)	Data: 0.510s (1.172s)	Loss: 5.378e-01 (6.517e-01)	Semantic loss: 4.001e-01 (4.295e-01)	Center loss: 1.019e-01 (1.289e-01)	Offset loss: 3.583e-02 (9.331e-02)	
+[07/13 18:00:13 segmentation]: [84140/90000] LR: 0.0000043	Time: 1.054s (1.506s)	Data: 0.717s (1.169s)	Loss: 7.109e-01 (6.519e-01)	Semantic loss: 4.205e-01 (4.294e-01)	Center loss: 2.442e-01 (1.289e-01)	Offset loss: 4.628e-02 (9.365e-02)	
+[07/13 18:00:33 segmentation]: [84160/90000] LR: 0.0000043	Time: 1.033s (1.503s)	Data: 0.695s (1.167s)	Loss: 9.335e-01 (6.515e-01)	Semantic loss: 6.431e-01 (4.291e-01)	Center loss: 1.483e-01 (1.289e-01)	Offset loss: 1.422e-01 (9.356e-02)	
+[07/13 18:00:52 segmentation]: [84180/90000] LR: 0.0000043	Time: 0.711s (1.500s)	Data: 0.370s (1.164s)	Loss: 1.250e+00 (6.511e-01)	Semantic loss: 3.865e-01 (4.287e-01)	Center loss: 2.344e-02 (1.288e-01)	Offset loss: 8.403e-01 (9.360e-02)	
+[07/13 18:01:12 segmentation]: [84200/90000] LR: 0.0000042	Time: 0.965s (1.498s)	Data: 0.632s (1.162s)	Loss: 6.562e-01 (6.507e-01)	Semantic loss: 5.120e-01 (4.283e-01)	Center loss: 1.159e-01 (1.289e-01)	Offset loss: 2.838e-02 (9.344e-02)	
+[07/13 18:01:32 segmentation]: [84220/90000] LR: 0.0000042	Time: 1.131s (1.495s)	Data: 0.792s (1.158s)	Loss: 7.721e-01 (6.504e-01)	Semantic loss: 5.247e-01 (4.283e-01)	Center loss: 1.928e-01 (1.288e-01)	Offset loss: 5.460e-02 (9.335e-02)	
+[07/13 18:01:53 segmentation]: [84240/90000] LR: 0.0000042	Time: 1.015s (1.493s)	Data: 0.665s (1.156s)	Loss: 8.347e-01 (6.511e-01)	Semantic loss: 5.900e-01 (4.284e-01)	Center loss: 1.218e-01 (1.289e-01)	Offset loss: 1.229e-01 (9.380e-02)	
+[07/13 18:02:11 segmentation]: [84260/90000] LR: 0.0000042	Time: 0.740s (1.490s)	Data: 0.392s (1.153s)	Loss: 1.867e-01 (6.502e-01)	Semantic loss: 1.431e-01 (4.278e-01)	Center loss: 1.497e-02 (1.288e-01)	Offset loss: 2.867e-02 (9.362e-02)	
+[07/13 18:02:30 segmentation]: [84280/90000] LR: 0.0000042	Time: 1.279s (1.487s)	Data: 0.943s (1.151s)	Loss: 1.307e+00 (6.509e-01)	Semantic loss: 6.880e-01 (4.283e-01)	Center loss: 3.722e-01 (1.288e-01)	Offset loss: 2.466e-01 (9.378e-02)	
+[07/13 18:02:48 segmentation]: [84300/90000] LR: 0.0000042	Time: 1.098s (1.484s)	Data: 0.757s (1.148s)	Loss: 3.872e-01 (6.506e-01)	Semantic loss: 2.833e-01 (4.282e-01)	Center loss: 4.984e-02 (1.287e-01)	Offset loss: 5.406e-02 (9.375e-02)	
+[07/13 18:03:12 segmentation]: [84320/90000] LR: 0.0000042	Time: 0.922s (1.482s)	Data: 0.579s (1.146s)	Loss: 3.983e-01 (6.506e-01)	Semantic loss: 2.714e-01 (4.279e-01)	Center loss: 1.078e-01 (1.290e-01)	Offset loss: 1.902e-02 (9.363e-02)	
+[07/13 18:03:32 segmentation]: [84340/90000] LR: 0.0000041	Time: 1.399s (1.480s)	Data: 1.057s (1.143s)	Loss: 8.199e-01 (6.509e-01)	Semantic loss: 5.503e-01 (4.283e-01)	Center loss: 1.893e-01 (1.290e-01)	Offset loss: 8.025e-02 (9.359e-02)	
+[07/13 18:03:52 segmentation]: [84360/90000] LR: 0.0000041	Time: 1.156s (1.478s)	Data: 0.816s (1.141s)	Loss: 8.896e-01 (6.505e-01)	Semantic loss: 4.771e-01 (4.280e-01)	Center loss: 1.173e-01 (1.289e-01)	Offset loss: 2.951e-01 (9.359e-02)	
+[07/13 18:04:13 segmentation]: [84380/90000] LR: 0.0000041	Time: 1.042s (1.476s)	Data: 0.679s (1.139s)	Loss: 8.238e-01 (6.507e-01)	Semantic loss: 6.544e-01 (4.282e-01)	Center loss: 1.236e-01 (1.289e-01)	Offset loss: 4.583e-02 (9.363e-02)	
+[07/13 18:04:32 segmentation]: [84400/90000] LR: 0.0000041	Time: 0.976s (1.474s)	Data: 0.635s (1.137s)	Loss: 4.990e-01 (6.511e-01)	Semantic loss: 2.241e-01 (4.285e-01)	Center loss: 1.623e-01 (1.289e-01)	Offset loss: 1.126e-01 (9.372e-02)	
+[07/13 18:04:55 segmentation]: [84420/90000] LR: 0.0000041	Time: 0.986s (1.471s)	Data: 0.636s (1.135s)	Loss: 5.354e-01 (6.512e-01)	Semantic loss: 3.519e-01 (4.284e-01)	Center loss: 1.246e-01 (1.292e-01)	Offset loss: 5.888e-02 (9.357e-02)	
+[07/13 18:05:15 segmentation]: [84440/90000] LR: 0.0000041	Time: 0.769s (1.469s)	Data: 0.430s (1.132s)	Loss: 7.636e-01 (6.512e-01)	Semantic loss: 7.060e-01 (4.285e-01)	Center loss: 1.465e-02 (1.293e-01)	Offset loss: 4.296e-02 (9.344e-02)	
+[07/13 18:05:33 segmentation]: [84460/90000] LR: 0.0000041	Time: 0.827s (1.467s)	Data: 0.488s (1.130s)	Loss: 7.400e-01 (6.507e-01)	Semantic loss: 5.421e-01 (4.283e-01)	Center loss: 1.223e-01 (1.291e-01)	Offset loss: 7.561e-02 (9.330e-02)	
+[07/13 18:05:55 segmentation]: [84480/90000] LR: 0.0000041	Time: 1.287s (1.465s)	Data: 0.948s (1.128s)	Loss: 9.086e-01 (6.512e-01)	Semantic loss: 5.678e-01 (4.285e-01)	Center loss: 2.232e-01 (1.291e-01)	Offset loss: 1.176e-01 (9.364e-02)	
+[07/13 18:06:15 segmentation]: [84500/90000] LR: 0.0000040	Time: 0.863s (1.463s)	Data: 0.524s (1.126s)	Loss: 4.131e-01 (6.512e-01)	Semantic loss: 2.723e-01 (4.284e-01)	Center loss: 8.328e-02 (1.291e-01)	Offset loss: 5.745e-02 (9.365e-02)	
+[07/13 18:06:38 segmentation]: [84520/90000] LR: 0.0000040	Time: 1.084s (1.461s)	Data: 0.747s (1.124s)	Loss: 5.139e-01 (6.512e-01)	Semantic loss: 2.509e-01 (4.285e-01)	Center loss: 2.145e-01 (1.292e-01)	Offset loss: 4.845e-02 (9.353e-02)	
+[07/13 18:06:58 segmentation]: [84540/90000] LR: 0.0000040	Time: 0.974s (1.459s)	Data: 0.634s (1.122s)	Loss: 5.056e-01 (6.515e-01)	Semantic loss: 3.720e-01 (4.288e-01)	Center loss: 8.963e-02 (1.292e-01)	Offset loss: 4.393e-02 (9.355e-02)	
+[07/13 18:07:18 segmentation]: [84560/90000] LR: 0.0000040	Time: 1.062s (1.457s)	Data: 0.722s (1.120s)	Loss: 4.270e-01 (6.512e-01)	Semantic loss: 2.647e-01 (4.286e-01)	Center loss: 1.227e-01 (1.291e-01)	Offset loss: 3.964e-02 (9.350e-02)	
+[07/13 18:07:37 segmentation]: [84580/90000] LR: 0.0000040	Time: 1.087s (1.454s)	Data: 0.746s (1.118s)	Loss: 2.650e-01 (6.510e-01)	Semantic loss: 1.368e-01 (4.286e-01)	Center loss: 7.730e-02 (1.289e-01)	Offset loss: 5.089e-02 (9.350e-02)	
+[07/13 18:07:56 segmentation]: [84600/90000] LR: 0.0000040	Time: 1.348s (1.452s)	Data: 0.990s (1.115s)	Loss: 1.205e+00 (6.507e-01)	Semantic loss: 7.939e-01 (4.285e-01)	Center loss: 2.679e-01 (1.289e-01)	Offset loss: 1.434e-01 (9.338e-02)	
+[07/13 18:08:19 segmentation]: [84620/90000] LR: 0.0000040	Time: 1.194s (1.450s)	Data: 0.858s (1.113s)	Loss: 2.618e-01 (6.507e-01)	Semantic loss: 9.283e-02 (4.286e-01)	Center loss: 1.348e-01 (1.288e-01)	Offset loss: 3.417e-02 (9.337e-02)	
+[07/13 18:08:41 segmentation]: [84640/90000] LR: 0.0000039	Time: 1.184s (1.448s)	Data: 0.845s (1.111s)	Loss: 6.854e-01 (6.509e-01)	Semantic loss: 4.187e-01 (4.286e-01)	Center loss: 2.049e-01 (1.289e-01)	Offset loss: 6.180e-02 (9.342e-02)	
+[07/13 18:09:01 segmentation]: [84660/90000] LR: 0.0000039	Time: 0.778s (1.446s)	Data: 0.436s (1.109s)	Loss: 3.683e-01 (6.511e-01)	Semantic loss: 3.283e-01 (4.288e-01)	Center loss: 1.328e-02 (1.289e-01)	Offset loss: 2.672e-02 (9.336e-02)	
+[07/13 18:09:20 segmentation]: [84680/90000] LR: 0.0000039	Time: 0.774s (1.444s)	Data: 0.437s (1.107s)	Loss: 6.044e-01 (6.510e-01)	Semantic loss: 5.443e-01 (4.286e-01)	Center loss: 3.006e-02 (1.288e-01)	Offset loss: 3.004e-02 (9.356e-02)	
+[07/13 18:09:40 segmentation]: [84700/90000] LR: 0.0000039	Time: 0.853s (1.442s)	Data: 0.513s (1.105s)	Loss: 3.983e-01 (6.509e-01)	Semantic loss: 2.758e-01 (4.285e-01)	Center loss: 6.826e-02 (1.289e-01)	Offset loss: 5.420e-02 (9.359e-02)	
+[07/13 18:10:02 segmentation]: [84720/90000] LR: 0.0000039	Time: 1.389s (1.440s)	Data: 1.034s (1.103s)	Loss: 7.608e-01 (6.515e-01)	Semantic loss: 4.406e-01 (4.290e-01)	Center loss: 2.533e-01 (1.289e-01)	Offset loss: 6.690e-02 (9.364e-02)	
+[07/13 18:10:23 segmentation]: [84740/90000] LR: 0.0000039	Time: 1.273s (1.438s)	Data: 0.933s (1.101s)	Loss: 6.375e-01 (6.510e-01)	Semantic loss: 3.781e-01 (4.287e-01)	Center loss: 2.174e-01 (1.289e-01)	Offset loss: 4.198e-02 (9.342e-02)	
+[07/13 18:10:41 segmentation]: [84760/90000] LR: 0.0000039	Time: 0.917s (1.436s)	Data: 0.574s (1.099s)	Loss: 4.749e-01 (6.504e-01)	Semantic loss: 3.357e-01 (4.282e-01)	Center loss: 7.664e-02 (1.288e-01)	Offset loss: 6.256e-02 (9.335e-02)	
+[07/13 18:11:00 segmentation]: [84780/90000] LR: 0.0000039	Time: 1.169s (1.434s)	Data: 0.823s (1.097s)	Loss: 4.393e-01 (6.501e-01)	Semantic loss: 3.725e-01 (4.279e-01)	Center loss: 3.678e-02 (1.289e-01)	Offset loss: 3.002e-02 (9.330e-02)	
+[07/13 18:11:18 segmentation]: [84800/90000] LR: 0.0000038	Time: 0.840s (1.432s)	Data: 0.499s (1.095s)	Loss: 1.831e-01 (6.496e-01)	Semantic loss: 1.075e-01 (4.275e-01)	Center loss: 4.746e-02 (1.290e-01)	Offset loss: 2.814e-02 (9.314e-02)	
+[07/13 18:11:38 segmentation]: [84820/90000] LR: 0.0000038	Time: 0.871s (1.429s)	Data: 0.527s (1.092s)	Loss: 6.259e-01 (6.498e-01)	Semantic loss: 5.492e-01 (4.279e-01)	Center loss: 5.188e-02 (1.288e-01)	Offset loss: 2.481e-02 (9.307e-02)	
+[07/13 18:11:58 segmentation]: [84840/90000] LR: 0.0000038	Time: 1.133s (1.427s)	Data: 0.794s (1.090s)	Loss: 6.761e-01 (6.505e-01)	Semantic loss: 4.547e-01 (4.284e-01)	Center loss: 1.753e-01 (1.289e-01)	Offset loss: 4.612e-02 (9.327e-02)	
+[07/13 18:12:19 segmentation]: [84860/90000] LR: 0.0000038	Time: 1.124s (1.426s)	Data: 0.774s (1.089s)	Loss: 5.404e-01 (6.504e-01)	Semantic loss: 3.464e-01 (4.284e-01)	Center loss: 1.244e-01 (1.289e-01)	Offset loss: 6.969e-02 (9.311e-02)	
+[07/13 18:12:39 segmentation]: [84880/90000] LR: 0.0000038	Time: 0.944s (1.424s)	Data: 0.611s (1.087s)	Loss: 5.936e-01 (6.506e-01)	Semantic loss: 4.807e-01 (4.286e-01)	Center loss: 6.806e-02 (1.289e-01)	Offset loss: 4.479e-02 (9.314e-02)	
+[07/13 18:12:57 segmentation]: [84900/90000] LR: 0.0000038	Time: 1.198s (1.422s)	Data: 0.863s (1.085s)	Loss: 1.177e+00 (6.506e-01)	Semantic loss: 4.886e-01 (4.284e-01)	Center loss: 6.198e-01 (1.289e-01)	Offset loss: 6.893e-02 (9.342e-02)	
+[07/13 18:13:18 segmentation]: [84920/90000] LR: 0.0000038	Time: 1.075s (1.420s)	Data: 0.740s (1.083s)	Loss: 1.402e+00 (6.505e-01)	Semantic loss: 1.084e+00 (4.283e-01)	Center loss: 1.599e-01 (1.289e-01)	Offset loss: 1.587e-01 (9.340e-02)	
+[07/13 18:13:38 segmentation]: [84940/90000] LR: 0.0000037	Time: 0.839s (1.418s)	Data: 0.497s (1.081s)	Loss: 5.661e-01 (6.505e-01)	Semantic loss: 3.582e-01 (4.284e-01)	Center loss: 1.033e-01 (1.287e-01)	Offset loss: 1.046e-01 (9.344e-02)	
+[07/13 18:13:57 segmentation]: [84960/90000] LR: 0.0000037	Time: 0.904s (1.416s)	Data: 0.568s (1.079s)	Loss: 4.279e-01 (6.506e-01)	Semantic loss: 3.052e-01 (4.283e-01)	Center loss: 4.767e-02 (1.288e-01)	Offset loss: 7.498e-02 (9.351e-02)	
+[07/13 18:14:18 segmentation]: [84980/90000] LR: 0.0000037	Time: 1.022s (1.415s)	Data: 0.682s (1.077s)	Loss: 6.594e-01 (6.500e-01)	Semantic loss: 5.357e-01 (4.277e-01)	Center loss: 8.487e-02 (1.288e-01)	Offset loss: 3.885e-02 (9.353e-02)	
+[07/13 18:14:37 segmentation]: [85000/90000] LR: 0.0000037	Time: 0.891s (1.413s)	Data: 0.550s (1.076s)	Loss: 8.179e-01 (6.500e-01)	Semantic loss: 4.667e-01 (4.275e-01)	Center loss: 1.814e-01 (1.290e-01)	Offset loss: 1.699e-01 (9.346e-02)	
+[07/13 18:15:04 segmentation]: [85020/90000] LR: 0.0000037	Time: 0.731s (1.411s)	Data: 0.392s (1.074s)	Loss: 2.604e-01 (6.500e-01)	Semantic loss: 1.427e-01 (4.275e-01)	Center loss: 6.942e-02 (1.292e-01)	Offset loss: 4.825e-02 (9.334e-02)	
+[07/13 18:15:23 segmentation]: [85040/90000] LR: 0.0000037	Time: 0.875s (1.410s)	Data: 0.534s (1.072s)	Loss: 1.138e+00 (6.497e-01)	Semantic loss: 6.319e-01 (4.272e-01)	Center loss: 7.124e-02 (1.292e-01)	Offset loss: 4.353e-01 (9.324e-02)	
+[07/13 18:15:42 segmentation]: [85060/90000] LR: 0.0000037	Time: 1.115s (1.408s)	Data: 0.778s (1.070s)	Loss: 5.321e-01 (6.494e-01)	Semantic loss: 3.148e-01 (4.271e-01)	Center loss: 1.727e-01 (1.290e-01)	Offset loss: 4.466e-02 (9.329e-02)	
+[07/13 18:16:01 segmentation]: [85080/90000] LR: 0.0000037	Time: 0.915s (1.406s)	Data: 0.555s (1.068s)	Loss: 7.273e-01 (6.498e-01)	Semantic loss: 5.605e-01 (4.276e-01)	Center loss: 7.976e-02 (1.290e-01)	Offset loss: 8.702e-02 (9.328e-02)	
+[07/13 18:16:22 segmentation]: [85100/90000] LR: 0.0000036	Time: 0.952s (1.405s)	Data: 0.608s (1.067s)	Loss: 2.618e-01 (6.496e-01)	Semantic loss: 2.029e-01 (4.275e-01)	Center loss: 2.388e-02 (1.289e-01)	Offset loss: 3.499e-02 (9.318e-02)	
+[07/13 18:16:44 segmentation]: [85120/90000] LR: 0.0000036	Time: 0.989s (1.402s)	Data: 0.653s (1.065s)	Loss: 6.289e-01 (6.498e-01)	Semantic loss: 2.960e-01 (4.275e-01)	Center loss: 2.682e-01 (1.289e-01)	Offset loss: 6.466e-02 (9.343e-02)	
+[07/13 18:17:03 segmentation]: [85140/90000] LR: 0.0000036	Time: 0.865s (1.401s)	Data: 0.526s (1.063s)	Loss: 2.899e-01 (6.497e-01)	Semantic loss: 2.145e-01 (4.274e-01)	Center loss: 3.919e-02 (1.289e-01)	Offset loss: 3.621e-02 (9.348e-02)	
+[07/13 18:17:23 segmentation]: [85160/90000] LR: 0.0000036	Time: 0.999s (1.399s)	Data: 0.655s (1.062s)	Loss: 2.965e-01 (6.496e-01)	Semantic loss: 1.439e-01 (4.273e-01)	Center loss: 1.241e-01 (1.289e-01)	Offset loss: 2.851e-02 (9.340e-02)	
+[07/13 18:17:42 segmentation]: [85180/90000] LR: 0.0000036	Time: 1.059s (1.398s)	Data: 0.716s (1.060s)	Loss: 4.088e-01 (6.493e-01)	Semantic loss: 1.413e-01 (4.268e-01)	Center loss: 2.412e-01 (1.289e-01)	Offset loss: 2.630e-02 (9.351e-02)	
+[07/13 18:18:02 segmentation]: [85200/90000] LR: 0.0000036	Time: 1.027s (1.396s)	Data: 0.673s (1.058s)	Loss: 2.242e+00 (6.499e-01)	Semantic loss: 8.541e-01 (4.273e-01)	Center loss: 1.061e-01 (1.289e-01)	Offset loss: 1.282e+00 (9.374e-02)	
+[07/13 18:18:25 segmentation]: [85220/90000] LR: 0.0000036	Time: 1.735s (1.394s)	Data: 1.367s (1.057s)	Loss: 7.330e-01 (6.508e-01)	Semantic loss: 4.734e-01 (4.276e-01)	Center loss: 2.084e-01 (1.289e-01)	Offset loss: 5.124e-02 (9.444e-02)	
+[07/13 18:18:44 segmentation]: [85240/90000] LR: 0.0000035	Time: 0.917s (1.393s)	Data: 0.579s (1.055s)	Loss: 5.783e-01 (6.507e-01)	Semantic loss: 4.030e-01 (4.275e-01)	Center loss: 1.419e-01 (1.288e-01)	Offset loss: 3.343e-02 (9.444e-02)	
+[07/13 18:19:02 segmentation]: [85260/90000] LR: 0.0000035	Time: 0.951s (1.391s)	Data: 0.607s (1.053s)	Loss: 3.789e-01 (6.503e-01)	Semantic loss: 1.816e-01 (4.273e-01)	Center loss: 1.698e-01 (1.286e-01)	Offset loss: 2.750e-02 (9.438e-02)	
+[07/13 18:19:22 segmentation]: [85280/90000] LR: 0.0000035	Time: 0.870s (1.389s)	Data: 0.527s (1.052s)	Loss: 5.117e-01 (6.506e-01)	Semantic loss: 3.098e-01 (4.272e-01)	Center loss: 1.082e-01 (1.288e-01)	Offset loss: 9.373e-02 (9.467e-02)	
+[07/13 18:19:42 segmentation]: [85300/90000] LR: 0.0000035	Time: 0.882s (1.388s)	Data: 0.541s (1.050s)	Loss: 2.565e-01 (6.506e-01)	Semantic loss: 1.398e-01 (4.273e-01)	Center loss: 8.817e-02 (1.287e-01)	Offset loss: 2.859e-02 (9.457e-02)	
+[07/13 18:20:04 segmentation]: [85320/90000] LR: 0.0000035	Time: 1.099s (1.386s)	Data: 0.760s (1.048s)	Loss: 5.986e-01 (6.506e-01)	Semantic loss: 4.116e-01 (4.272e-01)	Center loss: 1.434e-01 (1.287e-01)	Offset loss: 4.364e-02 (9.463e-02)	
+[07/13 18:20:23 segmentation]: [85340/90000] LR: 0.0000035	Time: 0.892s (1.384s)	Data: 0.552s (1.047s)	Loss: 6.988e-01 (6.504e-01)	Semantic loss: 5.177e-01 (4.271e-01)	Center loss: 9.252e-02 (1.288e-01)	Offset loss: 8.854e-02 (9.450e-02)	
+[07/13 18:20:44 segmentation]: [85360/90000] LR: 0.0000035	Time: 0.982s (1.383s)	Data: 0.637s (1.046s)	Loss: 4.070e-01 (6.507e-01)	Semantic loss: 3.142e-01 (4.273e-01)	Center loss: 4.441e-02 (1.288e-01)	Offset loss: 4.835e-02 (9.454e-02)	
+[07/13 18:21:05 segmentation]: [85380/90000] LR: 0.0000035	Time: 1.410s (1.382s)	Data: 1.073s (1.044s)	Loss: 1.347e+00 (6.508e-01)	Semantic loss: 7.725e-01 (4.273e-01)	Center loss: 3.620e-01 (1.290e-01)	Offset loss: 2.126e-01 (9.454e-02)	
+[07/13 18:21:24 segmentation]: [85400/90000] LR: 0.0000034	Time: 0.784s (1.380s)	Data: 0.434s (1.043s)	Loss: 3.814e-01 (6.506e-01)	Semantic loss: 3.210e-01 (4.273e-01)	Center loss: 3.501e-02 (1.289e-01)	Offset loss: 2.543e-02 (9.449e-02)	
+[07/13 18:21:46 segmentation]: [85420/90000] LR: 0.0000034	Time: 1.023s (1.379s)	Data: 0.684s (1.041s)	Loss: 8.281e-01 (6.506e-01)	Semantic loss: 5.713e-01 (4.273e-01)	Center loss: 1.419e-01 (1.288e-01)	Offset loss: 1.149e-01 (9.445e-02)	
+[07/13 18:22:07 segmentation]: [85440/90000] LR: 0.0000034	Time: 0.921s (1.377s)	Data: 0.580s (1.040s)	Loss: 7.528e-01 (6.506e-01)	Semantic loss: 6.304e-01 (4.272e-01)	Center loss: 8.138e-02 (1.290e-01)	Offset loss: 4.095e-02 (9.437e-02)	
+[07/13 18:22:28 segmentation]: [85460/90000] LR: 0.0000034	Time: 0.726s (1.376s)	Data: 0.382s (1.038s)	Loss: 3.216e-01 (6.507e-01)	Semantic loss: 2.917e-01 (4.274e-01)	Center loss: 2.049e-03 (1.291e-01)	Offset loss: 2.782e-02 (9.426e-02)	
+[07/13 18:22:51 segmentation]: [85480/90000] LR: 0.0000034	Time: 1.081s (1.375s)	Data: 0.722s (1.037s)	Loss: 7.982e-01 (6.508e-01)	Semantic loss: 4.393e-01 (4.275e-01)	Center loss: 1.934e-01 (1.291e-01)	Offset loss: 1.655e-01 (9.415e-02)	
+[07/13 18:23:12 segmentation]: [85500/90000] LR: 0.0000034	Time: 0.944s (1.374s)	Data: 0.597s (1.036s)	Loss: 1.516e+00 (6.512e-01)	Semantic loss: 4.673e-01 (4.278e-01)	Center loss: 7.397e-02 (1.292e-01)	Offset loss: 9.744e-01 (9.430e-02)	
+[07/13 18:23:35 segmentation]: [85520/90000] LR: 0.0000034	Time: 1.322s (1.373s)	Data: 0.986s (1.035s)	Loss: 9.283e-01 (6.513e-01)	Semantic loss: 3.803e-01 (4.278e-01)	Center loss: 5.082e-01 (1.293e-01)	Offset loss: 3.985e-02 (9.429e-02)	
+[07/13 18:23:55 segmentation]: [85540/90000] LR: 0.0000033	Time: 0.854s (1.371s)	Data: 0.515s (1.033s)	Loss: 4.875e-01 (6.515e-01)	Semantic loss: 2.891e-01 (4.280e-01)	Center loss: 1.777e-01 (1.292e-01)	Offset loss: 2.067e-02 (9.427e-02)	
+[07/13 18:24:16 segmentation]: [85560/90000] LR: 0.0000033	Time: 0.930s (1.370s)	Data: 0.590s (1.032s)	Loss: 4.672e-01 (6.514e-01)	Semantic loss: 3.334e-01 (4.279e-01)	Center loss: 7.932e-02 (1.293e-01)	Offset loss: 5.440e-02 (9.421e-02)	
+[07/13 18:24:35 segmentation]: [85580/90000] LR: 0.0000033	Time: 1.050s (1.369s)	Data: 0.678s (1.031s)	Loss: 3.042e-01 (6.511e-01)	Semantic loss: 1.427e-01 (4.277e-01)	Center loss: 1.313e-01 (1.293e-01)	Offset loss: 3.022e-02 (9.407e-02)	
+[07/13 18:24:57 segmentation]: [85600/90000] LR: 0.0000033	Time: 1.046s (1.368s)	Data: 0.710s (1.030s)	Loss: 5.440e-01 (6.511e-01)	Semantic loss: 3.254e-01 (4.276e-01)	Center loss: 1.918e-01 (1.296e-01)	Offset loss: 2.686e-02 (9.393e-02)	
+[07/13 18:25:18 segmentation]: [85620/90000] LR: 0.0000033	Time: 1.060s (1.366s)	Data: 0.713s (1.028s)	Loss: 5.220e-01 (6.511e-01)	Semantic loss: 1.929e-01 (4.276e-01)	Center loss: 1.322e-01 (1.296e-01)	Offset loss: 1.969e-01 (9.388e-02)	
+[07/13 18:25:38 segmentation]: [85640/90000] LR: 0.0000033	Time: 1.031s (1.365s)	Data: 0.688s (1.027s)	Loss: 2.649e-01 (6.509e-01)	Semantic loss: 1.556e-01 (4.275e-01)	Center loss: 5.491e-02 (1.295e-01)	Offset loss: 5.445e-02 (9.387e-02)	
+[07/13 18:25:57 segmentation]: [85660/90000] LR: 0.0000033	Time: 0.983s (1.363s)	Data: 0.647s (1.025s)	Loss: 6.329e-01 (6.510e-01)	Semantic loss: 5.646e-01 (4.278e-01)	Center loss: 3.560e-02 (1.294e-01)	Offset loss: 3.273e-02 (9.383e-02)	
+[07/13 18:26:16 segmentation]: [85680/90000] LR: 0.0000033	Time: 0.791s (1.362s)	Data: 0.445s (1.024s)	Loss: 2.832e-01 (6.506e-01)	Semantic loss: 1.997e-01 (4.277e-01)	Center loss: 3.178e-02 (1.292e-01)	Offset loss: 5.176e-02 (9.376e-02)	
+[07/13 18:26:34 segmentation]: [85700/90000] LR: 0.0000032	Time: 0.835s (1.360s)	Data: 0.497s (1.022s)	Loss: 4.889e+00 (6.522e-01)	Semantic loss: 4.768e+00 (4.290e-01)	Center loss: 2.514e-02 (1.290e-01)	Offset loss: 9.638e-02 (9.418e-02)	
+[07/13 18:26:57 segmentation]: [85720/90000] LR: 0.0000032	Time: 1.161s (1.359s)	Data: 0.820s (1.021s)	Loss: 1.028e+00 (6.523e-01)	Semantic loss: 2.967e-01 (4.292e-01)	Center loss: 6.355e-01 (1.289e-01)	Offset loss: 9.584e-02 (9.410e-02)	
+[07/13 18:27:17 segmentation]: [85740/90000] LR: 0.0000032	Time: 0.999s (1.358s)	Data: 0.660s (1.019s)	Loss: 7.618e-01 (6.523e-01)	Semantic loss: 6.108e-01 (4.294e-01)	Center loss: 1.562e-02 (1.288e-01)	Offset loss: 1.355e-01 (9.409e-02)	
+[07/13 18:27:38 segmentation]: [85760/90000] LR: 0.0000032	Time: 0.819s (1.356s)	Data: 0.480s (1.018s)	Loss: 9.033e-01 (6.527e-01)	Semantic loss: 5.214e-01 (4.299e-01)	Center loss: 8.035e-02 (1.288e-01)	Offset loss: 3.016e-01 (9.407e-02)	
+[07/13 18:27:59 segmentation]: [85780/90000] LR: 0.0000032	Time: 1.343s (1.355s)	Data: 0.999s (1.017s)	Loss: 9.907e-01 (6.541e-01)	Semantic loss: 6.284e-01 (4.307e-01)	Center loss: 3.043e-01 (1.289e-01)	Offset loss: 5.799e-02 (9.451e-02)	
+[07/13 18:28:19 segmentation]: [85800/90000] LR: 0.0000032	Time: 0.865s (1.354s)	Data: 0.529s (1.016s)	Loss: 4.230e-01 (6.539e-01)	Semantic loss: 2.189e-01 (4.306e-01)	Center loss: 1.856e-01 (1.290e-01)	Offset loss: 1.837e-02 (9.434e-02)	
+[07/13 18:28:41 segmentation]: [85820/90000] LR: 0.0000032	Time: 0.916s (1.353s)	Data: 0.578s (1.014s)	Loss: 1.645e-01 (6.540e-01)	Semantic loss: 9.218e-02 (4.306e-01)	Center loss: 2.443e-03 (1.290e-01)	Offset loss: 6.986e-02 (9.441e-02)	
+[07/13 18:29:02 segmentation]: [85840/90000] LR: 0.0000031	Time: 0.945s (1.352s)	Data: 0.601s (1.013s)	Loss: 2.653e-01 (6.533e-01)	Semantic loss: 1.868e-01 (4.302e-01)	Center loss: 4.349e-02 (1.289e-01)	Offset loss: 3.501e-02 (9.430e-02)	
+[07/13 18:29:22 segmentation]: [85860/90000] LR: 0.0000031	Time: 0.911s (1.350s)	Data: 0.575s (1.012s)	Loss: 4.270e-01 (6.531e-01)	Semantic loss: 3.022e-01 (4.301e-01)	Center loss: 9.957e-02 (1.289e-01)	Offset loss: 2.526e-02 (9.417e-02)	
+[07/13 18:29:42 segmentation]: [85880/90000] LR: 0.0000031	Time: 1.240s (1.349s)	Data: 0.895s (1.011s)	Loss: 6.504e-01 (6.532e-01)	Semantic loss: 4.641e-01 (4.299e-01)	Center loss: 1.229e-01 (1.290e-01)	Offset loss: 6.345e-02 (9.425e-02)	
+[07/13 18:30:00 segmentation]: [85900/90000] LR: 0.0000031	Time: 0.848s (1.348s)	Data: 0.505s (1.009s)	Loss: 4.377e-01 (6.532e-01)	Semantic loss: 1.754e-01 (4.301e-01)	Center loss: 2.157e-01 (1.288e-01)	Offset loss: 4.661e-02 (9.432e-02)	
+[07/13 18:30:24 segmentation]: [85920/90000] LR: 0.0000031	Time: 1.306s (1.347s)	Data: 0.963s (1.008s)	Loss: 8.448e-01 (6.538e-01)	Semantic loss: 4.119e-01 (4.304e-01)	Center loss: 2.686e-01 (1.289e-01)	Offset loss: 1.643e-01 (9.446e-02)	
+[07/13 18:30:46 segmentation]: [85940/90000] LR: 0.0000031	Time: 1.728s (1.346s)	Data: 1.384s (1.007s)	Loss: 5.901e-01 (6.541e-01)	Semantic loss: 2.669e-01 (4.308e-01)	Center loss: 2.855e-01 (1.289e-01)	Offset loss: 3.776e-02 (9.446e-02)	
+[07/13 18:31:09 segmentation]: [85960/90000] LR: 0.0000031	Time: 0.727s (1.345s)	Data: 0.370s (1.007s)	Loss: 1.827e-01 (6.540e-01)	Semantic loss: 1.406e-01 (4.307e-01)	Center loss: 1.686e-02 (1.288e-01)	Offset loss: 2.529e-02 (9.448e-02)	
+[07/13 18:31:32 segmentation]: [85980/90000] LR: 0.0000030	Time: 0.980s (1.344s)	Data: 0.633s (1.006s)	Loss: 5.560e-01 (6.539e-01)	Semantic loss: 1.142e-01 (4.306e-01)	Center loss: 3.650e-01 (1.288e-01)	Offset loss: 7.686e-02 (9.442e-02)	
+[07/13 18:31:53 segmentation]: [86000/90000] LR: 0.0000030	Time: 0.899s (1.343s)	Data: 0.556s (1.005s)	Loss: 6.641e-01 (6.535e-01)	Semantic loss: 4.619e-01 (4.305e-01)	Center loss: 6.580e-02 (1.287e-01)	Offset loss: 1.364e-01 (9.430e-02)	
+[07/13 18:32:17 segmentation]: [86020/90000] LR: 0.0000030	Time: 1.354s (1.342s)	Data: 1.008s (1.004s)	Loss: 5.616e-01 (6.534e-01)	Semantic loss: 2.026e-01 (4.305e-01)	Center loss: 3.240e-01 (1.287e-01)	Offset loss: 3.497e-02 (9.417e-02)	
+[07/13 18:32:38 segmentation]: [86040/90000] LR: 0.0000030	Time: 0.907s (1.341s)	Data: 0.569s (1.003s)	Loss: 5.098e-01 (6.533e-01)	Semantic loss: 4.586e-01 (4.305e-01)	Center loss: 1.809e-02 (1.287e-01)	Offset loss: 3.316e-02 (9.409e-02)	
+[07/13 18:33:02 segmentation]: [86060/90000] LR: 0.0000030	Time: 0.871s (1.341s)	Data: 0.516s (1.002s)	Loss: 2.794e-01 (6.533e-01)	Semantic loss: 1.947e-01 (4.305e-01)	Center loss: 4.223e-02 (1.287e-01)	Offset loss: 4.248e-02 (9.412e-02)	
+[07/13 18:33:23 segmentation]: [86080/90000] LR: 0.0000030	Time: 1.045s (1.340s)	Data: 0.708s (1.001s)	Loss: 7.738e-01 (6.537e-01)	Semantic loss: 5.787e-01 (4.307e-01)	Center loss: 1.256e-01 (1.287e-01)	Offset loss: 6.946e-02 (9.431e-02)	
+[07/13 18:33:44 segmentation]: [86100/90000] LR: 0.0000030	Time: 0.941s (1.339s)	Data: 0.602s (1.000s)	Loss: 3.831e-01 (6.533e-01)	Semantic loss: 1.370e-01 (4.304e-01)	Center loss: 2.118e-01 (1.287e-01)	Offset loss: 3.439e-02 (9.421e-02)	
+[07/13 18:34:07 segmentation]: [86120/90000] LR: 0.0000030	Time: 1.675s (1.338s)	Data: 1.333s (0.999s)	Loss: 1.257e+00 (6.533e-01)	Semantic loss: 7.810e-01 (4.305e-01)	Center loss: 3.921e-01 (1.287e-01)	Offset loss: 8.346e-02 (9.416e-02)	
+[07/13 18:34:30 segmentation]: [86140/90000] LR: 0.0000029	Time: 0.924s (1.337s)	Data: 0.576s (0.999s)	Loss: 1.082e+00 (6.534e-01)	Semantic loss: 6.614e-01 (4.306e-01)	Center loss: 6.087e-02 (1.286e-01)	Offset loss: 3.598e-01 (9.418e-02)	
+[07/13 18:34:55 segmentation]: [86160/90000] LR: 0.0000029	Time: 0.653s (1.337s)	Data: 0.308s (0.998s)	Loss: 2.143e-01 (6.534e-01)	Semantic loss: 2.139e-01 (4.305e-01)	Center loss: 3.893e-04 (1.288e-01)	Offset loss: 0.000e+00 (9.413e-02)	
+[07/13 18:35:19 segmentation]: [86180/90000] LR: 0.0000029	Time: 1.019s (1.336s)	Data: 0.668s (0.998s)	Loss: 2.620e-01 (6.534e-01)	Semantic loss: 1.493e-01 (4.303e-01)	Center loss: 9.830e-02 (1.287e-01)	Offset loss: 1.446e-02 (9.432e-02)	
+[07/13 18:35:41 segmentation]: [86200/90000] LR: 0.0000029	Time: 1.204s (1.336s)	Data: 0.851s (0.997s)	Loss: 7.168e-01 (6.538e-01)	Semantic loss: 5.587e-01 (4.309e-01)	Center loss: 1.168e-01 (1.286e-01)	Offset loss: 4.128e-02 (9.430e-02)	
+[07/13 18:36:05 segmentation]: [86220/90000] LR: 0.0000029	Time: 1.063s (1.334s)	Data: 0.717s (0.996s)	Loss: 9.630e-01 (6.536e-01)	Semantic loss: 8.436e-01 (4.309e-01)	Center loss: 5.701e-02 (1.285e-01)	Offset loss: 6.231e-02 (9.423e-02)	
+[07/13 18:36:26 segmentation]: [86240/90000] LR: 0.0000029	Time: 0.919s (1.334s)	Data: 0.580s (0.995s)	Loss: 4.115e-01 (6.533e-01)	Semantic loss: 3.777e-01 (4.307e-01)	Center loss: 4.029e-03 (1.284e-01)	Offset loss: 2.984e-02 (9.414e-02)	
+[07/13 18:36:49 segmentation]: [86260/90000] LR: 0.0000029	Time: 1.149s (1.333s)	Data: 0.801s (0.994s)	Loss: 6.744e-01 (6.534e-01)	Semantic loss: 2.839e-01 (4.307e-01)	Center loss: 3.428e-01 (1.285e-01)	Offset loss: 4.763e-02 (9.414e-02)	
+[07/13 18:37:12 segmentation]: [86280/90000] LR: 0.0000028	Time: 1.386s (1.332s)	Data: 1.048s (0.994s)	Loss: 1.003e+00 (6.533e-01)	Semantic loss: 4.584e-01 (4.306e-01)	Center loss: 4.480e-01 (1.285e-01)	Offset loss: 9.664e-02 (9.418e-02)	
+[07/13 18:37:35 segmentation]: [86300/90000] LR: 0.0000028	Time: 1.178s (1.332s)	Data: 0.832s (0.993s)	Loss: 5.061e-01 (6.532e-01)	Semantic loss: 3.655e-01 (4.304e-01)	Center loss: 8.264e-02 (1.285e-01)	Offset loss: 5.794e-02 (9.423e-02)	
+[07/13 18:37:59 segmentation]: [86320/90000] LR: 0.0000028	Time: 1.335s (1.331s)	Data: 0.996s (0.992s)	Loss: 1.516e+00 (6.533e-01)	Semantic loss: 1.006e+00 (4.306e-01)	Center loss: 3.081e-01 (1.285e-01)	Offset loss: 2.022e-01 (9.421e-02)	
+[07/13 18:38:20 segmentation]: [86340/90000] LR: 0.0000028	Time: 1.001s (1.330s)	Data: 0.658s (0.991s)	Loss: 3.544e-01 (6.529e-01)	Semantic loss: 2.790e-01 (4.303e-01)	Center loss: 3.485e-02 (1.285e-01)	Offset loss: 4.051e-02 (9.413e-02)	
+[07/13 18:38:41 segmentation]: [86360/90000] LR: 0.0000028	Time: 0.849s (1.329s)	Data: 0.491s (0.990s)	Loss: 5.182e-01 (6.526e-01)	Semantic loss: 4.356e-01 (4.303e-01)	Center loss: 1.400e-02 (1.283e-01)	Offset loss: 6.861e-02 (9.402e-02)	
+[07/13 18:39:06 segmentation]: [86380/90000] LR: 0.0000028	Time: 1.287s (1.329s)	Data: 0.944s (0.990s)	Loss: 9.475e-01 (6.527e-01)	Semantic loss: 4.758e-01 (4.304e-01)	Center loss: 2.354e-01 (1.283e-01)	Offset loss: 2.363e-01 (9.398e-02)	
+[07/13 18:39:29 segmentation]: [86400/90000] LR: 0.0000028	Time: 1.217s (1.328s)	Data: 0.873s (0.989s)	Loss: 5.295e-01 (6.528e-01)	Semantic loss: 3.476e-01 (4.306e-01)	Center loss: 1.344e-01 (1.283e-01)	Offset loss: 4.750e-02 (9.392e-02)	
+[07/13 18:39:53 segmentation]: [86420/90000] LR: 0.0000027	Time: 0.827s (1.327s)	Data: 0.480s (0.988s)	Loss: 6.017e-01 (6.527e-01)	Semantic loss: 5.036e-01 (4.306e-01)	Center loss: 5.955e-02 (1.283e-01)	Offset loss: 3.861e-02 (9.380e-02)	
+[07/13 18:40:15 segmentation]: [86440/90000] LR: 0.0000027	Time: 0.907s (1.326s)	Data: 0.537s (0.987s)	Loss: 4.564e-01 (6.525e-01)	Semantic loss: 3.220e-01 (4.306e-01)	Center loss: 3.717e-02 (1.281e-01)	Offset loss: 9.728e-02 (9.378e-02)	
+[07/13 18:40:37 segmentation]: [86460/90000] LR: 0.0000027	Time: 1.213s (1.326s)	Data: 0.873s (0.987s)	Loss: 6.495e-01 (6.524e-01)	Semantic loss: 3.642e-01 (4.304e-01)	Center loss: 2.163e-01 (1.282e-01)	Offset loss: 6.893e-02 (9.384e-02)	
+[07/13 18:41:00 segmentation]: [86480/90000] LR: 0.0000027	Time: 1.232s (1.325s)	Data: 0.887s (0.986s)	Loss: 1.299e+00 (6.530e-01)	Semantic loss: 1.007e+00 (4.307e-01)	Center loss: 1.551e-01 (1.282e-01)	Offset loss: 1.374e-01 (9.401e-02)	
+[07/13 18:41:23 segmentation]: [86500/90000] LR: 0.0000027	Time: 1.267s (1.325s)	Data: 0.925s (0.986s)	Loss: 6.965e-01 (6.529e-01)	Semantic loss: 5.666e-01 (4.307e-01)	Center loss: 8.496e-02 (1.282e-01)	Offset loss: 4.494e-02 (9.403e-02)	
+[07/13 18:41:47 segmentation]: [86520/90000] LR: 0.0000027	Time: 1.422s (1.324s)	Data: 1.082s (0.985s)	Loss: 1.003e+00 (6.526e-01)	Semantic loss: 6.462e-01 (4.305e-01)	Center loss: 2.520e-01 (1.282e-01)	Offset loss: 1.045e-01 (9.392e-02)	
+[07/13 18:42:09 segmentation]: [86540/90000] LR: 0.0000027	Time: 0.882s (1.323s)	Data: 0.527s (0.984s)	Loss: 2.457e-01 (6.523e-01)	Semantic loss: 2.379e-01 (4.304e-01)	Center loss: 7.847e-03 (1.281e-01)	Offset loss: 0.000e+00 (9.384e-02)	
+[07/13 18:42:32 segmentation]: [86560/90000] LR: 0.0000026	Time: 1.221s (1.322s)	Data: 0.875s (0.983s)	Loss: 6.093e-01 (6.524e-01)	Semantic loss: 2.039e-01 (4.304e-01)	Center loss: 3.787e-01 (1.281e-01)	Offset loss: 2.669e-02 (9.388e-02)	
+[07/13 18:42:56 segmentation]: [86580/90000] LR: 0.0000026	Time: 1.710s (1.322s)	Data: 1.346s (0.983s)	Loss: 1.038e+00 (6.524e-01)	Semantic loss: 6.078e-01 (4.304e-01)	Center loss: 9.656e-02 (1.281e-01)	Offset loss: 3.338e-01 (9.387e-02)	
+[07/13 18:43:17 segmentation]: [86600/90000] LR: 0.0000026	Time: 0.773s (1.321s)	Data: 0.430s (0.982s)	Loss: 9.093e-01 (6.521e-01)	Semantic loss: 3.576e-01 (4.302e-01)	Center loss: 3.156e-02 (1.280e-01)	Offset loss: 5.202e-01 (9.386e-02)	
+[07/13 18:43:43 segmentation]: [86620/90000] LR: 0.0000026	Time: 1.358s (1.321s)	Data: 1.008s (0.981s)	Loss: 1.475e+00 (6.519e-01)	Semantic loss: 7.566e-01 (4.299e-01)	Center loss: 3.013e-01 (1.282e-01)	Offset loss: 4.169e-01 (9.383e-02)	
+[07/13 18:44:05 segmentation]: [86640/90000] LR: 0.0000026	Time: 1.297s (1.320s)	Data: 0.957s (0.981s)	Loss: 9.144e-01 (6.517e-01)	Semantic loss: 5.377e-01 (4.299e-01)	Center loss: 2.900e-01 (1.281e-01)	Offset loss: 8.674e-02 (9.372e-02)	
+[07/13 18:44:26 segmentation]: [86660/90000] LR: 0.0000026	Time: 0.937s (1.319s)	Data: 0.584s (0.980s)	Loss: 2.128e-01 (6.515e-01)	Semantic loss: 1.149e-01 (4.297e-01)	Center loss: 7.837e-02 (1.281e-01)	Offset loss: 1.952e-02 (9.364e-02)	
+[07/13 18:44:50 segmentation]: [86680/90000] LR: 0.0000026	Time: 0.890s (1.319s)	Data: 0.528s (0.979s)	Loss: 9.658e-01 (6.516e-01)	Semantic loss: 3.052e-01 (4.297e-01)	Center loss: 5.520e-02 (1.283e-01)	Offset loss: 6.055e-01 (9.367e-02)	
+[07/13 18:45:14 segmentation]: [86700/90000] LR: 0.0000026	Time: 1.025s (1.318s)	Data: 0.682s (0.979s)	Loss: 5.866e-01 (6.518e-01)	Semantic loss: 2.443e-01 (4.297e-01)	Center loss: 2.794e-01 (1.284e-01)	Offset loss: 6.285e-02 (9.371e-02)	
+[07/13 18:45:39 segmentation]: [86720/90000] LR: 0.0000025	Time: 1.136s (1.318s)	Data: 0.789s (0.978s)	Loss: 3.044e-01 (6.517e-01)	Semantic loss: 7.283e-02 (4.296e-01)	Center loss: 1.942e-01 (1.284e-01)	Offset loss: 3.735e-02 (9.365e-02)	
+[07/13 18:46:00 segmentation]: [86740/90000] LR: 0.0000025	Time: 0.849s (1.317s)	Data: 0.505s (0.977s)	Loss: 5.333e-01 (6.516e-01)	Semantic loss: 4.054e-01 (4.296e-01)	Center loss: 6.004e-02 (1.284e-01)	Offset loss: 6.785e-02 (9.357e-02)	
+[07/13 18:46:23 segmentation]: [86760/90000] LR: 0.0000025	Time: 0.819s (1.316s)	Data: 0.458s (0.977s)	Loss: 2.936e-01 (6.514e-01)	Semantic loss: 1.749e-01 (4.295e-01)	Center loss: 8.291e-02 (1.284e-01)	Offset loss: 3.574e-02 (9.354e-02)	
+[07/13 18:46:44 segmentation]: [86780/90000] LR: 0.0000025	Time: 1.371s (1.316s)	Data: 1.024s (0.976s)	Loss: 5.449e-01 (6.514e-01)	Semantic loss: 3.405e-01 (4.295e-01)	Center loss: 1.712e-01 (1.283e-01)	Offset loss: 3.310e-02 (9.356e-02)	
+[07/13 18:47:06 segmentation]: [86800/90000] LR: 0.0000025	Time: 1.003s (1.315s)	Data: 0.656s (0.975s)	Loss: 5.471e-01 (6.514e-01)	Semantic loss: 4.179e-01 (4.296e-01)	Center loss: 1.019e-01 (1.282e-01)	Offset loss: 2.729e-02 (9.355e-02)	
+[07/13 18:47:30 segmentation]: [86820/90000] LR: 0.0000025	Time: 1.341s (1.314s)	Data: 1.002s (0.974s)	Loss: 7.163e-01 (6.515e-01)	Semantic loss: 5.301e-01 (4.299e-01)	Center loss: 1.396e-01 (1.281e-01)	Offset loss: 4.666e-02 (9.345e-02)	
+[07/13 18:47:52 segmentation]: [86840/90000] LR: 0.0000025	Time: 0.878s (1.313s)	Data: 0.538s (0.974s)	Loss: 5.223e-01 (6.514e-01)	Semantic loss: 4.132e-01 (4.299e-01)	Center loss: 4.385e-02 (1.281e-01)	Offset loss: 6.523e-02 (9.339e-02)	
+[07/13 18:48:15 segmentation]: [86860/90000] LR: 0.0000024	Time: 1.236s (1.313s)	Data: 0.895s (0.973s)	Loss: 1.465e+00 (6.518e-01)	Semantic loss: 1.267e+00 (4.300e-01)	Center loss: 1.096e-01 (1.282e-01)	Offset loss: 8.841e-02 (9.350e-02)	
+[07/13 18:48:40 segmentation]: [86880/90000] LR: 0.0000024	Time: 1.047s (1.313s)	Data: 0.690s (0.973s)	Loss: 8.095e-01 (6.519e-01)	Semantic loss: 6.783e-01 (4.301e-01)	Center loss: 8.681e-02 (1.284e-01)	Offset loss: 4.445e-02 (9.338e-02)	
+[07/13 18:49:03 segmentation]: [86900/90000] LR: 0.0000024	Time: 0.858s (1.312s)	Data: 0.508s (0.973s)	Loss: 1.420e+00 (6.523e-01)	Semantic loss: 1.372e+00 (4.304e-01)	Center loss: 7.181e-03 (1.283e-01)	Offset loss: 4.069e-02 (9.351e-02)	
+[07/13 18:49:27 segmentation]: [86920/90000] LR: 0.0000024	Time: 0.954s (1.311s)	Data: 0.612s (0.972s)	Loss: 4.463e-01 (6.520e-01)	Semantic loss: 3.150e-01 (4.303e-01)	Center loss: 8.359e-02 (1.283e-01)	Offset loss: 4.763e-02 (9.338e-02)	
+[07/13 18:49:50 segmentation]: [86940/90000] LR: 0.0000024	Time: 1.220s (1.311s)	Data: 0.872s (0.971s)	Loss: 6.114e-01 (6.518e-01)	Semantic loss: 3.234e-01 (4.303e-01)	Center loss: 1.912e-01 (1.282e-01)	Offset loss: 9.683e-02 (9.333e-02)	
+[07/13 18:50:12 segmentation]: [86960/90000] LR: 0.0000024	Time: 0.671s (1.310s)	Data: 0.309s (0.971s)	Loss: 1.668e-01 (6.516e-01)	Semantic loss: 1.266e-01 (4.300e-01)	Center loss: 1.257e-02 (1.283e-01)	Offset loss: 2.759e-02 (9.333e-02)	
+[07/13 18:50:34 segmentation]: [86980/90000] LR: 0.0000024	Time: 0.742s (1.310s)	Data: 0.395s (0.970s)	Loss: 4.029e-01 (6.514e-01)	Semantic loss: 3.663e-01 (4.299e-01)	Center loss: 1.426e-02 (1.283e-01)	Offset loss: 2.232e-02 (9.323e-02)	
+[07/13 18:50:58 segmentation]: [87000/90000] LR: 0.0000023	Time: 1.433s (1.309s)	Data: 1.065s (0.970s)	Loss: 2.457e-01 (6.514e-01)	Semantic loss: 1.412e-01 (4.299e-01)	Center loss: 7.958e-02 (1.283e-01)	Offset loss: 2.494e-02 (9.328e-02)	
+[07/13 18:51:24 segmentation]: [87020/90000] LR: 0.0000023	Time: 1.073s (1.309s)	Data: 0.711s (0.969s)	Loss: 1.204e+00 (6.519e-01)	Semantic loss: 8.230e-01 (4.303e-01)	Center loss: 6.637e-02 (1.282e-01)	Offset loss: 3.145e-01 (9.337e-02)	
+[07/13 18:51:46 segmentation]: [87040/90000] LR: 0.0000023	Time: 1.135s (1.308s)	Data: 0.788s (0.968s)	Loss: 6.348e-01 (6.522e-01)	Semantic loss: 2.251e-01 (4.307e-01)	Center loss: 3.700e-01 (1.282e-01)	Offset loss: 3.962e-02 (9.339e-02)	
+[07/13 18:52:07 segmentation]: [87060/90000] LR: 0.0000023	Time: 0.886s (1.307s)	Data: 0.542s (0.968s)	Loss: 9.560e-01 (6.522e-01)	Semantic loss: 7.667e-01 (4.308e-01)	Center loss: 3.847e-02 (1.281e-01)	Offset loss: 1.509e-01 (9.329e-02)	
+[07/13 18:52:29 segmentation]: [87080/90000] LR: 0.0000023	Time: 1.406s (1.307s)	Data: 1.030s (0.967s)	Loss: 8.916e-01 (6.530e-01)	Semantic loss: 6.453e-01 (4.312e-01)	Center loss: 1.377e-01 (1.280e-01)	Offset loss: 1.085e-01 (9.375e-02)	
+[07/13 18:52:52 segmentation]: [87100/90000] LR: 0.0000023	Time: 0.642s (1.306s)	Data: 0.303s (0.967s)	Loss: 2.843e-01 (6.531e-01)	Semantic loss: 2.840e-01 (4.312e-01)	Center loss: 3.040e-04 (1.282e-01)	Offset loss: 0.000e+00 (9.369e-02)	
+[07/13 18:53:17 segmentation]: [87120/90000] LR: 0.0000023	Time: 0.945s (1.306s)	Data: 0.573s (0.966s)	Loss: 3.910e-01 (6.527e-01)	Semantic loss: 2.267e-01 (4.309e-01)	Center loss: 1.297e-01 (1.282e-01)	Offset loss: 3.457e-02 (9.360e-02)	
+[07/13 18:53:40 segmentation]: [87140/90000] LR: 0.0000022	Time: 0.728s (1.305s)	Data: 0.389s (0.965s)	Loss: 4.292e-01 (6.535e-01)	Semantic loss: 3.547e-01 (4.313e-01)	Center loss: 1.892e-02 (1.282e-01)	Offset loss: 5.559e-02 (9.397e-02)	
+[07/13 18:54:04 segmentation]: [87160/90000] LR: 0.0000022	Time: 0.910s (1.305s)	Data: 0.565s (0.965s)	Loss: 5.025e-01 (6.531e-01)	Semantic loss: 3.752e-01 (4.310e-01)	Center loss: 3.336e-02 (1.282e-01)	Offset loss: 9.395e-02 (9.393e-02)	
+[07/13 18:54:29 segmentation]: [87180/90000] LR: 0.0000022	Time: 1.366s (1.305s)	Data: 1.029s (0.965s)	Loss: 6.645e-01 (6.537e-01)	Semantic loss: 4.877e-01 (4.314e-01)	Center loss: 1.186e-01 (1.284e-01)	Offset loss: 5.820e-02 (9.401e-02)	
+[07/13 18:54:50 segmentation]: [87200/90000] LR: 0.0000022	Time: 1.196s (1.304s)	Data: 0.849s (0.964s)	Loss: 1.095e+00 (6.535e-01)	Semantic loss: 8.691e-01 (4.312e-01)	Center loss: 1.503e-01 (1.283e-01)	Offset loss: 7.602e-02 (9.390e-02)	
+[07/13 18:55:18 segmentation]: [87220/90000] LR: 0.0000022	Time: 0.906s (1.304s)	Data: 0.562s (0.964s)	Loss: 4.893e-01 (6.534e-01)	Semantic loss: 4.159e-01 (4.312e-01)	Center loss: 3.022e-02 (1.284e-01)	Offset loss: 4.315e-02 (9.383e-02)	
+[07/13 18:55:41 segmentation]: [87240/90000] LR: 0.0000022	Time: 0.724s (1.303s)	Data: 0.380s (0.963s)	Loss: 3.334e-01 (6.535e-01)	Semantic loss: 2.964e-01 (4.313e-01)	Center loss: 1.989e-03 (1.283e-01)	Offset loss: 3.501e-02 (9.389e-02)	
+[07/13 18:56:03 segmentation]: [87260/90000] LR: 0.0000022	Time: 1.082s (1.303s)	Data: 0.727s (0.963s)	Loss: 5.406e-01 (6.537e-01)	Semantic loss: 4.269e-01 (4.313e-01)	Center loss: 7.469e-02 (1.283e-01)	Offset loss: 3.902e-02 (9.412e-02)	
+[07/13 18:56:26 segmentation]: [87280/90000] LR: 0.0000021	Time: 0.990s (1.302s)	Data: 0.644s (0.962s)	Loss: 3.349e-01 (6.537e-01)	Semantic loss: 2.348e-01 (4.313e-01)	Center loss: 3.739e-02 (1.283e-01)	Offset loss: 6.263e-02 (9.407e-02)	
+[07/13 18:56:48 segmentation]: [87300/90000] LR: 0.0000021	Time: 1.740s (1.302s)	Data: 1.398s (0.962s)	Loss: 5.829e-01 (6.536e-01)	Semantic loss: 2.852e-01 (4.313e-01)	Center loss: 1.864e-01 (1.283e-01)	Offset loss: 1.113e-01 (9.405e-02)	
+[07/13 18:57:15 segmentation]: [87320/90000] LR: 0.0000021	Time: 0.769s (1.301s)	Data: 0.426s (0.961s)	Loss: 2.341e-01 (6.535e-01)	Semantic loss: 2.034e-01 (4.312e-01)	Center loss: 6.395e-03 (1.282e-01)	Offset loss: 2.435e-02 (9.405e-02)	
+[07/13 18:57:37 segmentation]: [87340/90000] LR: 0.0000021	Time: 1.178s (1.301s)	Data: 0.833s (0.961s)	Loss: 4.287e-01 (6.532e-01)	Semantic loss: 1.858e-01 (4.311e-01)	Center loss: 2.106e-01 (1.282e-01)	Offset loss: 3.230e-02 (9.396e-02)	
+[07/13 18:58:01 segmentation]: [87360/90000] LR: 0.0000021	Time: 0.861s (1.301s)	Data: 0.498s (0.960s)	Loss: 1.024e+00 (6.536e-01)	Semantic loss: 1.023e+00 (4.314e-01)	Center loss: 9.515e-04 (1.283e-01)	Offset loss: 0.000e+00 (9.396e-02)	
+[07/13 18:58:25 segmentation]: [87380/90000] LR: 0.0000021	Time: 1.414s (1.300s)	Data: 1.069s (0.960s)	Loss: 6.397e-01 (6.537e-01)	Semantic loss: 1.738e-01 (4.313e-01)	Center loss: 4.355e-01 (1.283e-01)	Offset loss: 3.032e-02 (9.411e-02)	
+[07/13 18:58:46 segmentation]: [87400/90000] LR: 0.0000021	Time: 0.896s (1.300s)	Data: 0.558s (0.959s)	Loss: 7.834e-01 (6.535e-01)	Semantic loss: 6.991e-01 (4.313e-01)	Center loss: 2.655e-02 (1.282e-01)	Offset loss: 5.781e-02 (9.405e-02)	
+[07/13 18:59:10 segmentation]: [87420/90000] LR: 0.0000020	Time: 0.918s (1.299s)	Data: 0.565s (0.959s)	Loss: 1.051e+00 (6.534e-01)	Semantic loss: 3.123e-01 (4.311e-01)	Center loss: 4.288e-02 (1.282e-01)	Offset loss: 6.963e-01 (9.411e-02)	
+[07/13 18:59:32 segmentation]: [87440/90000] LR: 0.0000020	Time: 0.930s (1.298s)	Data: 0.573s (0.958s)	Loss: 2.235e-01 (6.531e-01)	Semantic loss: 1.494e-01 (4.310e-01)	Center loss: 3.464e-02 (1.282e-01)	Offset loss: 3.938e-02 (9.398e-02)	
+[07/13 18:59:55 segmentation]: [87460/90000] LR: 0.0000020	Time: 0.834s (1.298s)	Data: 0.486s (0.958s)	Loss: 3.330e-01 (6.530e-01)	Semantic loss: 1.931e-01 (4.310e-01)	Center loss: 2.523e-02 (1.282e-01)	Offset loss: 1.147e-01 (9.389e-02)	
+[07/13 19:00:19 segmentation]: [87480/90000] LR: 0.0000020	Time: 1.187s (1.298s)	Data: 0.844s (0.957s)	Loss: 7.330e-01 (6.530e-01)	Semantic loss: 4.866e-01 (4.309e-01)	Center loss: 7.562e-02 (1.282e-01)	Offset loss: 1.708e-01 (9.389e-02)	
+[07/13 19:00:42 segmentation]: [87500/90000] LR: 0.0000020	Time: 1.237s (1.297s)	Data: 0.870s (0.957s)	Loss: 6.740e-01 (6.530e-01)	Semantic loss: 4.474e-01 (4.311e-01)	Center loss: 1.614e-01 (1.281e-01)	Offset loss: 6.527e-02 (9.383e-02)	
+[07/13 19:01:08 segmentation]: [87520/90000] LR: 0.0000020	Time: 1.076s (1.297s)	Data: 0.735s (0.956s)	Loss: 7.223e-01 (6.530e-01)	Semantic loss: 2.588e-01 (4.310e-01)	Center loss: 4.048e-01 (1.282e-01)	Offset loss: 5.880e-02 (9.387e-02)	
+[07/13 19:01:30 segmentation]: [87540/90000] LR: 0.0000020	Time: 0.892s (1.296s)	Data: 0.552s (0.956s)	Loss: 1.457e+00 (6.529e-01)	Semantic loss: 1.269e+00 (4.310e-01)	Center loss: 5.055e-02 (1.282e-01)	Offset loss: 1.373e-01 (9.378e-02)	
+[07/13 19:01:52 segmentation]: [87560/90000] LR: 0.0000019	Time: 1.348s (1.296s)	Data: 0.971s (0.955s)	Loss: 9.234e-01 (6.528e-01)	Semantic loss: 7.965e-01 (4.309e-01)	Center loss: 6.831e-02 (1.282e-01)	Offset loss: 5.859e-02 (9.372e-02)	
+[07/13 19:02:13 segmentation]: [87580/90000] LR: 0.0000019	Time: 1.110s (1.295s)	Data: 0.761s (0.955s)	Loss: 3.402e-01 (6.528e-01)	Semantic loss: 1.352e-01 (4.312e-01)	Center loss: 1.684e-01 (1.280e-01)	Offset loss: 3.653e-02 (9.364e-02)	
+[07/13 19:02:34 segmentation]: [87600/90000] LR: 0.0000019	Time: 0.922s (1.294s)	Data: 0.581s (0.954s)	Loss: 4.369e-01 (6.527e-01)	Semantic loss: 3.891e-01 (4.311e-01)	Center loss: 2.601e-02 (1.280e-01)	Offset loss: 2.181e-02 (9.360e-02)	
+[07/13 19:02:59 segmentation]: [87620/90000] LR: 0.0000019	Time: 0.859s (1.294s)	Data: 0.516s (0.953s)	Loss: 7.501e-01 (6.524e-01)	Semantic loss: 6.173e-01 (4.308e-01)	Center loss: 4.944e-02 (1.280e-01)	Offset loss: 8.330e-02 (9.357e-02)	
+[07/13 19:03:19 segmentation]: [87640/90000] LR: 0.0000019	Time: 0.883s (1.293s)	Data: 0.543s (0.953s)	Loss: 8.419e-01 (6.521e-01)	Semantic loss: 6.877e-01 (4.307e-01)	Center loss: 2.272e-02 (1.279e-01)	Offset loss: 1.314e-01 (9.352e-02)	
+[07/13 19:03:41 segmentation]: [87660/90000] LR: 0.0000019	Time: 1.370s (1.292s)	Data: 1.015s (0.952s)	Loss: 7.029e-01 (6.518e-01)	Semantic loss: 4.127e-01 (4.306e-01)	Center loss: 2.340e-01 (1.279e-01)	Offset loss: 5.618e-02 (9.341e-02)	
+[07/13 19:04:03 segmentation]: [87680/90000] LR: 0.0000019	Time: 1.080s (1.292s)	Data: 0.739s (0.951s)	Loss: 8.413e-01 (6.516e-01)	Semantic loss: 6.867e-01 (4.304e-01)	Center loss: 8.671e-02 (1.278e-01)	Offset loss: 6.794e-02 (9.333e-02)	
+[07/13 19:04:26 segmentation]: [87700/90000] LR: 0.0000018	Time: 0.929s (1.292s)	Data: 0.583s (0.951s)	Loss: 5.865e-01 (6.515e-01)	Semantic loss: 4.479e-01 (4.304e-01)	Center loss: 8.683e-02 (1.278e-01)	Offset loss: 5.175e-02 (9.333e-02)	
+[07/13 19:04:50 segmentation]: [87720/90000] LR: 0.0000018	Time: 1.007s (1.291s)	Data: 0.668s (0.950s)	Loss: 5.100e-01 (6.520e-01)	Semantic loss: 3.694e-01 (4.306e-01)	Center loss: 6.098e-02 (1.278e-01)	Offset loss: 7.967e-02 (9.355e-02)	
+[07/13 19:05:13 segmentation]: [87740/90000] LR: 0.0000018	Time: 0.800s (1.290s)	Data: 0.456s (0.950s)	Loss: 3.056e-01 (6.521e-01)	Semantic loss: 2.653e-01 (4.307e-01)	Center loss: 9.814e-03 (1.277e-01)	Offset loss: 3.043e-02 (9.363e-02)	
+[07/13 19:05:36 segmentation]: [87760/90000] LR: 0.0000018	Time: 1.399s (1.290s)	Data: 1.054s (0.950s)	Loss: 1.107e+00 (6.521e-01)	Semantic loss: 7.398e-01 (4.307e-01)	Center loss: 3.031e-01 (1.278e-01)	Offset loss: 6.381e-02 (9.360e-02)	
+[07/13 19:05:58 segmentation]: [87780/90000] LR: 0.0000018	Time: 0.952s (1.290s)	Data: 0.610s (0.949s)	Loss: 2.795e-01 (6.524e-01)	Semantic loss: 1.606e-01 (4.309e-01)	Center loss: 9.458e-02 (1.278e-01)	Offset loss: 2.430e-02 (9.376e-02)	
+[07/13 19:06:20 segmentation]: [87800/90000] LR: 0.0000018	Time: 1.503s (1.289s)	Data: 1.162s (0.949s)	Loss: 5.287e-01 (6.523e-01)	Semantic loss: 2.346e-01 (4.309e-01)	Center loss: 2.656e-01 (1.278e-01)	Offset loss: 2.852e-02 (9.366e-02)	
+[07/13 19:06:45 segmentation]: [87820/90000] LR: 0.0000018	Time: 0.877s (1.289s)	Data: 0.535s (0.948s)	Loss: 5.609e-01 (6.522e-01)	Semantic loss: 3.082e-01 (4.307e-01)	Center loss: 5.638e-02 (1.279e-01)	Offset loss: 1.963e-01 (9.358e-02)	
+[07/13 19:07:09 segmentation]: [87840/90000] LR: 0.0000017	Time: 1.015s (1.288s)	Data: 0.674s (0.948s)	Loss: 8.885e-01 (6.523e-01)	Semantic loss: 6.719e-01 (4.309e-01)	Center loss: 3.568e-02 (1.279e-01)	Offset loss: 1.809e-01 (9.353e-02)	
+[07/13 19:07:30 segmentation]: [87860/90000] LR: 0.0000017	Time: 0.857s (1.288s)	Data: 0.513s (0.947s)	Loss: 5.151e-01 (6.523e-01)	Semantic loss: 4.200e-01 (4.309e-01)	Center loss: 1.291e-02 (1.278e-01)	Offset loss: 8.222e-02 (9.360e-02)	
+[07/13 19:07:51 segmentation]: [87880/90000] LR: 0.0000017	Time: 0.863s (1.287s)	Data: 0.522s (0.947s)	Loss: 1.004e+00 (6.526e-01)	Semantic loss: 8.056e-01 (4.311e-01)	Center loss: 4.323e-02 (1.278e-01)	Offset loss: 1.553e-01 (9.368e-02)	
+[07/13 19:08:14 segmentation]: [87900/90000] LR: 0.0000017	Time: 0.941s (1.287s)	Data: 0.592s (0.946s)	Loss: 2.569e-01 (6.526e-01)	Semantic loss: 1.782e-01 (4.311e-01)	Center loss: 5.741e-02 (1.278e-01)	Offset loss: 2.137e-02 (9.372e-02)	
+[07/13 19:08:37 segmentation]: [87920/90000] LR: 0.0000017	Time: 0.848s (1.286s)	Data: 0.508s (0.945s)	Loss: 6.458e-01 (6.525e-01)	Semantic loss: 5.675e-01 (4.311e-01)	Center loss: 2.211e-02 (1.277e-01)	Offset loss: 5.616e-02 (9.367e-02)	
+[07/13 19:09:02 segmentation]: [87940/90000] LR: 0.0000017	Time: 1.255s (1.286s)	Data: 0.918s (0.945s)	Loss: 9.116e-01 (6.522e-01)	Semantic loss: 6.835e-01 (4.310e-01)	Center loss: 1.205e-01 (1.277e-01)	Offset loss: 1.076e-01 (9.356e-02)	
+[07/13 19:09:25 segmentation]: [87960/90000] LR: 0.0000017	Time: 1.593s (1.285s)	Data: 1.248s (0.945s)	Loss: 6.707e-01 (6.520e-01)	Semantic loss: 2.722e-01 (4.307e-01)	Center loss: 3.567e-01 (1.278e-01)	Offset loss: 4.181e-02 (9.347e-02)	
+[07/13 19:09:45 segmentation]: [87980/90000] LR: 0.0000016	Time: 0.771s (1.285s)	Data: 0.427s (0.944s)	Loss: 2.968e-01 (6.519e-01)	Semantic loss: 2.611e-01 (4.307e-01)	Center loss: 6.245e-03 (1.277e-01)	Offset loss: 2.939e-02 (9.354e-02)	
+[07/13 19:10:08 segmentation]: [88000/90000] LR: 0.0000016	Time: 1.646s (1.284s)	Data: 1.303s (0.944s)	Loss: 8.285e-01 (6.518e-01)	Semantic loss: 5.475e-01 (4.308e-01)	Center loss: 2.003e-01 (1.276e-01)	Offset loss: 8.063e-02 (9.341e-02)	
+[07/13 19:10:35 segmentation]: [88020/90000] LR: 0.0000016	Time: 1.036s (1.284s)	Data: 0.682s (0.943s)	Loss: 3.071e-01 (6.517e-01)	Semantic loss: 2.553e-01 (4.306e-01)	Center loss: 2.037e-02 (1.277e-01)	Offset loss: 3.138e-02 (9.340e-02)	
+[07/13 19:11:00 segmentation]: [88040/90000] LR: 0.0000016	Time: 1.490s (1.284s)	Data: 1.153s (0.943s)	Loss: 1.379e+00 (6.516e-01)	Semantic loss: 9.594e-01 (4.306e-01)	Center loss: 2.809e-01 (1.277e-01)	Offset loss: 1.385e-01 (9.331e-02)	
+[07/13 19:11:22 segmentation]: [88060/90000] LR: 0.0000016	Time: 1.124s (1.284s)	Data: 0.763s (0.943s)	Loss: 2.847e-01 (6.513e-01)	Semantic loss: 1.531e-01 (4.304e-01)	Center loss: 6.444e-02 (1.276e-01)	Offset loss: 6.718e-02 (9.321e-02)	
+[07/13 19:11:44 segmentation]: [88080/90000] LR: 0.0000016	Time: 1.028s (1.283s)	Data: 0.688s (0.942s)	Loss: 6.511e-01 (6.511e-01)	Semantic loss: 3.433e-01 (4.302e-01)	Center loss: 1.357e-01 (1.276e-01)	Offset loss: 1.721e-01 (9.333e-02)	
+[07/13 19:12:07 segmentation]: [88100/90000] LR: 0.0000016	Time: 1.019s (1.283s)	Data: 0.676s (0.942s)	Loss: 5.141e-01 (6.511e-01)	Semantic loss: 3.233e-01 (4.302e-01)	Center loss: 1.482e-01 (1.277e-01)	Offset loss: 4.259e-02 (9.326e-02)	
+[07/13 19:12:33 segmentation]: [88120/90000] LR: 0.0000015	Time: 1.413s (1.282s)	Data: 1.070s (0.941s)	Loss: 9.794e-01 (6.511e-01)	Semantic loss: 6.285e-01 (4.301e-01)	Center loss: 2.424e-01 (1.277e-01)	Offset loss: 1.086e-01 (9.326e-02)	
+[07/13 19:12:56 segmentation]: [88140/90000] LR: 0.0000015	Time: 1.154s (1.282s)	Data: 0.811s (0.941s)	Loss: 5.688e-01 (6.508e-01)	Semantic loss: 4.108e-01 (4.300e-01)	Center loss: 7.104e-02 (1.276e-01)	Offset loss: 8.697e-02 (9.319e-02)	
+[07/13 19:13:17 segmentation]: [88160/90000] LR: 0.0000015	Time: 0.924s (1.281s)	Data: 0.586s (0.941s)	Loss: 3.808e-01 (6.506e-01)	Semantic loss: 3.425e-01 (4.299e-01)	Center loss: 8.830e-03 (1.276e-01)	Offset loss: 2.948e-02 (9.310e-02)	
+[07/13 19:13:41 segmentation]: [88180/90000] LR: 0.0000015	Time: 0.971s (1.281s)	Data: 0.600s (0.940s)	Loss: 5.940e-01 (6.508e-01)	Semantic loss: 4.940e-01 (4.300e-01)	Center loss: 5.769e-02 (1.277e-01)	Offset loss: 4.225e-02 (9.307e-02)	
+[07/13 19:14:02 segmentation]: [88200/90000] LR: 0.0000015	Time: 1.151s (1.281s)	Data: 0.806s (0.940s)	Loss: 5.687e-01 (6.506e-01)	Semantic loss: 2.219e-01 (4.299e-01)	Center loss: 3.162e-01 (1.277e-01)	Offset loss: 3.055e-02 (9.301e-02)	
+[07/13 19:14:26 segmentation]: [88220/90000] LR: 0.0000015	Time: 0.796s (1.280s)	Data: 0.459s (0.939s)	Loss: 2.992e-01 (6.505e-01)	Semantic loss: 1.887e-01 (4.299e-01)	Center loss: 8.195e-02 (1.276e-01)	Offset loss: 2.852e-02 (9.296e-02)	
+[07/13 19:14:49 segmentation]: [88240/90000] LR: 0.0000014	Time: 1.034s (1.280s)	Data: 0.696s (0.939s)	Loss: 4.813e-01 (6.505e-01)	Semantic loss: 3.540e-01 (4.299e-01)	Center loss: 7.907e-02 (1.276e-01)	Offset loss: 4.814e-02 (9.301e-02)	
+[07/13 19:15:10 segmentation]: [88260/90000] LR: 0.0000014	Time: 0.809s (1.279s)	Data: 0.469s (0.938s)	Loss: 3.778e-01 (6.504e-01)	Semantic loss: 3.174e-01 (4.299e-01)	Center loss: 4.311e-02 (1.275e-01)	Offset loss: 1.736e-02 (9.298e-02)	
+[07/13 19:15:31 segmentation]: [88280/90000] LR: 0.0000014	Time: 0.793s (1.279s)	Data: 0.451s (0.938s)	Loss: 1.449e-01 (6.503e-01)	Semantic loss: 9.608e-02 (4.298e-01)	Center loss: 1.234e-02 (1.276e-01)	Offset loss: 3.643e-02 (9.291e-02)	
+[07/13 19:15:51 segmentation]: [88300/90000] LR: 0.0000014	Time: 1.022s (1.278s)	Data: 0.676s (0.937s)	Loss: 7.141e-01 (6.499e-01)	Semantic loss: 6.317e-01 (4.295e-01)	Center loss: 3.753e-02 (1.275e-01)	Offset loss: 4.486e-02 (9.285e-02)	
+[07/13 19:16:16 segmentation]: [88320/90000] LR: 0.0000014	Time: 1.160s (1.277s)	Data: 0.817s (0.936s)	Loss: 4.670e-01 (6.498e-01)	Semantic loss: 3.243e-01 (4.295e-01)	Center loss: 6.831e-02 (1.275e-01)	Offset loss: 7.440e-02 (9.279e-02)	
+[07/13 19:16:41 segmentation]: [88340/90000] LR: 0.0000014	Time: 0.985s (1.277s)	Data: 0.642s (0.936s)	Loss: 2.796e-01 (6.500e-01)	Semantic loss: 1.292e-01 (4.294e-01)	Center loss: 6.730e-02 (1.276e-01)	Offset loss: 8.314e-02 (9.303e-02)	
+[07/13 19:17:03 segmentation]: [88360/90000] LR: 0.0000014	Time: 1.001s (1.277s)	Data: 0.651s (0.936s)	Loss: 4.161e-01 (6.502e-01)	Semantic loss: 2.812e-01 (4.294e-01)	Center loss: 6.400e-02 (1.275e-01)	Offset loss: 7.097e-02 (9.324e-02)	
+[07/13 19:17:25 segmentation]: [88380/90000] LR: 0.0000013	Time: 1.180s (1.276s)	Data: 0.837s (0.935s)	Loss: 3.344e-01 (6.503e-01)	Semantic loss: 2.438e-01 (4.294e-01)	Center loss: 6.486e-02 (1.275e-01)	Offset loss: 2.578e-02 (9.340e-02)	
+[07/13 19:17:46 segmentation]: [88400/90000] LR: 0.0000013	Time: 0.923s (1.276s)	Data: 0.553s (0.935s)	Loss: 5.600e-01 (6.502e-01)	Semantic loss: 4.103e-01 (4.292e-01)	Center loss: 6.058e-02 (1.275e-01)	Offset loss: 8.914e-02 (9.343e-02)	
+[07/13 19:18:12 segmentation]: [88420/90000] LR: 0.0000013	Time: 1.842s (1.275s)	Data: 1.494s (0.934s)	Loss: 7.417e-01 (6.504e-01)	Semantic loss: 2.438e-01 (4.294e-01)	Center loss: 4.558e-01 (1.276e-01)	Offset loss: 4.210e-02 (9.345e-02)	
+[07/13 19:18:37 segmentation]: [88440/90000] LR: 0.0000013	Time: 1.127s (1.275s)	Data: 0.775s (0.934s)	Loss: 5.491e-01 (6.503e-01)	Semantic loss: 4.254e-01 (4.293e-01)	Center loss: 7.971e-02 (1.276e-01)	Offset loss: 4.397e-02 (9.345e-02)	
+[07/13 19:19:00 segmentation]: [88460/90000] LR: 0.0000013	Time: 2.423s (1.275s)	Data: 2.075s (0.934s)	Loss: 8.767e-01 (6.507e-01)	Semantic loss: 6.396e-01 (4.297e-01)	Center loss: 1.857e-01 (1.276e-01)	Offset loss: 5.139e-02 (9.345e-02)	
+[07/13 19:19:23 segmentation]: [88480/90000] LR: 0.0000013	Time: 1.168s (1.275s)	Data: 0.818s (0.934s)	Loss: 6.064e-01 (6.505e-01)	Semantic loss: 3.772e-01 (4.296e-01)	Center loss: 1.774e-01 (1.276e-01)	Offset loss: 5.182e-02 (9.336e-02)	
+[07/13 19:19:48 segmentation]: [88500/90000] LR: 0.0000013	Time: 1.067s (1.275s)	Data: 0.723s (0.934s)	Loss: 5.372e-01 (6.510e-01)	Semantic loss: 4.594e-01 (4.298e-01)	Center loss: 3.160e-02 (1.277e-01)	Offset loss: 4.614e-02 (9.344e-02)	
+[07/13 19:20:13 segmentation]: [88520/90000] LR: 0.0000012	Time: 1.162s (1.274s)	Data: 0.803s (0.933s)	Loss: 4.794e-01 (6.507e-01)	Semantic loss: 3.804e-01 (4.297e-01)	Center loss: 6.488e-02 (1.277e-01)	Offset loss: 3.413e-02 (9.341e-02)	
+[07/13 19:20:35 segmentation]: [88540/90000] LR: 0.0000012	Time: 1.413s (1.274s)	Data: 1.072s (0.933s)	Loss: 6.361e-01 (6.509e-01)	Semantic loss: 4.572e-01 (4.298e-01)	Center loss: 1.269e-01 (1.276e-01)	Offset loss: 5.196e-02 (9.342e-02)	
+[07/13 19:20:57 segmentation]: [88560/90000] LR: 0.0000012	Time: 0.993s (1.273s)	Data: 0.655s (0.932s)	Loss: 4.200e-01 (6.507e-01)	Semantic loss: 2.755e-01 (4.298e-01)	Center loss: 9.774e-02 (1.276e-01)	Offset loss: 4.675e-02 (9.333e-02)	
+[07/13 19:21:21 segmentation]: [88580/90000] LR: 0.0000012	Time: 0.971s (1.273s)	Data: 0.612s (0.932s)	Loss: 2.814e-01 (6.505e-01)	Semantic loss: 1.652e-01 (4.296e-01)	Center loss: 8.806e-02 (1.277e-01)	Offset loss: 2.809e-02 (9.326e-02)	
+[07/13 19:21:46 segmentation]: [88600/90000] LR: 0.0000012	Time: 0.876s (1.273s)	Data: 0.532s (0.932s)	Loss: 3.263e-01 (6.507e-01)	Semantic loss: 2.690e-01 (4.295e-01)	Center loss: 8.775e-03 (1.276e-01)	Offset loss: 4.855e-02 (9.350e-02)	
+[07/13 19:22:11 segmentation]: [88620/90000] LR: 0.0000012	Time: 1.062s (1.272s)	Data: 0.722s (0.931s)	Loss: 9.087e-01 (6.507e-01)	Semantic loss: 3.139e-01 (4.295e-01)	Center loss: 7.677e-02 (1.277e-01)	Offset loss: 5.180e-01 (9.351e-02)	
+[07/13 19:22:32 segmentation]: [88640/90000] LR: 0.0000011	Time: 1.130s (1.272s)	Data: 0.782s (0.931s)	Loss: 7.280e-01 (6.507e-01)	Semantic loss: 4.008e-01 (4.294e-01)	Center loss: 2.269e-01 (1.277e-01)	Offset loss: 1.003e-01 (9.355e-02)	
+[07/13 19:22:51 segmentation]: [88660/90000] LR: 0.0000011	Time: 0.927s (1.271s)	Data: 0.588s (0.930s)	Loss: 2.288e-01 (6.506e-01)	Semantic loss: 1.606e-01 (4.292e-01)	Center loss: 4.817e-02 (1.277e-01)	Offset loss: 2.002e-02 (9.373e-02)	
+[07/13 19:23:14 segmentation]: [88680/90000] LR: 0.0000011	Time: 1.010s (1.271s)	Data: 0.667s (0.930s)	Loss: 3.796e-01 (6.504e-01)	Semantic loss: 1.741e-01 (4.291e-01)	Center loss: 1.594e-01 (1.276e-01)	Offset loss: 4.605e-02 (9.370e-02)	
+[07/13 19:23:41 segmentation]: [88700/90000] LR: 0.0000011	Time: 0.936s (1.271s)	Data: 0.595s (0.930s)	Loss: 4.372e-01 (6.502e-01)	Semantic loss: 3.370e-01 (4.290e-01)	Center loss: 4.517e-02 (1.276e-01)	Offset loss: 5.500e-02 (9.363e-02)	
+[07/13 19:24:07 segmentation]: [88720/90000] LR: 0.0000011	Time: 0.960s (1.271s)	Data: 0.588s (0.929s)	Loss: 3.578e-01 (6.501e-01)	Semantic loss: 3.013e-01 (4.289e-01)	Center loss: 1.806e-02 (1.276e-01)	Offset loss: 3.844e-02 (9.366e-02)	
+[07/13 19:24:29 segmentation]: [88740/90000] LR: 0.0000011	Time: 1.310s (1.270s)	Data: 0.966s (0.929s)	Loss: 7.226e-01 (6.501e-01)	Semantic loss: 4.191e-01 (4.289e-01)	Center loss: 1.982e-01 (1.275e-01)	Offset loss: 1.054e-01 (9.359e-02)	
+[07/13 19:24:53 segmentation]: [88760/90000] LR: 0.0000011	Time: 1.136s (1.270s)	Data: 0.798s (0.929s)	Loss: 6.257e-01 (6.500e-01)	Semantic loss: 4.928e-01 (4.289e-01)	Center loss: 8.249e-02 (1.276e-01)	Offset loss: 5.041e-02 (9.351e-02)	
+[07/13 19:25:15 segmentation]: [88780/90000] LR: 0.0000010	Time: 1.380s (1.270s)	Data: 1.007s (0.928s)	Loss: 4.739e-01 (6.501e-01)	Semantic loss: 4.103e-01 (4.292e-01)	Center loss: 2.509e-02 (1.275e-01)	Offset loss: 3.855e-02 (9.344e-02)	
+[07/13 19:25:39 segmentation]: [88800/90000] LR: 0.0000010	Time: 1.287s (1.269s)	Data: 0.945s (0.928s)	Loss: 5.748e-01 (6.503e-01)	Semantic loss: 2.060e-01 (4.293e-01)	Center loss: 3.251e-01 (1.275e-01)	Offset loss: 4.372e-02 (9.353e-02)	
+[07/13 19:26:05 segmentation]: [88820/90000] LR: 0.0000010	Time: 0.839s (1.269s)	Data: 0.492s (0.928s)	Loss: 4.540e-01 (6.502e-01)	Semantic loss: 2.243e-01 (4.292e-01)	Center loss: 1.445e-01 (1.276e-01)	Offset loss: 8.523e-02 (9.347e-02)	
+[07/13 19:26:29 segmentation]: [88840/90000] LR: 0.0000010	Time: 1.455s (1.269s)	Data: 1.107s (0.928s)	Loss: 6.145e-01 (6.503e-01)	Semantic loss: 3.852e-01 (4.291e-01)	Center loss: 1.609e-01 (1.276e-01)	Offset loss: 6.843e-02 (9.360e-02)	
+[07/13 19:26:51 segmentation]: [88860/90000] LR: 0.0000010	Time: 0.899s (1.269s)	Data: 0.551s (0.927s)	Loss: 1.514e+00 (6.507e-01)	Semantic loss: 4.254e-01 (4.293e-01)	Center loss: 1.938e-02 (1.275e-01)	Offset loss: 1.070e+00 (9.383e-02)	
+[07/13 19:27:14 segmentation]: [88880/90000] LR: 0.0000010	Time: 0.961s (1.268s)	Data: 0.607s (0.927s)	Loss: 5.801e-01 (6.506e-01)	Semantic loss: 4.779e-01 (4.293e-01)	Center loss: 5.025e-02 (1.275e-01)	Offset loss: 5.188e-02 (9.381e-02)	
+[07/13 19:27:37 segmentation]: [88900/90000] LR: 0.0000010	Time: 0.903s (1.268s)	Data: 0.557s (0.927s)	Loss: 6.849e-01 (6.503e-01)	Semantic loss: 5.099e-01 (4.291e-01)	Center loss: 7.117e-02 (1.275e-01)	Offset loss: 1.038e-01 (9.378e-02)	
+[07/13 19:28:05 segmentation]: [88920/90000] LR: 0.0000009	Time: 0.970s (1.268s)	Data: 0.628s (0.926s)	Loss: 6.187e-01 (6.503e-01)	Semantic loss: 1.529e-01 (4.289e-01)	Center loss: 4.510e-02 (1.276e-01)	Offset loss: 4.207e-01 (9.374e-02)	
+[07/13 19:28:30 segmentation]: [88940/90000] LR: 0.0000009	Time: 0.989s (1.268s)	Data: 0.633s (0.926s)	Loss: 5.738e-01 (6.502e-01)	Semantic loss: 3.900e-01 (4.288e-01)	Center loss: 1.124e-01 (1.277e-01)	Offset loss: 7.135e-02 (9.374e-02)	
+[07/13 19:28:53 segmentation]: [88960/90000] LR: 0.0000009	Time: 0.835s (1.268s)	Data: 0.480s (0.926s)	Loss: 4.077e-01 (6.501e-01)	Semantic loss: 2.375e-01 (4.286e-01)	Center loss: 1.382e-01 (1.277e-01)	Offset loss: 3.201e-02 (9.378e-02)	
+[07/13 19:29:16 segmentation]: [88980/90000] LR: 0.0000009	Time: 1.033s (1.267s)	Data: 0.693s (0.926s)	Loss: 3.186e-01 (6.502e-01)	Semantic loss: 2.508e-01 (4.287e-01)	Center loss: 3.388e-02 (1.277e-01)	Offset loss: 3.392e-02 (9.383e-02)	
+[07/13 19:29:40 segmentation]: [89000/90000] LR: 0.0000009	Time: 0.943s (1.267s)	Data: 0.602s (0.926s)	Loss: 5.152e-01 (6.502e-01)	Semantic loss: 2.363e-01 (4.288e-01)	Center loss: 2.823e-02 (1.276e-01)	Offset loss: 2.508e-01 (9.381e-02)	
+[07/13 19:30:05 segmentation]: [89020/90000] LR: 0.0000009	Time: 1.219s (1.267s)	Data: 0.874s (0.925s)	Loss: 6.682e-01 (6.505e-01)	Semantic loss: 4.276e-01 (4.289e-01)	Center loss: 1.350e-01 (1.278e-01)	Offset loss: 1.056e-01 (9.385e-02)	
+[07/13 19:30:28 segmentation]: [89040/90000] LR: 0.0000008	Time: 1.217s (1.266s)	Data: 0.871s (0.925s)	Loss: 4.762e-01 (6.503e-01)	Semantic loss: 3.796e-01 (4.287e-01)	Center loss: 6.768e-02 (1.278e-01)	Offset loss: 2.888e-02 (9.378e-02)	
+[07/13 19:30:54 segmentation]: [89060/90000] LR: 0.0000008	Time: 1.050s (1.266s)	Data: 0.698s (0.925s)	Loss: 4.658e-01 (6.503e-01)	Semantic loss: 3.237e-01 (4.288e-01)	Center loss: 6.761e-02 (1.278e-01)	Offset loss: 7.447e-02 (9.375e-02)	
+[07/13 19:31:16 segmentation]: [89080/90000] LR: 0.0000008	Time: 0.996s (1.266s)	Data: 0.658s (0.925s)	Loss: 6.524e-01 (6.501e-01)	Semantic loss: 5.252e-01 (4.287e-01)	Center loss: 4.623e-02 (1.278e-01)	Offset loss: 8.103e-02 (9.369e-02)	
+[07/13 19:31:37 segmentation]: [89100/90000] LR: 0.0000008	Time: 1.076s (1.266s)	Data: 0.723s (0.924s)	Loss: 5.079e-01 (6.498e-01)	Semantic loss: 4.160e-01 (4.284e-01)	Center loss: 6.085e-02 (1.277e-01)	Offset loss: 3.103e-02 (9.368e-02)	
+[07/13 19:32:02 segmentation]: [89120/90000] LR: 0.0000008	Time: 1.370s (1.265s)	Data: 1.002s (0.924s)	Loss: 7.063e-01 (6.498e-01)	Semantic loss: 5.258e-01 (4.285e-01)	Center loss: 1.209e-01 (1.277e-01)	Offset loss: 5.965e-02 (9.371e-02)	
+[07/13 19:32:26 segmentation]: [89140/90000] LR: 0.0000008	Time: 1.426s (1.265s)	Data: 1.081s (0.923s)	Loss: 8.308e-01 (6.498e-01)	Semantic loss: 6.774e-01 (4.285e-01)	Center loss: 1.185e-01 (1.276e-01)	Offset loss: 3.487e-02 (9.369e-02)	
+[07/13 19:32:47 segmentation]: [89160/90000] LR: 0.0000007	Time: 1.430s (1.265s)	Data: 1.089s (0.923s)	Loss: 3.316e-01 (6.496e-01)	Semantic loss: 1.867e-01 (4.285e-01)	Center loss: 7.909e-02 (1.275e-01)	Offset loss: 6.573e-02 (9.361e-02)	
+[07/13 19:33:09 segmentation]: [89180/90000] LR: 0.0000007	Time: 1.129s (1.264s)	Data: 0.785s (0.923s)	Loss: 6.930e-01 (6.495e-01)	Semantic loss: 4.011e-01 (4.285e-01)	Center loss: 1.741e-01 (1.274e-01)	Offset loss: 1.179e-01 (9.361e-02)	
+[07/13 19:33:34 segmentation]: [89200/90000] LR: 0.0000007	Time: 0.977s (1.264s)	Data: 0.630s (0.923s)	Loss: 7.824e-01 (6.497e-01)	Semantic loss: 6.695e-01 (4.286e-01)	Center loss: 4.232e-02 (1.275e-01)	Offset loss: 7.055e-02 (9.358e-02)	
+[07/13 19:33:58 segmentation]: [89220/90000] LR: 0.0000007	Time: 1.298s (1.264s)	Data: 0.951s (0.922s)	Loss: 3.214e-01 (6.493e-01)	Semantic loss: 1.237e-01 (4.284e-01)	Center loss: 1.645e-01 (1.274e-01)	Offset loss: 3.321e-02 (9.354e-02)	
+[07/13 19:34:20 segmentation]: [89240/90000] LR: 0.0000007	Time: 0.871s (1.263s)	Data: 0.530s (0.922s)	Loss: 4.265e-01 (6.494e-01)	Semantic loss: 2.724e-01 (4.283e-01)	Center loss: 4.792e-02 (1.274e-01)	Offset loss: 1.062e-01 (9.365e-02)	
+[07/13 19:34:42 segmentation]: [89260/90000] LR: 0.0000007	Time: 1.069s (1.263s)	Data: 0.728s (0.921s)	Loss: 4.509e-01 (6.491e-01)	Semantic loss: 2.732e-01 (4.283e-01)	Center loss: 1.538e-01 (1.273e-01)	Offset loss: 2.397e-02 (9.358e-02)	
+[07/13 19:35:02 segmentation]: [89280/90000] LR: 0.0000006	Time: 1.202s (1.262s)	Data: 0.859s (0.921s)	Loss: 9.988e-01 (6.493e-01)	Semantic loss: 7.957e-01 (4.285e-01)	Center loss: 1.421e-01 (1.272e-01)	Offset loss: 6.104e-02 (9.362e-02)	
+[07/13 19:35:26 segmentation]: [89300/90000] LR: 0.0000006	Time: 1.577s (1.262s)	Data: 1.233s (0.920s)	Loss: 6.153e-01 (6.496e-01)	Semantic loss: 3.546e-01 (4.287e-01)	Center loss: 1.635e-01 (1.272e-01)	Offset loss: 9.721e-02 (9.365e-02)	
+[07/13 19:35:51 segmentation]: [89320/90000] LR: 0.0000006	Time: 0.837s (1.262s)	Data: 0.495s (0.920s)	Loss: 5.432e-01 (6.497e-01)	Semantic loss: 5.229e-01 (4.288e-01)	Center loss: 3.749e-03 (1.273e-01)	Offset loss: 1.657e-02 (9.361e-02)	
+[07/13 19:36:14 segmentation]: [89340/90000] LR: 0.0000006	Time: 1.040s (1.261s)	Data: 0.697s (0.920s)	Loss: 6.843e-01 (6.494e-01)	Semantic loss: 3.691e-01 (4.286e-01)	Center loss: 1.471e-01 (1.272e-01)	Offset loss: 1.680e-01 (9.357e-02)	
+[07/13 19:36:36 segmentation]: [89360/90000] LR: 0.0000006	Time: 0.876s (1.261s)	Data: 0.531s (0.919s)	Loss: 1.016e+00 (6.493e-01)	Semantic loss: 4.547e-01 (4.285e-01)	Center loss: 8.543e-02 (1.272e-01)	Offset loss: 4.761e-01 (9.353e-02)	
+[07/13 19:36:58 segmentation]: [89380/90000] LR: 0.0000006	Time: 1.378s (1.261s)	Data: 1.038s (0.919s)	Loss: 5.375e-01 (6.492e-01)	Semantic loss: 3.371e-01 (4.286e-01)	Center loss: 1.610e-01 (1.271e-01)	Offset loss: 3.944e-02 (9.345e-02)	
+[07/13 19:37:20 segmentation]: [89400/90000] LR: 0.0000006	Time: 0.926s (1.260s)	Data: 0.583s (0.919s)	Loss: 4.183e-01 (6.489e-01)	Semantic loss: 3.693e-01 (4.285e-01)	Center loss: 2.544e-02 (1.271e-01)	Offset loss: 2.363e-02 (9.339e-02)	
+[07/13 19:37:48 segmentation]: [89420/90000] LR: 0.0000005	Time: 0.849s (1.260s)	Data: 0.504s (0.918s)	Loss: 3.353e-01 (6.491e-01)	Semantic loss: 2.688e-01 (4.285e-01)	Center loss: 2.877e-02 (1.271e-01)	Offset loss: 3.772e-02 (9.348e-02)	
+[07/13 19:38:11 segmentation]: [89440/90000] LR: 0.0000005	Time: 1.097s (1.260s)	Data: 0.755s (0.918s)	Loss: 1.143e+00 (6.492e-01)	Semantic loss: 4.698e-01 (4.285e-01)	Center loss: 3.938e-02 (1.272e-01)	Offset loss: 6.333e-01 (9.356e-02)	
+[07/13 19:38:35 segmentation]: [89460/90000] LR: 0.0000005	Time: 0.750s (1.260s)	Data: 0.406s (0.918s)	Loss: 2.344e-01 (6.491e-01)	Semantic loss: 1.749e-01 (4.285e-01)	Center loss: 2.908e-02 (1.271e-01)	Offset loss: 3.034e-02 (9.351e-02)	
+[07/13 19:38:59 segmentation]: [89480/90000] LR: 0.0000005	Time: 0.988s (1.260s)	Data: 0.645s (0.918s)	Loss: 4.354e-01 (6.495e-01)	Semantic loss: 1.722e-01 (4.285e-01)	Center loss: 1.212e-01 (1.272e-01)	Offset loss: 1.419e-01 (9.378e-02)	
+[07/13 19:39:20 segmentation]: [89500/90000] LR: 0.0000005	Time: 1.227s (1.259s)	Data: 0.883s (0.917s)	Loss: 4.668e-01 (6.495e-01)	Semantic loss: 2.092e-01 (4.286e-01)	Center loss: 2.103e-01 (1.271e-01)	Offset loss: 4.733e-02 (9.382e-02)	
+[07/13 19:39:47 segmentation]: [89520/90000] LR: 0.0000005	Time: 1.092s (1.259s)	Data: 0.733s (0.917s)	Loss: 5.129e-01 (6.495e-01)	Semantic loss: 3.737e-01 (4.286e-01)	Center loss: 1.023e-01 (1.271e-01)	Offset loss: 3.694e-02 (9.376e-02)	
+[07/13 19:40:11 segmentation]: [89540/90000] LR: 0.0000004	Time: 0.999s (1.259s)	Data: 0.654s (0.917s)	Loss: 9.306e-01 (6.498e-01)	Semantic loss: 8.021e-01 (4.288e-01)	Center loss: 6.285e-02 (1.271e-01)	Offset loss: 6.559e-02 (9.387e-02)	
+[07/13 19:40:32 segmentation]: [89560/90000] LR: 0.0000004	Time: 0.966s (1.258s)	Data: 0.613s (0.917s)	Loss: 2.011e-01 (6.496e-01)	Semantic loss: 1.206e-01 (4.286e-01)	Center loss: 6.930e-02 (1.271e-01)	Offset loss: 1.116e-02 (9.394e-02)	
+[07/13 19:40:56 segmentation]: [89580/90000] LR: 0.0000004	Time: 1.484s (1.258s)	Data: 1.141s (0.916s)	Loss: 7.863e-01 (6.494e-01)	Semantic loss: 5.976e-01 (4.286e-01)	Center loss: 1.381e-01 (1.270e-01)	Offset loss: 5.061e-02 (9.387e-02)	
+[07/13 19:41:22 segmentation]: [89600/90000] LR: 0.0000004	Time: 0.950s (1.258s)	Data: 0.606s (0.916s)	Loss: 3.610e-01 (6.493e-01)	Semantic loss: 2.919e-01 (4.285e-01)	Center loss: 4.775e-02 (1.270e-01)	Offset loss: 2.130e-02 (9.384e-02)	
+[07/13 19:41:46 segmentation]: [89620/90000] LR: 0.0000004	Time: 1.111s (1.258s)	Data: 0.764s (0.916s)	Loss: 8.740e-01 (6.493e-01)	Semantic loss: 4.890e-01 (4.285e-01)	Center loss: 8.097e-02 (1.269e-01)	Offset loss: 3.041e-01 (9.392e-02)	
+[07/13 19:42:09 segmentation]: [89640/90000] LR: 0.0000003	Time: 1.014s (1.258s)	Data: 0.667s (0.916s)	Loss: 5.557e-01 (6.493e-01)	Semantic loss: 3.832e-01 (4.285e-01)	Center loss: 8.094e-02 (1.269e-01)	Offset loss: 9.157e-02 (9.389e-02)	
+[07/13 19:42:35 segmentation]: [89660/90000] LR: 0.0000003	Time: 0.922s (1.258s)	Data: 0.582s (0.916s)	Loss: 5.435e-01 (6.497e-01)	Semantic loss: 4.794e-01 (4.286e-01)	Center loss: 3.941e-02 (1.272e-01)	Offset loss: 2.464e-02 (9.385e-02)	
+[07/13 19:42:58 segmentation]: [89680/90000] LR: 0.0000003	Time: 1.255s (1.258s)	Data: 0.906s (0.916s)	Loss: 5.179e-01 (6.498e-01)	Semantic loss: 3.272e-01 (4.287e-01)	Center loss: 1.403e-01 (1.273e-01)	Offset loss: 5.043e-02 (9.384e-02)	
+[07/13 19:43:24 segmentation]: [89700/90000] LR: 0.0000003	Time: 1.263s (1.258s)	Data: 0.918s (0.916s)	Loss: 4.996e-01 (6.498e-01)	Semantic loss: 1.412e-01 (4.286e-01)	Center loss: 3.026e-01 (1.274e-01)	Offset loss: 5.584e-02 (9.384e-02)	
+[07/13 19:43:48 segmentation]: [89720/90000] LR: 0.0000003	Time: 1.002s (1.257s)	Data: 0.647s (0.915s)	Loss: 3.894e-01 (6.497e-01)	Semantic loss: 2.779e-01 (4.285e-01)	Center loss: 9.941e-02 (1.274e-01)	Offset loss: 1.214e-02 (9.379e-02)	
+[07/13 19:44:11 segmentation]: [89740/90000] LR: 0.0000003	Time: 1.439s (1.257s)	Data: 1.101s (0.915s)	Loss: 6.619e-01 (6.498e-01)	Semantic loss: 4.467e-01 (4.286e-01)	Center loss: 1.845e-01 (1.273e-01)	Offset loss: 3.057e-02 (9.395e-02)	
+[07/13 19:44:34 segmentation]: [89760/90000] LR: 0.0000002	Time: 1.082s (1.257s)	Data: 0.730s (0.915s)	Loss: 3.407e-01 (6.497e-01)	Semantic loss: 2.129e-01 (4.285e-01)	Center loss: 9.114e-02 (1.272e-01)	Offset loss: 3.660e-02 (9.399e-02)	
+[07/13 19:44:57 segmentation]: [89780/90000] LR: 0.0000002	Time: 1.472s (1.256s)	Data: 1.131s (0.915s)	Loss: 4.075e-01 (6.496e-01)	Semantic loss: 2.391e-01 (4.284e-01)	Center loss: 1.015e-01 (1.273e-01)	Offset loss: 6.690e-02 (9.393e-02)	
+[07/13 19:45:20 segmentation]: [89800/90000] LR: 0.0000002	Time: 1.122s (1.256s)	Data: 0.783s (0.914s)	Loss: 3.387e-01 (6.495e-01)	Semantic loss: 1.664e-01 (4.284e-01)	Center loss: 1.259e-01 (1.273e-01)	Offset loss: 4.635e-02 (9.390e-02)	
+[07/13 19:45:46 segmentation]: [89820/90000] LR: 0.0000002	Time: 1.228s (1.256s)	Data: 0.888s (0.914s)	Loss: 6.348e-01 (6.496e-01)	Semantic loss: 2.830e-01 (4.284e-01)	Center loss: 1.547e-01 (1.273e-01)	Offset loss: 1.970e-01 (9.387e-02)	
+[07/13 19:46:09 segmentation]: [89840/90000] LR: 0.0000002	Time: 1.288s (1.256s)	Data: 0.947s (0.914s)	Loss: 4.620e-01 (6.493e-01)	Semantic loss: 1.839e-01 (4.283e-01)	Center loss: 2.548e-01 (1.273e-01)	Offset loss: 2.329e-02 (9.379e-02)	
+[07/13 19:46:33 segmentation]: [89860/90000] LR: 0.0000001	Time: 1.869s (1.256s)	Data: 1.508s (0.914s)	Loss: 2.809e-01 (6.492e-01)	Semantic loss: 1.148e-01 (4.282e-01)	Center loss: 1.281e-01 (1.272e-01)	Offset loss: 3.801e-02 (9.378e-02)	
+[07/13 19:46:58 segmentation]: [89880/90000] LR: 0.0000001	Time: 1.067s (1.256s)	Data: 0.723s (0.914s)	Loss: 3.143e-01 (6.491e-01)	Semantic loss: 2.372e-01 (4.281e-01)	Center loss: 3.445e-02 (1.272e-01)	Offset loss: 4.265e-02 (9.383e-02)	
+[07/13 19:47:20 segmentation]: [89900/90000] LR: 0.0000001	Time: 0.779s (1.255s)	Data: 0.429s (0.913s)	Loss: 3.857e-01 (6.489e-01)	Semantic loss: 3.679e-01 (4.280e-01)	Center loss: 1.211e-03 (1.272e-01)	Offset loss: 1.658e-02 (9.377e-02)	
+[07/13 19:47:44 segmentation]: [89920/90000] LR: 0.0000001	Time: 1.114s (1.255s)	Data: 0.759s (0.913s)	Loss: 4.734e-01 (6.491e-01)	Semantic loss: 3.553e-01 (4.280e-01)	Center loss: 7.519e-02 (1.271e-01)	Offset loss: 4.290e-02 (9.392e-02)	
+[07/13 19:48:08 segmentation]: [89940/90000] LR: 0.0000001	Time: 1.176s (1.255s)	Data: 0.806s (0.913s)	Loss: 7.997e-01 (6.493e-01)	Semantic loss: 5.998e-01 (4.282e-01)	Center loss: 1.333e-01 (1.272e-01)	Offset loss: 6.669e-02 (9.394e-02)	
+[07/13 19:48:31 segmentation]: [89960/90000] LR: 0.0000000	Time: 0.738s (1.254s)	Data: 0.395s (0.912s)	Loss: 1.962e-01 (6.492e-01)	Semantic loss: 1.555e-01 (4.282e-01)	Center loss: 9.873e-03 (1.271e-01)	Offset loss: 3.085e-02 (9.386e-02)	
+[07/13 19:48:53 segmentation]: [89980/90000] LR: 0.0000000	Time: 1.060s (1.254s)	Data: 0.718s (0.912s)	Loss: 3.459e-01 (6.490e-01)	Semantic loss: 2.434e-01 (4.281e-01)	Center loss: 6.860e-02 (1.270e-01)	Offset loss: 3.391e-02 (9.382e-02)	
+[07/13 19:49:15 segmentation]: [90000/90000] LR: 0.0000000	Time: 1.290s (1.254s)	Data: 0.937s (0.912s)	Loss: 6.497e-01 (6.489e-01)	Semantic loss: 5.320e-01 (4.281e-01)	Center loss: 4.504e-02 (1.270e-01)	Offset loss: 7.259e-02 (9.380e-02)	
+[07/13 19:49:23 segmentation]: Training finished.
