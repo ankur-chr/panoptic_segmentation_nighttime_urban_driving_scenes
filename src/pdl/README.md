@@ -60,4 +60,4 @@ The following publicly available datasets have been used in this project:
 - Nighttime driving dataset: http://people.ee.ethz.ch/~daid/NightDriving/#
 
 # Trained Models
-- The main three trained models of panoptic segmentation can be found here: https://drive.google.com/drive/folders/1--u0QI1YJQsbKRJTA55MDEga7X6OzS3c?usp=sharing
+- The 3 main trained models for panoptic segmentation can be found here: https://drive.google.com/drive/folders/1--u0QI1YJQsbKRJTA55MDEga7X6OzS3c?usp=sharing
