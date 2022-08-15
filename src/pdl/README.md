@@ -34,7 +34,7 @@ All the source code files for training and evaluation are present under the fold
 - Source code for Panoptic segmentation model is present under the folder: **"/panoptic-deeplab"**
     - Config files: All the config files used during the training and evaluation are included as part of this folder.
     - All the adapted code used in the project is also present under this folder.    
-- Note: The source code for Panoptic-DeepLab was **ADAPTED** from the public github repository: https://github.com/bowenc0221/panoptic-deeplab which has a re-implementation from the original paper : "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation" 
+- Note: The source code for Panoptic-DeepLab was **USED AND ADAPTED** from the public github repository: https://github.com/bowenc0221/panoptic-deeplab which has a re-implementation from the original paper : "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation" 
     - bibtex entry:
         - @inproceedings{cheng2020panoptic,
           title={Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation},
