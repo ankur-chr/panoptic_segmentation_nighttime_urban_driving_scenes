@@ -23,7 +23,7 @@ This repository contains the source code and related files for the dissertation 
           booktitle={CVPR},
           year={2020}
         }
-
+- A new parameter TRAIN.REFINE was introduced which allows for model refinement with a fresh learning rate, when training is resumed from a given iteration using the RESUME flag. This can be configured like other settings via the configuration yaml files.
 # CycleGAN base source code:
 - The base code for CycleGAN mmodel architecture was sourced from the public github repository : https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
 - It is part of the published paper "Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks" with the following bibtex entries:-
