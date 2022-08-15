@@ -3,7 +3,7 @@ This repository contains the source code and related files for the dissertation 
 # IMPORTANT: DATA SETUP for Cityscapes dataset
 - Before training of the panoptic-deeplab model, the data preparation scripts need to be run for the Cityscapes dataset, as described in https://github.com/bowenc0221/panoptic-deeplab/blob/master/datasets/README.md
 - This should be done after downloading the required Cityscapes dataset from the dataset link provided below.
-# Training/Testing - source code
+# Training/Testing - source code : Python files and Jupyter notebooks
 All the source code files for training and evaluation are present under the folder **"/src_train_test"**
 - A description for all the files is provided in
     - **ReadMe.MD** file under the **"/src_train_test"** directory.
