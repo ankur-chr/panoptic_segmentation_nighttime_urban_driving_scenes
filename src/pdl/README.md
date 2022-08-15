@@ -26,6 +26,10 @@ This repository contains the source code and related files for the dissertation 
 - Config files: All the config files used during the training and evaluation are included as part of the **/configs** folder.
 - All the ADAPTED code used in the project is included in this folder. 
 - A new parameter TRAIN.REFINE was introduced which allows for model refinement with a fresh learning rate, when training is resumed from a given iteration using the RESUME flag. This can be configured like other settings via the configuration yaml files.
+- Some primary base scripts that are important, are as follows:
+    - train_net.py is the base script for training the model.
+    - test.py is the base script for testing the model quantitatively.
+    - demo.py can be used to test a trained model qualitatively using some input images.
 
 # CycleGAN base source code:
 - The base code for CycleGAN mmodel architecture was sourced from the public github repository : https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
@@ -44,6 +48,11 @@ This repository contains the source code and related files for the dissertation 
     }
 - The code can be downloaded using the following git command:
     - !git clone https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+ 
+- Some primary scripts that are important are:
+    - train.py : used for training a CycleGAN model
+    - test.py : testing a trained CycleGAN model 
+- Usage instructions are primarily given in the link: https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
 
 # IMPORTANT: DATA SETUP for Cityscapes dataset
 - Before training of the panoptic-deeplab model, the data preparation scripts need to be run for the Cityscapes dataset, as described in https://github.com/bowenc0221/panoptic-deeplab/blob/master/datasets/README.md
