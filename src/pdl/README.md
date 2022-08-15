@@ -26,7 +26,7 @@ This repository contains the source code and related files for the dissertation 
 - Config files: All the config files used during the training and evaluation are included as part of the **/configs** folder.
 - All the ADAPTED code used in the project is included in this folder. 
 - A new parameter TRAIN.REFINE was introduced which allows for model refinement with a fresh learning rate, when training is resumed from a given iteration using the RESUME flag. This can be configured like other settings via the configuration yaml files.
-- Some primary base scripts that are important, are as follows:
+- Some primary base scripts that are important, are present in the **/tools** directory, and are as follows:
     - train_net.py is the base script for training the model.
     - test.py is the base script for testing the model quantitatively.
     - demo.py can be used to test a trained model qualitatively using some input images.
