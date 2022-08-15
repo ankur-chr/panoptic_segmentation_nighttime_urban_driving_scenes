@@ -61,3 +61,4 @@ The following publicly available datasets have been used in this project:
 
 # Trained Models
 - The 3 main trained models for panoptic segmentation can be found here: https://drive.google.com/drive/folders/1--u0QI1YJQsbKRJTA55MDEga7X6OzS3c?usp=sharing
+- Many other models where trained and tested for Panoptic Segmentation and CycleGAN. Those can be shared on request.
