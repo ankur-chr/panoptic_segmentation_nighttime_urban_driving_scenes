@@ -1,17 +1,50 @@
 # **Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
 This repository contains the source code and related files for the dissertation title mentioned above.
+
+# Training/Testing - source code 
+- Python files & Jupyter notebooks
+    - All the source code files for training and evaluation are present under the folder **"/src_train_test"**
+        - A description for all the files is provided in
+            - **ReadMe.MD** file under the **"/src_train_test"** directory.
+            - You may also check or download the descriptions via **"Files.xlsx"** in the same folder
+        - The folder contains training and evaluation files for:
+            -  Panoptic Segmentation
+            -  Domain Adaptation (CycleGAN)
+        - Corresponding Jupyter Notebooks are also available with output logs, etc. These are added under the sub-folder **"/jupyter"**
+# Panoptic-DeepLab model architecture base source code:
+- Source code for Panoptic segmentation model is present under the folder: **"/panoptic-deeplab"**
+    - Config files: All the config files used during the training and evaluation are included as part of this folder.
+    - All the ADAPTED code used in the project is also present under this folder.    
+- Note: The source code for Panoptic-DeepLab was **USED AND ADAPTED** from public re-implementation of the paper: "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation", available via https://github.com/bowenc0221/panoptic-deeplab  
+    - bibtex entry:
+        - @inproceedings{cheng2020panoptic,
+          title={Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation},
+          author={Cheng, Bowen and Collins, Maxwell D and Zhu, Yukun and Liu, Ting and Huang, Thomas S and Adam, Hartwig and Chen, Liang-Chieh},
+          booktitle={CVPR},
+          year={2020}
+        }
+
+# CycleGAN base source code:
+- The base code for CycleGAN mmodel architecture was sourced from the public github repository : https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+- bibtex entries 
+    - @inproceedings{CycleGAN2017,
+      title={Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks},
+      author={Zhu, Jun-Yan and Park, Taesung and Isola, Phillip and Efros, Alexei A},
+      booktitle={Computer Vision (ICCV), 2017 IEEE International Conference on},
+      year={2017}
+    }
+    - @inproceedings{isola2017image,
+      title={Image-to-Image Translation with Conditional Adversarial Networks},
+      author={Isola, Phillip and Zhu, Jun-Yan and Zhou, Tinghui and Efros, Alexei A},
+      booktitle={Computer Vision and Pattern Recognition (CVPR), 2017 IEEE Conference on},
+      year={2017}
+    }
+- The code can be downloaded using the following git command:
+    - !git clone https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+
 # IMPORTANT: DATA SETUP for Cityscapes dataset
 - Before training of the panoptic-deeplab model, the data preparation scripts need to be run for the Cityscapes dataset, as described in https://github.com/bowenc0221/panoptic-deeplab/blob/master/datasets/README.md
 - This should be done after downloading the required Cityscapes dataset from the dataset link provided below.
-# Training/Testing - source code : Python files & Jupyter notebooks
-All the source code files for training and evaluation are present under the folder **"/src_train_test"**
-- A description for all the files is provided in
-    - **ReadMe.MD** file under the **"/src_train_test"** directory.
-    - You may also check or download the descriptions via **"Files.xlsx"** in the same folder
-- The folder contains training and evaluation files for:
-    -  Panoptic Segmentation
-    -  Domain Adaptation (CycleGAN)
-- Corresponding Jupyter Notebooks are also available with output logs, etc. These are added under the sub-folder **"/jupyter"**
 
 # Running the training / evaluation code
 - NOTE that the executable code works on the "Google Drive" environment (has been implemented and tested via Google Colaboratory).
@@ -29,24 +62,6 @@ All the source code files for training and evaluation are present under the fold
     - The Pytorch implementation has been used in this project, in the respective code files that are provided.
     - In order to train CycleGAN, source and target datasets need to be set up as per the instructions provided in the repository linked above.
     - If the training gets stuck mid-way, it can be resumed using the --continue_train --epoch_count <epoch number> arguments to the training command. Such instances can already be found in the training execution python files in the **"/src_train_test"** directory.
-
-# Panoptic-DeepLab model architecture source code:
-- Source code for Panoptic segmentation model is present under the folder: **"/panoptic-deeplab"**
-    - Config files: All the config files used during the training and evaluation are included as part of this folder.
-    - All the adapted code used in the project is also present under this folder.    
-- Note: The source code for Panoptic-DeepLab was **USED AND ADAPTED** from the public github repository: https://github.com/bowenc0221/panoptic-deeplab which has a re-implementation from the original paper : "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation" 
-    - bibtex entry:
-        - @inproceedings{cheng2020panoptic,
-          title={Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation},
-          author={Cheng, Bowen and Collins, Maxwell D and Zhu, Yukun and Liu, Ting and Huang, Thomas S and Adam, Hartwig and Chen, Liang-Chieh},
-          booktitle={CVPR},
-          year={2020}
-        }
-
-# CycleGAN main source code:
-- The code was referenced from the public github repository : https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
-- The code can be downloaded using the following git command:
-    - !git clone https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
 
 # Datasets used:
 The following publicly available datasets have been used in this project:
