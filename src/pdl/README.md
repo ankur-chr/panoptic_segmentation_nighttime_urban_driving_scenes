@@ -58,3 +58,6 @@ The following publicly available datasets have been used in this project:
     -  https://github.com/sauradip/night_image_semantic_segmentation
     -  https://drive.google.com/drive/folders/1KBn3LIoD5rvNFDe2aZCH-4mNo6iXSuGX
 - Nighttime driving dataset: http://people.ee.ethz.ch/~daid/NightDriving/#
+
+# Trained Models
+- The main three trained models of panoptic segmentation can be found here: https://drive.google.com/drive/folders/1--u0QI1YJQsbKRJTA55MDEga7X6OzS3c?usp=sharing
