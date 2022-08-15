@@ -11,7 +11,7 @@ All the source code files for training and evaluation are present under the fold
 - The folder contains training and evaluation files for:
     -  Panoptic Segmentation
     -  Domain Adaptation (CycleGAN)
-- Corresponding Jupyter Notebooks are also available, and added to the sub-folder **"/jupyter"**
+- Corresponding Jupyter Notebooks are also available with output logs, etc. These are added under the sub-folder **"/jupyter"**
 
 # Running the training / evaluation code
 - NOTE that the executable code works on the "Google Drive" environment (has been implemented and tested via Google Colaboratory).
