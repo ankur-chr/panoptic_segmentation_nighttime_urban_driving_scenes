@@ -1,1 +1,1 @@
-Datasets would have to be added in this directory
+Datasets can be added in this directory for training and evaluation purposes
