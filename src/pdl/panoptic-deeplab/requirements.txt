@@ -1,0 +1,9 @@
+torchvision==0.6.0
+torch==1.5
+EasyDict==1.7
+opencv-python
+Cython
+Pillow
+tabulate
+termcolor
+fvcore
