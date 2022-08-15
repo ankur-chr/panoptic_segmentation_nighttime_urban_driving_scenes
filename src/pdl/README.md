@@ -23,8 +23,8 @@ This repository contains the source code and related files for the dissertation 
           booktitle={CVPR},
           year={2020}
         }
-- Config files: All the config files used during the training and evaluation are included as part of this folder.
-- All the ADAPTED code used in the project is also present under this folder. 
+- Config files: All the config files used during the training and evaluation are included as part of the **/configs** folder.
+- All the ADAPTED code used in the project is included in this folder. 
 - A new parameter TRAIN.REFINE was introduced which allows for model refinement with a fresh learning rate, when training is resumed from a given iteration using the RESUME flag. This can be configured like other settings via the configuration yaml files.
 
 # CycleGAN base source code:
