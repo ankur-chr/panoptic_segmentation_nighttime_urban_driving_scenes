@@ -4,7 +4,7 @@ This repository contains the source code and related files for the dissertation 
 # Training/Testing - source code 
 - Python files & Jupyter notebooks
     - All the source code files for training and evaluation are present under the folder **"/src_train_test"** 
-        - NOTE: There is no single executable file, as it is not an application development project. There are several files which are used for training and evaluation of models. These have been included in this folder.
+        - NOTE: There is no single executable file, as it is not an application development project. There are several files which are used for training and evaluation of deep-learning models. They have been included in this folder.
         - A description for all the files is provided in
             - **ReadMe.MD** file under the **"/src_train_test"** directory.
             - You may also check or download the descriptions via **"Files.xlsx"** in the same folder
