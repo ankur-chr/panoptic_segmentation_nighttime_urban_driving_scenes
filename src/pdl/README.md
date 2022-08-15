@@ -12,6 +12,7 @@ This repository contains the source code and related files for the dissertation 
             -  Domain Adaptation (CycleGAN)
         - Corresponding Jupyter Notebooks are also available with output logs, etc. These are added under the sub-folder **"/jupyter"**
         - For using this code, you will need to have the base source code for Panoptic-DeepLab and/or CycleGAN, as these files use the base code.
+            - More information for the base source code of each of them is provided below.
 # Panoptic-DeepLab model architecture base source code:
 - Source code for Panoptic segmentation model is present under the folder: **"/panoptic-deeplab"**
     - Config files: All the config files used during the training and evaluation are included as part of this folder.
