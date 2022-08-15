@@ -15,8 +15,6 @@ This repository contains the source code and related files for the dissertation 
             - More information for the base source code of each of them is provided below.
 # Panoptic-DeepLab model architecture base source code:
 - Source code for Panoptic segmentation model is present under the folder: **"/panoptic-deeplab"**
-    - Config files: All the config files used during the training and evaluation are included as part of this folder.
-    - All the ADAPTED code used in the project is also present under this folder.    
 - Note: The source code for Panoptic-DeepLab was **USED AND ADAPTED** from public re-implementation of the paper: "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation", available via https://github.com/bowenc0221/panoptic-deeplab  
     - bibtex entry:
         - @inproceedings{cheng2020panoptic,
@@ -25,7 +23,10 @@ This repository contains the source code and related files for the dissertation 
           booktitle={CVPR},
           year={2020}
         }
+- Config files: All the config files used during the training and evaluation are included as part of this folder.
+- All the ADAPTED code used in the project is also present under this folder. 
 - A new parameter TRAIN.REFINE was introduced which allows for model refinement with a fresh learning rate, when training is resumed from a given iteration using the RESUME flag. This can be configured like other settings via the configuration yaml files.
+
 # CycleGAN base source code:
 - The base code for CycleGAN mmodel architecture was sourced from the public github repository : https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
 - It is part of the published paper "Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks" with the following bibtex entries:-
