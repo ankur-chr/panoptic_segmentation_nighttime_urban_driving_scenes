@@ -93,4 +93,7 @@ The following publicly available datasets have been used in this project:
 - Many other models were trained and tested for Panoptic Segmentation and CycleGAN under various settings and with different datasets. Those can be shared on request as the list is big!
 
 # Additional data/logs
-- Some additional training and evaluation logs are added in the folder **/additional_output** as supporting facts for trainings (and evaluation) conducted under various settings.
+- Some additional training and evaluation logs are added in the folder **/additional_output** as supporting facts for trainings (and evaluation) conducted under various settings, such as:
+    - different ResNet backbone variants i.e., ResNet-34 or ResNet-50
+    - different learning rates, crop sizes, batch sizes, dilation enabled/disabled, etc.
+    - refining or training from scratch
