@@ -37,6 +37,9 @@ os.chdir('/content/drive/MyDrive/dissertation/dissertation/src/pdl/panoptic-deep
 # Install requirements/dependencies
 !pip install -r requirements.txt
 
+# IMPORTANT! 
+# Before training, the data preparation scripts need to be run for cityscapes, as per https://github.com/bowenc0221/panoptic-deeplab/blob/master/datasets/README.md
+
 # Use for training the panoptic-deeplab model ( baseline)
 #!python tools/train_net.py --cfg configs/Base-Panoptic-DeepLab.yaml
 !python tools/train_net.py --cfg configs/panoptic_deeplab_R50_os32_cityscapes.yaml
@@ -44,16 +47,11 @@ os.chdir('/content/drive/MyDrive/dissertation/dissertation/src/pdl/panoptic-deep
 # Use only for syncing to google drive
 #drive.flush_and_unmount()
 
-# Not needed
-#!git config --global user.email ankur.chrungoo@gmail.com
-
+# git related code (not needed to be run always)
 #!git commit -m "updated"
 
 # Install scripts for cityscapes data preparation, evaluation, etc.
 !pip install git+https://github.com/mcordts/cityscapesScripts.git
-
-# IMPORTANT! 
-# Before training, the data preparation scripts need to be run for cityscapes, as per https://github.com/bowenc0221/panoptic-deeplab/blob/master/datasets/README.md
 
 # use for testing the panoptic-deeplab model
 #!python tools/test.py --cfg configs/Base-Panoptic-DeepLab.yaml
