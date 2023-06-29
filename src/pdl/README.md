@@ -1,4 +1,4 @@
-# **Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
+# **Improving Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
 This repository contains the source code and related files for the dissertation title mentioned above.
 
 # Training/Testing - source code 
