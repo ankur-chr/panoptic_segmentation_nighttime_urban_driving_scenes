@@ -1,5 +1,5 @@
 # **Improving Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
-This repository contains the source code and related files for the dissertation title mentioned above.
+This repository contains the source code and related files for the research project title mentioned above.
 
 # Training/Testing - source code 
 - Python files & Jupyter notebooks
