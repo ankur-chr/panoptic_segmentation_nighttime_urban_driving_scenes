@@ -1,5 +1,5 @@
 # **Improving Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
-This repository contains the source code and related files for the research project titled above. The research is based on existing deep-learning architectures and utilizes the Domain Adaptation technique to improve panoptic segmentation for nighttime or low-illumination urban driving scenes by making use of various existing nighttime driving datasets.
+This repository contains the source code and related files for the research project titled above (arXiv:2306.13725 [cs.CV]). The research is based on existing deep-learning architectures and utilizes the Domain Adaptation technique to improve panoptic segmentation for nighttime or low-illumination urban driving scenes by making use of various existing nighttime driving datasets.
 
 # Datasets used:
 The following publicly available datasets have been used in this project:
