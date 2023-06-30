@@ -99,7 +99,8 @@ The following publicly available datasets have been used in this project:
     - refining or training from scratch
       
 # References
-- https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+- CycleGAN and pix2pix in PyTorch
+  https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
   - @inproceedings{CycleGAN2017,
       title={Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks},
       author={Zhu, Jun-Yan and Park, Taesung and Isola, Phillip and Efros, Alexei A},
