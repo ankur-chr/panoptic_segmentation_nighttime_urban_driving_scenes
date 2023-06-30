@@ -7,17 +7,16 @@ This repository contains the source code and related files for the research proj
         - NOTE: There is no single executable file, as it is not an application development project. There are several files which are used for training and evaluation of deep-learning models. They have been included in the said folder.
         - A description for all the files is provided in
             - **ReadMe.MD** file under the **"/src/pdl/src_train_test"** directory.
-            - You may also check or download the descriptions via **"Files.xlsx"** in the same folder
+            - One can also check or download the descriptions via **"Files.xlsx"** in the same folder
         - The folder contains training and evaluation files for:
             -  Panoptic Segmentation
             -  Domain Adaptation (CycleGAN)
         - Corresponding Jupyter Notebooks are also available with output logs, etc. These are added under the sub-folder **"/jupyter"**
-        - For using this code, you will need to have the base source code for Panoptic-DeepLab and/or CycleGAN, as these files use the base code.
-            - More information for the base source code for each of them is provided below.
+        - For using the training/testing code, one needs the source code for Panoptic-DeepLab and/or CycleGAN. Any adaptations to that code are listed below.
             
 # Panoptic-DeepLab model architecture base source code:
 - Source code for Panoptic segmentation model is present under the folder: **"/src/pdl/panoptic-deeplab"**
-- The source code for Panoptic-DeepLab was **used and further adapted** from a public re-implementation of the paper: "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation", available via https://github.com/bowenc0221/panoptic-deeplab  
+- The source code for Panoptic-DeepLab was **used and slightly adapted** from a public re-implementation of the paper: "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation", available via https://github.com/bowenc0221/panoptic-deeplab  
     - bibtex entry:
         - @inproceedings{cheng2020panoptic,
           title={Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation},
@@ -25,9 +24,9 @@ This repository contains the source code and related files for the research proj
           booktitle={CVPR},
           year={2020}
         }
-- Config files: All the config files used during the training and evaluation are included as part of the **/configs** folder.
-- All the ADAPTED code used in the project is included in this folder. 
+- The adapted code that was used is included in this folder. 
 - A new parameter TRAIN.REFINE was introduced which allows for model refinement with a fresh learning rate, when training is resumed from a given iteration using the RESUME flag. This can be configured like other settings via the configuration yaml files.
+- Config files: All the config files used during the training and evaluation are included as part of the **/configs** folder.
 - Important base scripts are present in the **/tools** directory, and are described as follows:
     - train_net.py is the base script for training the model.
     - test.py is the base script for testing the model quantitatively.
@@ -51,10 +50,10 @@ This repository contains the source code and related files for the research proj
 - The code can be downloaded using the following git command:
     - !git clone https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
  
-- Some primary scripts that are important are:
+- The primary scripts that are important are:
     - train.py : used for training a CycleGAN model
     - test.py : testing a trained CycleGAN model 
-- Usage instructions are primarily given in the link: https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+- Usage instructions are present in the link: https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
 
 # Datasets used:
 The following publicly available datasets have been used in this project:
@@ -73,15 +72,15 @@ The following publicly available datasets have been used in this project:
 
 # Running the training / evaluation code
 - NOTE that the executable code works on the "Google Drive" environment (has been implemented and tested via Google Colaboratory).
-- Panoptic Segmentation
+- **Panoptic Segmentation**
     - Please download and setup the Cityscapes panoptic segmentation training dataset and prepare it using the instructions and the dataset link(s) provided above.
     - After setting up the data for the Cityscapes dataset, the python file for baseline panoptic segmentation model can be run. Or the other python files can be run as per need.
     - In some files, demo code is also available as described in the readme file in the **"/src_train_test"** directory. The demo related commands in the python files take a trained model, and some input images and use the model to make the panoptic predictions.
         - You will need to setup the data in the required input directory, and have the trained model path ready before using this.
     - The python files also contain commands to execute 'test.py' which evaluate a trained panoptic segmentation model on the configured validation set.
     - The panoptic-deeplab folder contains configuration yaml files under the "configs" directory which can be configured to use different datasets, model settings, trained model path, number of iterations, resume/refine model, number of GPUs, batch size, crop size, loss parameters, and various other settings.
-- CycleGAN:
-    - One can download the required repository from the link provided.
+- **CycleGAN**:
+    - One can download the required repository from the link provided above.
     - The python files provided under the **"/src_train_test"** directory can be used as per need to train or refine a CycleGAN model.
     - For detailed instructions, please refer: https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix and related documentation.
     - The Pytorch-based implementation has been used in the respective code files that are provided.
