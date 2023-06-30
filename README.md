@@ -14,10 +14,10 @@ The following publicly available datasets have been used in this project:
 
 # Training/Testing - source code 
 - Python files & Jupyter notebooks
-    - All the source code files for training and evaluation are present under the folder **"/src_train_test"** 
+    - All the source code files for training and evaluation are present under the folder **"/src/pdl/src_train_test"** 
         - NOTE: There is no single executable file, as it is not an application development project. There are several files which are used for training and evaluation of deep-learning models. They have been included in the said folder.
         - A description for all the files is provided in
-            - **ReadMe.MD** file under the **"/src_train_test"** directory.
+            - **ReadMe.MD** file under the **"/src/pdl/src_train_test"** directory.
             - You may also check or download the descriptions via **"Files.xlsx"** in the same folder
         - The folder contains training and evaluation files for:
             -  Panoptic Segmentation
@@ -27,7 +27,7 @@ The following publicly available datasets have been used in this project:
             - More information for the base source code for each of them is provided below.
             
 # Panoptic-DeepLab model architecture base source code:
-- Source code for Panoptic segmentation model is present under the folder: **"/panoptic-deeplab"**
+- Source code for Panoptic segmentation model is present under the folder: **"/src/pdl/panoptic-deeplab"**
 - Note: The source code for Panoptic-DeepLab was **USED and further ADAPTED** from a public re-implementation of the paper: "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation", available via https://github.com/bowenc0221/panoptic-deeplab  
     - bibtex entry:
         - @inproceedings{cheng2020panoptic,
@@ -39,7 +39,7 @@ The following publicly available datasets have been used in this project:
 - Config files: All the config files used during the training and evaluation are included as part of the **/configs** folder.
 - All the ADAPTED code used in the project is included in this folder. 
 - A new parameter TRAIN.REFINE was introduced which allows for model refinement with a fresh learning rate, when training is resumed from a given iteration using the RESUME flag. This can be configured like other settings via the configuration yaml files.
-- Some primary base scripts that are important, are present in the **/tools** directory, and are as follows:
+- Important base scripts are present in the **/tools** directory, and are described as follows:
     - train_net.py is the base script for training the model.
     - test.py is the base script for testing the model quantitatively.
     - demo.py can be used to test a trained model qualitatively using some input images.
@@ -93,7 +93,7 @@ The following publicly available datasets have been used in this project:
 - Many other models were trained and tested for Panoptic Segmentation and CycleGAN under various settings and with different datasets. Those can be shared on request as the list is big!
 
 # Additional data/logs
-- Some additional training and evaluation logs are added in the folder **/additional_output** as artifacts for trainings (and evaluation) conducted under various settings, such as:
+- Some additional training and evaluation logs are added in the folder **/src/pdl/additional_output** as artifacts for trainings (and evaluation) conducted under various settings, such as:
     - different ResNet backbone variants i.e., ResNet-34 or ResNet-50
     - different learning rates, crop sizes, batch sizes, dilation enabled/disabled, etc.
     - refining or training from scratch
