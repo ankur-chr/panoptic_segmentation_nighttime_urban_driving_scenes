@@ -97,3 +97,27 @@ The following publicly available datasets have been used in this project:
     - different ResNet backbone variants i.e., ResNet-34 or ResNet-50
     - different learning rates, crop sizes, batch sizes, dilation enabled/disabled, etc.
     - refining or training from scratch
+      
+# References
+- https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+  - @inproceedings{CycleGAN2017,
+      title={Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks},
+      author={Zhu, Jun-Yan and Park, Taesung and Isola, Phillip and Efros, Alexei A},
+      booktitle={Computer Vision (ICCV), 2017 IEEE International Conference on},
+      year={2017}
+    }
+    - @inproceedings{isola2017image,
+      title={Image-to-Image Translation with Conditional Adversarial Networks},
+      author={Isola, Phillip and Zhu, Jun-Yan and Zhou, Tinghui and Efros, Alexei A},
+      booktitle={Computer Vision and Pattern Recognition (CVPR), 2017 IEEE Conference on},
+      year={2017}
+    }    
+- Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation
+  https://github.com/bowenc0221/panoptic-deeplab  
+    - bibtex entry:
+        - @inproceedings{cheng2020panoptic,
+          title={Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation},
+          author={Cheng, Bowen and Collins, Maxwell D and Zhu, Yukun and Liu, Ting and Huang, Thomas S and Adam, Hartwig and Chen, Liang-Chieh},
+          booktitle={CVPR},
+          year={2020}
+        }
