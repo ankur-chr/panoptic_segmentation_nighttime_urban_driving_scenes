@@ -1,17 +1,6 @@
 # **Improving Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
 This repository contains the source code and related files for the research project titled above (https://arxiv.org/abs/2306.13725 Ref: arXiv:2306.13725 [cs.CV] ). The research is based on existing deep-learning architectures and utilizes the Domain Adaptation technique to improve panoptic segmentation for nighttime or low-illumination urban driving scenes by making use of various existing nighttime driving datasets.
 
-# Datasets used:
-The following publicly available datasets have been used in this project:
-- Cityscapes: https://www.cityscapes-dataset.com/
-- Dark Zurich: https://www.trace.ethz.ch/publications/2019/GCMA_UIoU/
-- NightCity: https://dmcv.sjtu.edu.cn/people/phd/tanxin/NightCity/index.html
-- BDD100K: https://www.bdd100k.com/
-- Urban Night Driving Dataset (UNDD): 
-    -  https://github.com/sauradip/night_image_semantic_segmentation
-    -  https://drive.google.com/drive/folders/1KBn3LIoD5rvNFDe2aZCH-4mNo6iXSuGX
-- Nighttime driving dataset: http://people.ee.ethz.ch/~daid/NightDriving/#
-
 # Training/Testing - source code 
 - Python files & Jupyter notebooks
     - All the source code files for training and evaluation are present under the folder **"/src/pdl/src_train_test"** 
@@ -66,6 +55,17 @@ The following publicly available datasets have been used in this project:
     - train.py : used for training a CycleGAN model
     - test.py : testing a trained CycleGAN model 
 - Usage instructions are primarily given in the link: https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+
+# Datasets used:
+The following publicly available datasets have been used in this project:
+- Cityscapes: https://www.cityscapes-dataset.com/
+- Dark Zurich: https://www.trace.ethz.ch/publications/2019/GCMA_UIoU/
+- NightCity: https://dmcv.sjtu.edu.cn/people/phd/tanxin/NightCity/index.html
+- BDD100K: https://www.bdd100k.com/
+- Urban Night Driving Dataset (UNDD): 
+    -  https://github.com/sauradip/night_image_semantic_segmentation
+    -  https://drive.google.com/drive/folders/1KBn3LIoD5rvNFDe2aZCH-4mNo6iXSuGX
+- Nighttime driving dataset: http://people.ee.ethz.ch/~daid/NightDriving/#
 
 # IMPORTANT: DATA SETUP for Cityscapes dataset
 - Before training of the panoptic-deeplab model, the data preparation scripts need to be run for the Cityscapes dataset, as described in https://github.com/bowenc0221/panoptic-deeplab/blob/master/datasets/README.md
