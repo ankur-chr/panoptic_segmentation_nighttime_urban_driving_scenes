@@ -74,20 +74,19 @@ The following publicly available datasets have been used in this project:
 # Running the training / evaluation code
 - NOTE that the executable code works on the "Google Drive" environment (has been implemented and tested via Google Colaboratory).
 - Panoptic Segmentation
-    - Please download and setup the Cityscapes panoptic segmentation training dataset and prepare it using the instructions provided above, and the dataset link(s) provided below.
+    - Please download and setup the Cityscapes panoptic segmentation training dataset and prepare it using the instructions and the dataset link(s) provided above.
     - After setting up the data for the Cityscapes dataset, the python file for baseline panoptic segmentation model can be run. Or the other python files can be run as per need.
-    - In some files, demo code is also available as described in the readme file in the **"/src_train_test"** directory. Basically, the demo related commands in the python files take a trained model, and some input images and use the model to make the panoptic predictions.
+    - In some files, demo code is also available as described in the readme file in the **"/src_train_test"** directory. The demo related commands in the python files take a trained model, and some input images and use the model to make the panoptic predictions.
         - You will need to setup the data in the required input directory, and have the trained model path ready before using this.
     - The python files also contain commands to execute 'test.py' which evaluate a trained panoptic segmentation model on the configured validation set.
     - The panoptic-deeplab folder contains configuration yaml files under the "configs" directory which can be configured to use different datasets, model settings, trained model path, number of iterations, resume/refine model, number of GPUs, batch size, crop size, loss parameters, and various other settings.
 - CycleGAN:
-    - Please download the required repository from the link provided below.
+    - One can download the required repository from the link provided.
     - The python files provided under the **"/src_train_test"** directory can be used as per need to train or refine a CycleGAN model.
     - For detailed instructions, please refer: https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix and related documentation.
-    - The Pytorch implementation has been used in this project, in the respective code files that are provided.
+    - The Pytorch-based implementation has been used in the respective code files that are provided.
     - In order to train CycleGAN, source and target datasets need to be set up as per the instructions provided in the repository linked above.
-    - If the training gets stuck mid-way, it can be resumed using the --continue_train --epoch_count <epoch number> arguments to the training command. Such instances can already be found in the training execution python files in the **"/src_train_test"** directory.
-
+    - If the training gets stuck mid-way, it can be resumed using the --continue_train --epoch_count <epoch number> arguments to the training command. Such examples can be found in the training execution python files in the **"/src_train_test"** directory.
 
 # Trained Models
 - The 3 main trained models for panoptic segmentation, and 1 main CycleGAN model can be found here: https://drive.google.com/drive/folders/1--u0QI1YJQsbKRJTA55MDEga7X6OzS3c?usp=sharing
