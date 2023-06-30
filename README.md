@@ -28,7 +28,7 @@ The following publicly available datasets have been used in this project:
             
 # Panoptic-DeepLab model architecture base source code:
 - Source code for Panoptic segmentation model is present under the folder: **"/src/pdl/panoptic-deeplab"**
-- Note: The source code for Panoptic-DeepLab was **USED and further ADAPTED** from a public re-implementation of the paper: "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation", available via https://github.com/bowenc0221/panoptic-deeplab  
+- The source code for Panoptic-DeepLab was **USED and further ADAPTED** from a public re-implementation of the paper: "Panoptic-DeepLab: A Simple, Strong,and Fast Baseline for Bottom-Up Panoptic Segmentation", available via https://github.com/bowenc0221/panoptic-deeplab  
     - bibtex entry:
         - @inproceedings{cheng2020panoptic,
           title={Panoptic-DeepLab: A Simple, Strong, and Fast Baseline for Bottom-Up Panoptic Segmentation},
