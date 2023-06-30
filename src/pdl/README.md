@@ -1,5 +1,16 @@
 # **Improving Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
-This repository contains the source code and related files for the research project title mentioned above.
+This repository contains the source code and related files for the research project titled above. The research is based on existing deep learning architectures and utilizes the Domain Adaptation technique to improve panoptic segmentation for nighttime or low-illumination urban driving scenes by making use of various existing nighttime driving datasets.
+
+# Datasets used:
+The following publicly available datasets have been used in this project:
+- Cityscapes: https://www.cityscapes-dataset.com/
+- Dark Zurich: https://www.trace.ethz.ch/publications/2019/GCMA_UIoU/
+- NightCity: https://dmcv.sjtu.edu.cn/people/phd/tanxin/NightCity/index.html
+- BDD100K: https://www.bdd100k.com/
+- Urban Night Driving Dataset (UNDD): 
+    -  https://github.com/sauradip/night_image_semantic_segmentation
+    -  https://drive.google.com/drive/folders/1KBn3LIoD5rvNFDe2aZCH-4mNo6iXSuGX
+- Nighttime driving dataset: http://people.ee.ethz.ch/~daid/NightDriving/#
 
 # Training/Testing - source code 
 - Python files & Jupyter notebooks
@@ -77,23 +88,13 @@ This repository contains the source code and related files for the research proj
     - In order to train CycleGAN, source and target datasets need to be set up as per the instructions provided in the repository linked above.
     - If the training gets stuck mid-way, it can be resumed using the --continue_train --epoch_count <epoch number> arguments to the training command. Such instances can already be found in the training execution python files in the **"/src_train_test"** directory.
 
-# Datasets used:
-The following publicly available datasets have been used in this project:
-- Cityscapes: https://www.cityscapes-dataset.com/
-- Dark Zurich: https://www.trace.ethz.ch/publications/2019/GCMA_UIoU/
-- NightCity: https://dmcv.sjtu.edu.cn/people/phd/tanxin/NightCity/index.html
-- BDD100K: https://www.bdd100k.com/
-- Urban Night Driving Dataset (UNDD): 
-    -  https://github.com/sauradip/night_image_semantic_segmentation
-    -  https://drive.google.com/drive/folders/1KBn3LIoD5rvNFDe2aZCH-4mNo6iXSuGX
-- Nighttime driving dataset: http://people.ee.ethz.ch/~daid/NightDriving/#
 
 # Trained Models
 - The 3 main trained models for panoptic segmentation, and 1 main CycleGAN model can be found here: https://drive.google.com/drive/folders/1--u0QI1YJQsbKRJTA55MDEga7X6OzS3c?usp=sharing
 - Many other models were trained and tested for Panoptic Segmentation and CycleGAN under various settings and with different datasets. Those can be shared on request as the list is big!
 
 # Additional data/logs
-- Some additional training and evaluation logs are added in the folder **/additional_output** as supporting facts for trainings (and evaluation) conducted under various settings, such as:
+- Some additional training and evaluation logs are added in the folder **/additional_output** as artifacts for trainings (and evaluation) conducted under various settings, such as:
     - different ResNet backbone variants i.e., ResNet-34 or ResNet-50
     - different learning rates, crop sizes, batch sizes, dilation enabled/disabled, etc.
     - refining or training from scratch
