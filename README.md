@@ -1,5 +1,5 @@
 # **Improving Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
-**Research Paper: https://arxiv.org/abs/2306.13725 Citation: arXiv:2306.13725 [cs.CV]**
+**Associated Research Paper: https://arxiv.org/abs/2306.13725 Citation: arXiv:2306.13725 [cs.CV]**
 
 ## Overview
 
