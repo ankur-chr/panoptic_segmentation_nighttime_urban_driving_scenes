@@ -1,3 +1,29 @@
+## Key Contributions
+
+• Implemented panoptic segmentation training pipeline using Panoptic-DeepLab
+• Applied domain adaptation using CycleGAN for nighttime urban driving scenes
+• Integrated multiple datasets (Cityscapes, Dark Zurich, NightCity, BDD100K)
+• Trained models and evaluated performance across different configurations
+• Experimented with ResNet-34 and ResNet-50 backbones
+• Tuned hyperparameters including learning rate, batch size, crop size
+
+## Results
+
+• Improved segmentation performance in low illumination conditions
+• Successfully adapted daytime-trained models to nighttime scenes
+• Demonstrated effectiveness of domain adaptation
+
+## Tech stack
+
+• Python
+• PyTorch
+• Computer Vision
+• Deep Learning
+• CycleGAN
+• Panoptic-DeepLab
+• Google Colab training environment
+
+
 # **Improving Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
 This repository contains the source code and related files for the research project titled above, and linked here (https://arxiv.org/abs/2306.13725 Citation: arXiv:2306.13725 [cs.CV] ). The research is based on existing deep-learning architectures and utilizes the Domain Adaptation technique to improve Panoptic segmentation for nighttime or low-illumination urban driving scenes by making use of various existing nighttime driving datasets.
 
