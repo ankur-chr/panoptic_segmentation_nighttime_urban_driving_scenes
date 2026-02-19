@@ -13,11 +13,11 @@ This repository reflects practical application of deep learning-based computer v
 
 ## Key Implementation areas
 
-• Panoptic-DeepLab model training and evaluation setup  
-• Domain adaptation using CycleGAN for day-to-night domain transfer 
+• Panoptic-DeepLab model training and evaluation setup
+• Domain adaptation using CycleGAN for day-to-night domain transfer
 • Dataset configuration and integration for multiple urban driving datasets (Cityscapes, Dark Zurich, NightCity, BDD100K)
 • Trained models and evaluated performance across different configurations
-• Experiment configuration and evaluation pipelines. 
+• Experiment configuration and evaluation pipelines.
     - Experimented with ResNet-34 and ResNet-50 backbones
     - Tuned hyperparameters including learning rate, batch size, crop size
 
