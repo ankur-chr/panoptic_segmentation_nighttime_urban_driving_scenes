@@ -1,6 +1,8 @@
 # **Improving Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
 **Research Paper: https://arxiv.org/abs/2306.13725 Citation: arXiv:2306.13725 [cs.CV]**
 
+## Overview
+
 This repository contains the implementation and experimental setup corresponding to the associated research publication on improving panoptic segmentation performance in nighttime and low-illumination urban driving scenes.
 
 The work builds upon the Panoptic-DeepLab architecture and explores the use of domain adaptation techniques, specifically CycleGAN, to address the domain gap between daytime-trained models and nighttime driving environments. The repository includes model configurations, training setups, and experiment workflows used to train and evaluate segmentation models across multiple urban driving datasets.
@@ -9,14 +11,15 @@ The implementation supports dataset integration, training configuration, checkpo
 
 This repository reflects practical application of deep learning-based computer vision workflows, including model training, experiment configuration, and evaluation using real-world autonomous driving datasets.
 
-## Key Contributions
+## Key Implementation areas
 
-• Implemented panoptic segmentation training pipeline using Panoptic-DeepLab
-• Applied domain adaptation using CycleGAN for nighttime urban driving scenes
-• Integrated multiple datasets (Cityscapes, Dark Zurich, NightCity, BDD100K)
+• Panoptic-DeepLab model training and evaluation setup  
+• Domain adaptation using CycleGAN for day-to-night domain transfer 
+• Dataset configuration and integration for multiple urban driving datasets (Cityscapes, Dark Zurich, NightCity, BDD100K)
 • Trained models and evaluated performance across different configurations
-• Experimented with ResNet-34 and ResNet-50 backbones
-• Tuned hyperparameters including learning rate, batch size, crop size
+• Experiment configuration and evaluation pipelines. 
+    - Experimented with ResNet-34 and ResNet-50 backbones
+    - Tuned hyperparameters including learning rate, batch size, crop size
 
 ## Results
 
