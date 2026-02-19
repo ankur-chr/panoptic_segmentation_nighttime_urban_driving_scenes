@@ -1,5 +1,13 @@
 # **Improving Panoptic Segmentation for Nighttime or Low-Illumination Urban Driving Scenes**
-This repository contains the source code and related files for the research project titled above, and linked here (https://arxiv.org/abs/2306.13725 Citation: arXiv:2306.13725 [cs.CV] ). The research is based on existing deep-learning architectures and utilizes the Domain Adaptation technique to improve Panoptic segmentation for nighttime or low-illumination urban driving scenes by making use of various existing nighttime driving datasets.
+**Research Paper: https://arxiv.org/abs/2306.13725 Citation: arXiv:2306.13725 [cs.CV]**
+
+This repository contains the implementation and experimental setup corresponding to the associated research publication on improving panoptic segmentation performance in nighttime and low-illumination urban driving scenes.
+
+The work builds upon the Panoptic-DeepLab architecture and explores the use of domain adaptation techniques, specifically CycleGAN, to address the domain gap between daytime-trained models and nighttime driving environments. The repository includes model configurations, training setups, and experiment workflows used to train and evaluate segmentation models across multiple urban driving datasets.
+
+The implementation supports dataset integration, training configuration, checkpoint management, and evaluation pipelines used to analyze model performance under low-illumination conditions.
+
+This repository reflects practical application of deep learning-based computer vision workflows, including model training, experiment configuration, and evaluation using real-world autonomous driving datasets.
 
 ## Key Contributions
 
