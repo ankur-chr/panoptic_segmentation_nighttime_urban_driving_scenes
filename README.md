@@ -18,7 +18,7 @@ This repository reflects practical application of deep learning-based computer v
 • Domain adaptation using CycleGAN for day-to-night domain transfer
 • Dataset configuration and integration for multiple urban driving datasets
 • Trained models and evaluated performance across different configurations
-• Experiment configuration and evaluation pipelines.
+• Experiment configuration and evaluation.
     - Experimented with ResNet-34 and ResNet-50 backbones
     - Tuned hyperparameters including learning rate, batch size, crop size
 
