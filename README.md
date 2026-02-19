@@ -14,11 +14,11 @@ This repository reflects practical application of deep learning-based computer v
 
 ## Key Implementation areas
 
-✔ Panoptic-DeepLab model training configuration and execution
-✔ CycleGAN domain adaptation training workflow integration
-✔ Dataset configuration and integration for multiple urban driving datasets
-✔ Training continuation and checkpoint refinement logic (TRAIN.REFINE)
-✔ Experiment setup, evaluation, and logging
+✔ Panoptic-DeepLab model training configuration and execution.
+✔ CycleGAN domain adaptation training workflow integration.
+✔ Dataset configuration and integration for multiple urban driving datasets.
+✔ Training continuation and checkpoint refinement logic (TRAIN.REFINE).
+✔ Experiment setup, evaluation, and logging.
 
 ## Results
 
